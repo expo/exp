@@ -1,0 +1,39 @@
+{
+  "name": "exponent-server",
+  "version": "0.0.1",
+  "description": "For serving code to Exponent browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "exponent-serve": "./serve.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/650Industries/exponent-server.git"
+  },
+  "keywords": [
+    "exponent",
+    "react-native",
+    "browser",
+    "server",
+    "react",
+    "native-web"
+  ],
+  "author": "650 Industries",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/650Industries/exponent-server/issues"
+  },
+  "homepage": "https://github.com/650Industries/exponent-server#readme",
+  "dependencies": {
+    "@ccheever/crayon": "^4.0.0",
+    "co": "^4.5.2",
+    "instapromise": "^1.0.0",
+    "minimist": "^1.1.1",
+    "ngrok": "^0.1.99",
+    "coffee-script": "^1.9.2",
+    "react-native": "^0.4.1"
+  }
+}
