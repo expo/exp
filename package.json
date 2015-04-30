@@ -1,6 +1,6 @@
 {
   "name": "exponent-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "For serving code to Exponent browser",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/650Industries/exponent-server#readme",
   "dependencies": {
-    "@ccheever/crayon": "^4.0.0",
+    "@ccheever/crayon": "^5.0.0",
     "co": "^4.5.2",
     "instapromise": "^1.0.0",
     "minimist": "^1.1.1",
