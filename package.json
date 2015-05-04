@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "exponent-serve": "./serve.js"
+    "exp": "./build/exp.js"
   },
   "repository": {
     "type": "git",
@@ -29,10 +29,19 @@
   "homepage": "https://github.com/650Industries/exponent-server#readme",
   "dependencies": {
     "@ccheever/crayon": "^5.0.0",
+    "babel-runtime": "^5.2.2",
     "co": "^4.5.2",
     "instapromise": "^1.0.0",
     "minimist": "^1.1.1",
     "ngrok": "^0.1.99",
-    "react-native": "^0.4.1"
+    "react-native": "^0.4.1",
+    "request": "^2.55.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-watch": "^4.2.4",
+    "gulp-babel": "^5.1.0",
+    "gulp-changed": "^1.2.1",
+    "gulp-sourcemaps": "^1.5.2"
   }
 }
