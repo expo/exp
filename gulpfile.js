@@ -13,7 +13,7 @@ gulp.task('babel', function() {
   var src = 'src/**/*.js';
   return gulp.src(src)
     .pipe(watch(src))
-    //.pipe(changed(paths.dest))
+    .pipe(changed(paths.dest))
     .pipe(sourcemaps.init())
     .pipe(babel({
       stage: 1,

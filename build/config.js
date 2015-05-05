@@ -5,13 +5,19 @@
 
 'use strict';
 
-var DEFAULT_URL_FILE = '.exponent.url';
-
 var minimist = require('minimist');
+var path = require('path');
 
 var argv = minimist(process.argv.slice(2));
 
-var path = argv.path || argv.p || '.';
+var relativePath = argv.path || argv.p || '.';
+var absolutePath = path.resolve('.', relativePath);
 
-module.exports;
+var packagerPath = path.join(__dirname, '..', 'node_modules', 'react-native', 'packager', 'packager.sh');
+
+module.exports = {
+  relativePath: relativePath,
+  absolutePath: absolutePath,
+  argv: argv,
+  packagerPath: packagerPath };
 //# sourceMappingURL=sourcemaps/config.js.map
