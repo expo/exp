@@ -1,6 +1,26 @@
 #!/usr/bin/env node
 'use strict';
 
+var _Object$keys = require('babel-runtime/core-js/object/keys')['default'];
+
+var hasYield = require('has-yield');
+if (!hasYield) {
+  var log = require('./log');
+  log.error('`yield` keyword not available; use iojs (or a version of node that supports yield and generators)');
+  console.error('You are currently using node ' + process.version);
+  console.error('We recommend using nvm to install the latest version of iojs');
+  console.error('');
+  console.error(log.crayon.bold('https://github.com/creationix/nvm'));
+  console.error('');
+  console.error(' curl https://raw.githubusercontent.com/creationix/nvm/v0.25.1/install.sh | bash');
+  console.error(' nvm install iojs');
+  console.error(' nvm alias default iojs');
+  console.error('');
+  console.error(' # ... then open a new terminal window and try again');
+  console.error('');
+  process.exit(1);
+}
+
 var child_process = require('child_process');
 var co = require('co');
 var crayon = require('@ccheever/crayon');
@@ -21,14 +41,20 @@ module.exports = function (command, argv) {
     commands[command].runAsync({ argv: argv }).then(function (result) {
       if (result != null) {
         console.error('\n');
-        log(log.crayon.gray(result));
+        log(crayon.gray(result));
       }
     }, function (err) {
-      crayon.red.bold.error('Error:');
-      crayon.red.error(err);
+      log.error(err);
     });
   } else {
-    console.error('Usage: exp <command>\n' + '\n' + 'where <command> is one of:\n' + '    serve, send, snapshot, help\n' + '\n' + 'exp help <cmd>     search for help on <cmd>\n');
+    var commandKeys = _Object$keys(commands);
+    console.error('Usage: exp <command>\n' + '\n' + 'where <command> is one of:\n' + '    ' + commandKeys.join(', ') + '\n' + '\n' + 'exp help <cmd>     search for help on <cmd>\n');
+
+    for (var i = 0; i < commandKeys.length; i++) {
+      var key = commandKeys[i];
+      var command = commands[key];
+      console.error('exp ' + command.name + '\t' + command.description);
+    }
   }
 };
 

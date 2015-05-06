@@ -31,6 +31,8 @@
     "@ccheever/crayon": "^5.0.0",
     "babel-runtime": "^5.2.2",
     "co": "^4.5.2",
+    "has-yield": "^1.0.0",
+    "inquirer": "^0.8.3",
     "instapromise": "^1.0.0",
     "minimist": "^1.1.1",
     "ngrok": "^0.1.99",

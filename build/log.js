@@ -8,6 +8,14 @@ function log() {
   console.error.apply(console, args);
 }
 
+log.error = function error() {
+  var prefix = crayon.red('[') + crayon.gray('exp') + crayon.red(']') + crayon.red.bold(' Error:');
+  var args = [prefix].concat(Array.prototype.slice.call(arguments, 0).map(function (x) {
+    return crayon.red(x);
+  }));
+  console.error.apply(console, args);
+};
+
 log.crayon = crayon;
 
 module.exports = log;
