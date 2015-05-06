@@ -41,7 +41,7 @@ module.exports = function (command, argv) {
     commands[command].runAsync({ argv: argv }).then(function (result) {
       if (result != null) {
         console.error('\n');
-        log(crayon.gray(result));
+        log(crayon.gray('\n') + crayon.gray(result));
       }
     }, function (err) {
       log.error(err);

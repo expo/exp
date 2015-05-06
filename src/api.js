@@ -7,12 +7,23 @@ var co = require('co');
 var instapromise = require('instapromise');
 var request = require('request');
 
+var userSettings = require('./userSettings');
+
 var HOST = 'exp.host';
 var PORT = 80;
 
-var callMethodAsync = co.wrap(function*(methodName, args) {
+var getBaseUrlAsync = co.wrap(function *() {
+  // TODO: Let you specify host and port with command line arguments (use config module)
+  var {api} = yield userSettings.readFileAsync();
+  var host = (api && api.host) || HOST;
+  var port = (api && api.port) || PORT;
+  var baseUrl = api.baseUrl || ('http://' + host + ':' + port + '/__api__');
+  return baseUrl;
+});
+
+var callMethodAsync = co.wrap(function *(methodName, args) {
   // TODO: Make this configurable at some point
-  var baseUrl = 'http://' + HOST + ':' + PORT + '/__api__';
+  var baseUrl = yield getBaseUrlAsync();
   var url = baseUrl + '/' + encodeURIComponent(methodName) + '/' + encodeURIComponent(JSON.stringify(args));
   //console.log("url=", url);
   var response = yield request.promise.post(url);
@@ -27,4 +38,5 @@ var callMethodAsync = co.wrap(function*(methodName, args) {
 
 module.exports = {
   callMethodAsync,
+  getBaseUrlAsync,
 };
