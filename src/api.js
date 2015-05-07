@@ -26,7 +26,7 @@ var getBaseUrlAsync = co.wrap(function *() {
   var {api} = yield userSettings.readFileAsync();
   var host = (api && api.host) || HOST;
   var port = (api && api.port) || PORT;
-  var baseUrl = (api && api.baseUrl) || ('http://' + host + ':' + port + '/__api__');
+  var baseUrl = (api && api.baseUrl) || ('http://' + host + ':' + port + '/--/api');
   return baseUrl;
 });
 
