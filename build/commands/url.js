@@ -22,12 +22,12 @@ module.exports = {
     } catch (e) {
       throw CommandError('RUN_EXP_SERVE_FIRST', env, 'You need to run `exp serve` before you have a URL you can send');
     }
-
+    var expUrl = urlUtil.expUrlFromHttpUrl(url);
     var recipient = args[1];
     if (recipient) {
-      return yield api.callMethodAsync('send', [recipient, url]);
+      return yield api.callMethodAsync('send', [recipient, expUrl]);
     } else {
-      console.log(url);
+      console.log(expUrl);
       // TODO: If we can make the URLs shorter, show a QR code
       /*
       crayon.bold.log(url);

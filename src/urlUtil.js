@@ -65,7 +65,12 @@ var testUrlAsync = co.wrap(function *(url) {
   return url;
 });
 
+function expUrlFromHttpUrl(url) {
+  return ('' + url).replace(/^http(s?)/,'exp');
+}
+
 module.exports = {
+  expUrlFromHttpUrl,
   readUrlFileAsync,
   writeUrlFileAsync,
   getTestedMainBundleUrlAsync,
