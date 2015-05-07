@@ -1,7 +1,5 @@
 /**
  * A trivial example of a React Native application
- *
- * @providesModule main
  */
 var React = require('react-native');
 
@@ -10,7 +8,7 @@ var {
   Text,
 } = React;
 
-var ExampleApp = React.createClass({
+class ExampleApp extends React.Component {
   render() {
     return (
       <View>
@@ -21,7 +19,7 @@ var ExampleApp = React.createClass({
         </Text>
       </View>
     );
-  },
-});
+  }
+}
 
 AppRegistry.registerComponent('main', () => ExampleApp);
