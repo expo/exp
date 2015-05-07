@@ -48,7 +48,6 @@
     "gulp-watch": "^4.2.4",
     "gulp-babel": "^5.1.0",
     "gulp-changed": "^1.2.1",
-    "gulp-sourcemaps": "^1.5.2",
-    "react-native": "^0.4.1"
+    "gulp-sourcemaps": "^1.5.2"
   }
 }
