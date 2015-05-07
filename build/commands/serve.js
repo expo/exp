@@ -11,6 +11,7 @@ var config = require('../config');
 var log = require('../log');
 var urlUtil = require('../urlUtil');
 var userSettings = require('../userSettings');
+var waitAsync = require('../waitAsync');
 
 module.exports = {
   name: 'serve',
@@ -44,6 +45,17 @@ module.exports = {
     yield urlUtil.writeUrlFileAsync(url);
 
     log('Started packager and ngrok');
-    log('Your URL is\n' + crayon.bold(url) + '\n');
+    //log("Your URL is\n" + crayon.bold(url) + "\n");
+
+    // TODO: Make this read the stdout stream looking for text aobut being ready
+    // instead of just delaying
+    log(crayon.yellow('The packager is starting up. You\'ll be given a URL in bold yellow you can use when its ready'));
+    yield waitAsync(3000);
+
+    var httpUrl = yield urlUtil.getTestedMainBundleUrlAsync();
+    var expUrl = urlUtil.expUrlFromHttpUrl(httpUrl);
+    log('Your URL is\n' + crayon.yellow.bold(expUrl) + '\n');
+
+    // TODO: Add sending stuff
   }) };
 //# sourceMappingURL=../sourcemaps/commands/serve.js.map
