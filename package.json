@@ -1,7 +1,7 @@
 {
   "name": "exponent-server",
-  "version": "0.0.2",
-  "description": "For serving code to Exponent browser",
+  "version": "0.0.4",
+  "description": "For serving code to the Exponent app",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
