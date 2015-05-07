@@ -4,8 +4,8 @@ var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default']
 
 var _ = require('lodash-node');
 var co = require('co');
+var inquirerAsync = require('inquirer-async');
 var instapromise = require('instapromise');
-var inquirer = require('inquirer');
 
 var api = require('../api');
 var password = require('../password');
@@ -19,18 +19,20 @@ module.exports = {
     var argv = env.argv;
     var args = argv._;
 
-    var _args = _slicedToArray(args, 5);
+    var _args = _slicedToArray(args, 6);
 
     var _cmd = _args[0];
     var username = _args[1];
     var cleartextPassword = _args[2];
-    var email = _args[3];
-    var phoneNumber = _args[4];
+    var fullName = _args[3];
+    var email = _args[4];
+    var phoneNumber = _args[5];
 
     username = username || argv.username;
     cleartextPassword = cleartextPassword || argv.password;
     email = email || argv.email;
     phoneNumber = phoneNumber || argv.phoneNumber;
+    fullName = fullName || argv.fullName;
 
     var settingsData = yield userSettings.readFileAsync();
 
@@ -59,6 +61,17 @@ module.exports = {
         } });
     }
 
+    if (!fullName) {
+      questions.push({
+        type: 'input',
+        name: 'fullName',
+        message: 'Full Name',
+        validate: function validate(val) {
+          // TODO: Validate
+          return true;
+        } });
+    }
+
     if (!email) {
       questions.push({
         type: 'input',
@@ -75,20 +88,28 @@ module.exports = {
         'default': settingsData.phoneNumber });
     }
 
-    inquirer.prompt(questions, function (answers) {
-      var data = {
-        username: username || answers.username,
-        cleartextPassword: cleartextPassword || answers.cleartextPassword,
-        email: email || answers.email,
-        phoneNumber: phoneNumber || answers.phoneNumber };
+    // TODO: Make this more of a Promise/yieldable situation so we can continue inline here
+    var answers = yield inquirerAsync.promptAsync(questions);
 
-      // Store only the hashed version of someone's password
-      data.hashedPassword = password.hashPassword(data.cleartextPassword);
-      delete data.cleartextPassword;
-      console.log('data=', data);
-      // TODO: Call the API. Write the settings file
+    var data = {
+      username: username || answers.username,
+      cleartextPassword: cleartextPassword || answers.cleartextPassword,
+      email: email || answers.email,
+      phoneNumber: phoneNumber || answers.phoneNumber };
 
-      api.callMethodAsync('adduser', data);
-    });
+    // Store only the hashed version of someone's password
+    data.hashedPassword = password.hashPassword(data.cleartextPassword);
+    delete data.cleartextPassword;
+
+    var result = yield api.callMethodAsync('adduser', data);
+
+    var user = result.user;
+
+    if (user) {
+      yield userSettings.writeFileAsync(user);
+      return result;
+    } else {
+      throw new Error('Unexpected Error: No user returned from the API');
+    }
   }) };
 //# sourceMappingURL=../sourcemaps/commands/adduser.js.map

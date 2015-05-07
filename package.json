@@ -33,6 +33,7 @@
     "co": "^4.5.2",
     "has-yield": "^1.0.0",
     "inquirer": "^0.8.3",
+    "inquirer-async": "^1.0.0",
     "instapromise": "^1.0.0",
     "lodash-node": "^3.8.0",
     "minimist": "^1.1.1",
