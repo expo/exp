@@ -8,6 +8,7 @@ var path = require('path');
 var config = require('../config');
 var log = require('../log');
 var urlUtil = require('../urlUtil');
+var userSettings = require('../userSettings');
 
 module.exports = {
   name: 'serve',
@@ -17,6 +18,7 @@ module.exports = {
     ['--port', "The port to run the server on", "Random (9000-9999)"],
     ['--ngrokSubdomain', "The ngrok subdomain to use", (config.ngrok && config.ngrok.subdomain)],
     ['--ngrokAuthToken', "The ngrok authToken to use", (config.ngrok && config.ngrok.authToken)],
+    ['--send', "An e-mail address or phone number to send a link to"]
   ],
   help: "Starts a local server to serve your app and gives you a URL to it",
   runAsync: co.wrap(function *(env) {

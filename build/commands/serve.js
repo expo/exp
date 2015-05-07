@@ -10,11 +10,12 @@ var path = require('path');
 var config = require('../config');
 var log = require('../log');
 var urlUtil = require('../urlUtil');
+var userSettings = require('../userSettings');
 
 module.exports = {
   name: 'serve',
   description: 'Starts a local server to serve your app and gives you a URL to it',
-  options: [['--path', 'The path to the place where your package is', '.'], ['--port', 'The port to run the server on', 'Random (9000-9999)'], ['--ngrokSubdomain', 'The ngrok subdomain to use', config.ngrok && config.ngrok.subdomain], ['--ngrokAuthToken', 'The ngrok authToken to use', config.ngrok && config.ngrok.authToken]],
+  options: [['--path', 'The path to the place where your package is', '.'], ['--port', 'The port to run the server on', 'Random (9000-9999)'], ['--ngrokSubdomain', 'The ngrok subdomain to use', config.ngrok && config.ngrok.subdomain], ['--ngrokAuthToken', 'The ngrok authToken to use', config.ngrok && config.ngrok.authToken], ['--send', 'An e-mail address or phone number to send a link to']],
   help: 'Starts a local server to serve your app and gives you a URL to it',
   runAsync: co.wrap(function* (env) {
     var argv = env.argv;
