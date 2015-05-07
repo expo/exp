@@ -8,6 +8,7 @@ var inquirerAsync = require('inquirer-async');
 var instapromise = require('instapromise');
 
 var api = require('../api');
+var CommandError = require('./CommandError');
 var password = require('../password');
 var userSettings = require('../userSettings');
 
@@ -61,7 +62,7 @@ module.exports = {
         } });
     }
 
-    if (!fullName) {
+    if (!fullName && !env.isLogin) {
       questions.push({
         type: 'input',
         name: 'fullName',
@@ -72,7 +73,7 @@ module.exports = {
         } });
     }
 
-    if (!email) {
+    if (!email && !env.isLogin) {
       questions.push({
         type: 'input',
         name: 'email',
@@ -80,7 +81,7 @@ module.exports = {
         'default': settingsData.email });
     }
 
-    if (!phoneNumber) {
+    if (!phoneNumber && !env.isLogin) {
       questions.push({
         type: 'input',
         name: 'phoneNumber',
@@ -109,6 +110,7 @@ module.exports = {
       yield userSettings.writeFileAsync(user);
       return result;
     } else {
+      console.log('result=', result);
       throw new Error('Unexpected Error: No user returned from the API');
     }
   }) };

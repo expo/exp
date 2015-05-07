@@ -1,5 +1,3 @@
-'use strict';
-
 var co = require('co');
 //var crayon = require('@ccheever/crayon');
 //var qrcodeTerminal = require('qrcode-terminal');
@@ -10,9 +8,9 @@ var urlUtil = require('../urlUtil');
 
 module.exports = {
   name: 'url',
-  description: 'Sends a link you can load the app you\'re developing to a phone number or e-mail address',
-  help: 'You must have the server running for this command to work',
-  runAsync: co.wrap(function* (env) {
+  description: "Sends a link you can load the app you're developing to a phone number or e-mail address",
+  help: "You must have the server running for this command to work",
+  runAsync: co.wrap(function *(env) {
     var argv = env.argv;
     var args = argv._;
     var err = null;
@@ -20,7 +18,7 @@ module.exports = {
     try {
       var url = yield urlUtil.getTestedMainBundleUrlAsync();
     } catch (e) {
-      throw CommandError('RUN_EXP_SERVE_FIRST', env, 'You need to run `exp serve` before you have a URL you can send');
+      throw CommandError('RUN_EXP_SERVE_FIRST', env, "You need to run `exp serve` before you have a URL you can send");
     }
 
     var recipient = args[1];
@@ -37,5 +35,6 @@ module.exports = {
       crayon.bold.log(url);
       */
     }
-  }) };
-//# sourceMappingURL=../sourcemaps/commands/send.js.map
+
+  }),
+};

@@ -1,4 +1,5 @@
-/**
+/*eU
+
  * Makes an API call to exp.host
  *
  */
@@ -14,6 +15,14 @@ var userSettings = require('./userSettings');
 var HOST = 'exp.host';
 var PORT = 80;
 
+function ApiError(code, env, message) {
+  var err = new Error(message);
+  err.code = code;
+  err.env = env;
+  err._isApiError = true;
+  return err;
+}
+
 var getBaseUrlAsync = co.wrap(function* () {
   // TODO: Let you specify host and port with command line arguments (use config module)
 
@@ -23,7 +32,7 @@ var getBaseUrlAsync = co.wrap(function* () {
 
   var host = api && api.host || HOST;
   var port = api && api.port || PORT;
-  var baseUrl = api.baseUrl || 'http://' + host + ':' + port + '/__api__';
+  var baseUrl = api && api.baseUrl || 'http://' + host + ':' + port + '/__api__';
   return baseUrl;
 });
 
@@ -35,11 +44,15 @@ var callMethodAsync = co.wrap(function* (methodName, args) {
   var response = yield request.promise.post(url);
   var body = response.body;
   try {
-    return JSON.parse(body);
+    var response = JSON.parse(body);
   } catch (e) {
     var err = new Error('Unparseable response from API server: ' + body);
     throw err;
   }
+  if (response.err) {
+    throw ApiError(response.code, response.err.env, response.err);
+  }
+  return response;
 });
 
 module.exports = {
