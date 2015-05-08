@@ -41,7 +41,8 @@
     "ngrok": "^0.1.99",
     "qrcode-terminal": "^0.9.5",
     "react-native": "^0.4.1",
-    "request": "^2.55.0"
+    "request": "^2.55.0",
+    "simple-spinner": "0.0.3"
   },
   "devDependencies": {
     "gulp": "^3.8.11",

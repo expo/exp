@@ -1,11 +1,17 @@
 'use strict';
 
+var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default'];
+
+var _Promise = require('babel-runtime/core-js/promise')['default'];
+
 var child_process = require('child_process');
 var co = require('co');
 var crayon = require('@ccheever/crayon');
 var instapromise = require('instapromise');
 var ngrok = require('ngrok');
 var path = require('path');
+var simpleSpinner = require('simple-spinner');
+var stream = require('stream');
 
 var config = require('../config');
 var log = require('../log');
@@ -38,23 +44,55 @@ module.exports = {
     //var root = path.resolve(__dirname, '..', '..');
     var root = config.absolutePath;
     var packager = child_process.spawn(config.packagerPath, ['--port=' + port, '--root=' + root, '--assetRoots=' + root], {
-      stdio: [process.stdin, process.stdout, process.stderr] });
+      stdio: [process.stdin, 'pipe', process.stderr] });
 
-    var url = yield urlP;
-    // Store the URL in a file
-    yield urlUtil.writeUrlFileAsync(url);
+    var outStream = new stream.Writable();
+    outStream.buffer = '';
+    outStream._write = function (chunk, encoding, done) {
+      outStream.buffer += chunk.toString();
+      done();
+    };
 
-    log('Started packager and ngrok');
-    //log("Your URL is\n" + crayon.bold(url) + "\n");
+    var packagerReady = new _Promise(function (fulfill, reject) {
 
-    // TODO: Make this read the stdout stream looking for text aobut being ready
-    // instead of just delaying
-    log(crayon.yellow('The packager is starting up. You\'ll be given a URL in bold yellow you can use when its ready'));
-    yield waitAsync(3000);
+      var packagerBuffer = '';
+      packager.stdout.on('readable', function () {
+        var chunk;
+        while (null !== (chunk = packager.stdout.read())) {
+          packagerBuffer += chunk.toString();
+          if (packagerBuffer.match(/React packager ready\./)) {
+            packager.stdout.pipe(outStream);
+            fulfill(packagerBuffer);
+            break;
+          }
+        }
+      });
+    });
+
+    var urlWrittenP = urlP.then(function (ngrokUrl) {
+      return urlUtil.writeUrlFileAsync(ngrokUrl);
+    });
+
+    log(crayon.gray('The packager is starting up and building your initial bundle...'));
+    simpleSpinner.start();
+
+    var _ref = yield [urlWrittenP, packagerReady];
+
+    var _ref2 = _slicedToArray(_ref, 2);
+
+    var ngrokUrl = _ref2[0];
+    var packagerBuffer = _ref2[1];
+
+    //log(crayon.green("Started packager and ngrok"));
 
     var httpUrl = yield urlUtil.getTestedMainBundleUrlAsync();
     var expUrl = urlUtil.expUrlFromHttpUrl(httpUrl);
-    log('Your URL is\n' + crayon.yellow.bold(expUrl) + '\n');
+
+    simpleSpinner.stop();
+    console.log(crayon.green(expUrl) + '\n');
+
+    packager.stdout.pipe(process.stdout);
+    console.log(crayon.gray(outStream.buffer));
 
     // TODO: Add sending stuff
   }) };
