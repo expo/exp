@@ -7,6 +7,7 @@ var path = require('path');
 var simpleSpinner = require('simple-spinner');
 var stream = require('stream');
 
+var api = require('../api');
 var config = require('../config');
 var log = require('../log');
 var urlUtil = require('../urlUtil');
@@ -28,6 +29,12 @@ module.exports = {
   runAsync: co.wrap(function *(env) {
       var argv = env.argv;
       var args = argv._;
+
+      var sendTo = (argv.send || args[1]);
+      if (sendTo === true) {
+        var settings = userSettings.readFileAsync();
+        sendTo = args[1] || settings.phoneNumber || settings.email || null;
+      }
 
       var ngrokSubdomain = argv['ngrok-subdomain'] || (config.ngrok && config.ngrok.subdomain) || undefined;
       var ngrokAuthToken = argv['ngrok-auth-token'] || (config.ngrok && config.ngrok.authToken) || undefined;
@@ -92,7 +99,9 @@ module.exports = {
       packager.stdout.pipe(process.stdout);
       console.log(crayon.gray(outStream.buffer));
 
-      // TODO: Add sending stuff
+      if (sendTo) {
+        var result = yield urlUtil.sendUrlAsync(sendTo, expUrl);
+      }
 
   }),
 };

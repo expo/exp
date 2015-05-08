@@ -11,6 +11,7 @@ var instapromise = require('instapromise');
 var path = require('path');
 var request = require('request');
 
+var api = require('./api');
 var config = require('./config');
 
 var DEFAULT_URL_FILE = '.exponent.url';
@@ -73,11 +74,16 @@ function expUrlFromHttpUrl(url) {
   return ('' + url).replace(/^http(s?)/, 'exp');
 }
 
+function sendUrlAsync(recipient, expUrl) {
+  return api.callMethodAsync('send', [recipient, expUrl]);
+}
+
 module.exports = {
   expUrlFromHttpUrl: expUrlFromHttpUrl,
   readUrlFileAsync: readUrlFileAsync,
   writeUrlFileAsync: writeUrlFileAsync,
   getTestedMainBundleUrlAsync: getTestedMainBundleUrlAsync,
   mainBundleUrlAsync: mainBundleUrlAsync,
+  sendUrlAsync: sendUrlAsync,
   testUrlAsync: testUrlAsync };
 //# sourceMappingURL=sourcemaps/urlUtil.js.map
