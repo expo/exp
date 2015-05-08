@@ -1,6 +1,6 @@
 {
   "name": "exponent-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "For serving code to the Exponent app",
   "main": "index.js",
   "scripts": {
