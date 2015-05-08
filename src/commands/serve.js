@@ -134,7 +134,7 @@ module.exports = {
       } else {
         simpleSpinner.stop();
       }
-      console.log(crayon.green(expUrl) + "\n");
+      console.log("\nVisit this URL in the Exponent app on your phone to view this project:\n" + crayon.green(expUrl) + "\n");
 
       packager.stdout.pipe(process.stdout);
       console.log(crayon.gray(outStream.buffer));
