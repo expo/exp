@@ -41,7 +41,7 @@ class ExampleApp extends React.Component {
             />
           <Text>... as is this duckie!</Text>
         </ScrollView>
-        <Text style={styles.paragraph}>E-mail exponent.team@gmail.com with feedback or questions :)</Text>
+        <Text style={styles.paragraph}>E-mail exponent.team@gmail.com with feedback or questions :) & Thank you to Aaron Iba for being alpha tester #1!</Text>
       </View>
     );
   }
