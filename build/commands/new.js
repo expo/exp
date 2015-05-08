@@ -16,8 +16,17 @@ module.exports = {
   description: 'Sets up a new project',
   help: '',
   runAsync: _asyncToGenerator(function* (env) {
+    var argv = env.argv;
+    var args = argv._;
 
     // Here is what this will do
+
+    // 0. If there is a command line argument, make a new directory in the current directory and chdir to it
+    var dirName = args[1];
+    if (dirName) {
+      yield fs.promise.mkdir(dirName);
+      process.chdir(dirName);
+    }
 
     // 1. If there is no package.json in the current directory, run npm init
     var pkgJsonFile = 'package.json';

@@ -12,8 +12,18 @@ module.exports = {
   description: "Sets up a new project",
   help: "",
   runAsync: async function (env) {
+    var argv = env.argv;
+    var args = argv._;
+
 
     // Here is what this will do
+
+    // 0. If there is a command line argument, make a new directory in the current directory and chdir to it
+    var dirName = args[1];
+    if (dirName) {
+      await fs.promise.mkdir(dirName)
+      process.chdir(dirName);
+    }
 
     // 1. If there is no package.json in the current directory, run npm init
     var pkgJsonFile = 'package.json';
@@ -21,7 +31,7 @@ module.exports = {
     try {
       pkgFile = await fs.promise.readFile(pkgJsonFile);
     } catch (e) {
-      
+
       // No package.json, so let's create it
       log("No package.json file found. Using `npm init` to help you create one.");
       var zero = await spawnAsync('npm', ['init'], {stdio: 'inherit'});
