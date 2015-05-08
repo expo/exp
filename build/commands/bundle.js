@@ -12,10 +12,15 @@ var urlUtil = require('../urlUtil');
 module.exports = {
   name: 'bundle',
   description: 'Saves the current bundle of your app to the terminal or a file',
+  options: [['--dev', 'Whether to set the dev flag'], ['--minify', 'Whether to minify the bundle'], ['--mainModulePath', 'Path to the main module']],
   help: '',
   runAsync: co.wrap(function* (env) {
     var argv = env.argv;
     var args = argv._;
+
+    var dev = argv.dev || true;
+    var minify = argv.minify;
+    var mainModulePath = argv.mainModulePath;
 
     var filepath = args[1];
     var outStream = process.stdout;
@@ -23,7 +28,7 @@ module.exports = {
       outStream = fs.createWriteStream(filepath);
     }
 
-    var url = yield urlUtil.mainBundleUrlAsync();
+    var url = yield urlUtil.mainBundleUrlAsync({ dev: dev, minify: minify, mainModulePath: mainModulePath });
     log('Requesting bundle from', url);
     if (filepath) {
       log('Saving to', filepath);

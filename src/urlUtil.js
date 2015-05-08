@@ -29,7 +29,7 @@ var readUrlFileAsync = co.wrap(function *() {
 function constructUrlFromBaseUrl(baseUrl, opts) {
   var url = baseUrl;
   opts = opts || {};
-  var {mainModulePath, dev} = opts;
+  var {mainModulePath, dev, minify} = opts;
   mainModulePath = mainModulePath || 'main';
   url += '/' + encodeURIComponent(mainModulePath) + '.';
   if (opts.includeRequire !== false) {
@@ -40,6 +40,9 @@ function constructUrlFromBaseUrl(baseUrl, opts) {
   }
   url += 'bundle';
   url += '?dev=' + encodeURIComponent(!!dev);
+  if (minify != null) {
+    url += '&minify=' + encodeURIComponent(!!minify);
+  }
   return url;
 }
 
@@ -49,11 +52,11 @@ var constructUrlAsync = co.wrap(function *(opts) {
 });
 
 var mainBundleUrlAsync = co.wrap(function *(opts) {
-  return yield constructUrlAsync();
+  return yield constructUrlAsync(opts);
 });
 
-var getTestedMainBundleUrlAsync = co.wrap(function *() {
-  var url = yield mainBundleUrlAsync();
+var getTestedMainBundleUrlAsync = co.wrap(function *(opts) {
+  var url = yield mainBundleUrlAsync(opts);
   //console.log("Testing url " + url);
   return yield testUrlAsync(url);
 });
