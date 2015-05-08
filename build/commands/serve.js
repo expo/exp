@@ -138,6 +138,7 @@ module.exports = {
     console.log('\nVisit this URL in the Exponent app on your phone to view this project:\n' + crayon.green(expUrl) + '\n');
 
     packager.stdout.pipe(process.stdout);
+    log(crayon.gray('Packager is running on port ' + port));
     console.log(crayon.gray(outStream.buffer));
 
     if (sendTo) {
