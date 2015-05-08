@@ -3,6 +3,7 @@ var co = require('co');
 var crayon = require('@ccheever/crayon');
 var inquirerAsync = require('inquirer-async');
 var instapromise = require('instapromise');
+var jsonParseAsync = require('@exponent/json-parse-async');
 var ngrok = require('ngrok');
 var path = require('path');
 var simpleSpinner = require('simple-spinner');
@@ -38,6 +39,11 @@ module.exports = {
         process.chdir(projectDir);
         log(crayon.gray("Using project at", process.cwd()));
       }
+
+      // TODO: These two functions are sort of redundant
+      var mainModulePath = yield urlUtil.guessMainModulePathAsync();
+      var entryPoint = yield urlUtil.entryPointAsync();
+      log(crayon.gray("Using mainModulePath of", mainModulePath, "and an entry point of", entryPoint));
 
       var ngrokSubdomain = argv['ngrok-subdomain'] || (config.ngrok && config.ngrok.subdomain) || undefined;
       var ngrokAuthToken = argv['ngrok-auth-token'] || (config.ngrok && config.ngrok.authToken) || undefined;
@@ -136,9 +142,10 @@ module.exports = {
       }
       console.log("\nVisit this URL in the Exponent app on your phone to view this project:\n" + crayon.green(expUrl) + "\n");
 
-      packager.stdout.pipe(process.stdout);
       log(crayon.gray("Packager is running on port " + port));
+      console.log(crayon.gray(packagerBuffer));
       console.log(crayon.gray(outStream.buffer));
+      packager.stdout.pipe(process.stdout);
 
       if (sendTo) {
         log(crayon.gray("Sending URL to", sendTo));

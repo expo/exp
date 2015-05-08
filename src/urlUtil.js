@@ -6,6 +6,7 @@
 var co = require('co');
 var fs = require('fs');
 var instapromise = require('instapromise');
+var jsonParseAsync = require('@exponent/json-parse-async');
 var path = require('path');
 var request = require('request');
 
@@ -13,6 +14,17 @@ var api = require('./api');
 var config = require('./config');
 
 var DEFAULT_URL_FILE = '.exponent.url';
+
+var entryPointAsync = async function() {
+  var pkg = await jsonParseAsync('package.json');
+  var entryPoint = pkg.main || 'index.js';
+  return entryPoint;
+}
+
+var guessMainModulePathAsync = async function () {
+  var entryPoint = await entryPointAsync();
+  return entryPoint.replace(/\.js$/, '');
+}
 
 function urlFilePath() {
   return path.resolve('.', path.join(config.relativePath, DEFAULT_URL_FILE));
@@ -30,7 +42,7 @@ function constructUrlFromBaseUrl(baseUrl, opts) {
   var url = baseUrl;
   opts = opts || {};
   var {mainModulePath, dev, minify} = opts;
-  mainModulePath = mainModulePath || 'main';
+  mainModulePath = mainModulePath || 'index.js';
   url += '/' + encodeURIComponent(mainModulePath) + '.';
   if (opts.includeRequire !== false) {
     url += encodeURIComponent('includeRequire.');
@@ -46,10 +58,12 @@ function constructUrlFromBaseUrl(baseUrl, opts) {
   return url;
 }
 
-var constructUrlAsync = co.wrap(function *(opts) {
-  var baseUrl = yield readUrlFileAsync();
+var constructUrlAsync = async function (opts) {
+  var baseUrl = await readUrlFileAsync();
+  opts = opts || {};
+  opts.mainModulePath = opts.mainModulePath || await guessMainModulePathAsync();
   return constructUrlFromBaseUrl(baseUrl, opts);
-});
+};
 
 var mainBundleUrlAsync = co.wrap(function *(opts) {
   return yield constructUrlAsync(opts);
@@ -85,4 +99,6 @@ module.exports = {
   mainBundleUrlAsync,
   sendUrlAsync,
   testUrlAsync,
+  entryPointAsync,
+  guessMainModulePathAsync,
 };

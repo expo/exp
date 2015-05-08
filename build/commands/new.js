@@ -52,7 +52,7 @@ module.exports = {
     // 2. Figure out the entry point of the app. Try to create that file with the template
     //    ... but fail if it already exist
 
-    var js = yield fs.promise.readFile(path.join(__dirname, '..', '..', 'main.js'), 'utf8');
+    var js = yield fs.promise.readFile(path.join(__dirname, '..', '..', 'example', 'main.js'), 'utf8');
     try {
       yield fs.promise.writeFile(entryPoint, js, { encoding: 'utf8', flag: 'wx' });
     } catch (e) {

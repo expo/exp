@@ -5,9 +5,12 @@
 
 'use strict';
 
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+
 var co = require('co');
 var fs = require('fs');
 var instapromise = require('instapromise');
+var jsonParseAsync = require('@exponent/json-parse-async');
 var path = require('path');
 var request = require('request');
 
@@ -15,6 +18,17 @@ var api = require('./api');
 var config = require('./config');
 
 var DEFAULT_URL_FILE = '.exponent.url';
+
+var entryPointAsync = _asyncToGenerator(function* () {
+  var pkg = yield jsonParseAsync('package.json');
+  var entryPoint = pkg.main || 'index.js';
+  return entryPoint;
+});
+
+var guessMainModulePathAsync = _asyncToGenerator(function* () {
+  var entryPoint = yield entryPointAsync();
+  return entryPoint.replace(/\.js$/, '');
+});
 
 function urlFilePath() {
   return path.resolve('.', path.join(config.relativePath, DEFAULT_URL_FILE));
@@ -35,7 +49,7 @@ function constructUrlFromBaseUrl(baseUrl, opts) {
   var dev = opts.dev;
   var minify = opts.minify;
 
-  mainModulePath = mainModulePath || 'main';
+  mainModulePath = mainModulePath || 'index.js';
   url += '/' + encodeURIComponent(mainModulePath) + '.';
   if (opts.includeRequire !== false) {
     url += encodeURIComponent('includeRequire.');
@@ -51,8 +65,10 @@ function constructUrlFromBaseUrl(baseUrl, opts) {
   return url;
 }
 
-var constructUrlAsync = co.wrap(function* (opts) {
+var constructUrlAsync = _asyncToGenerator(function* (opts) {
   var baseUrl = yield readUrlFileAsync();
+  opts = opts || {};
+  opts.mainModulePath = opts.mainModulePath || (yield guessMainModulePathAsync());
   return constructUrlFromBaseUrl(baseUrl, opts);
 });
 
@@ -89,5 +105,7 @@ module.exports = {
   getTestedMainBundleUrlAsync: getTestedMainBundleUrlAsync,
   mainBundleUrlAsync: mainBundleUrlAsync,
   sendUrlAsync: sendUrlAsync,
-  testUrlAsync: testUrlAsync };
+  testUrlAsync: testUrlAsync,
+  entryPointAsync: entryPointAsync,
+  guessMainModulePathAsync: guessMainModulePathAsync };
 //# sourceMappingURL=sourcemaps/urlUtil.js.map
