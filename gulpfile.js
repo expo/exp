@@ -1,6 +1,7 @@
 var gulp = require('gulp');
-var babel = require('gulp-babel');
+var babel = require('@exponent/gulp-babel');
 var changed = require('gulp-changed');
+var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
 var watch = require('gulp-watch');
 
@@ -12,6 +13,7 @@ var paths = {
 gulp.task('babel', function() {
   var src = 'src/**/*.js';
   return gulp.src(src)
+    .pipe(plumber())
     .pipe(watch(src))
     .pipe(changed(paths.dest))
     .pipe(sourcemaps.init())
@@ -30,6 +32,7 @@ gulp.task('babel', function() {
       ],
     }))
     .pipe(sourcemaps.write(paths.sourceMaps))
+    .pipe(plumber.stop())
     .pipe(gulp.dest(paths.dest));
 });
 

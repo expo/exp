@@ -47,10 +47,11 @@
     "simple-spinner": "0.0.3"
   },
   "devDependencies": {
+    "@exponent/gulp-babel": "^5.1.0",
     "gulp": "^3.8.11",
-    "gulp-watch": "^4.2.4",
-    "gulp-babel": "^5.1.0",
     "gulp-changed": "^1.2.1",
-    "gulp-sourcemaps": "^1.5.2"
+    "gulp-plumber": "^1.0.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-watch": "^4.2.4"
   }
 }
