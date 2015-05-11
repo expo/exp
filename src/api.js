@@ -4,10 +4,10 @@
  *
  */
 
-var co = require('co');
 var instapromise = require('instapromise');
 var request = require('request');
 
+var log = require('./log');
 var userSettings = require('./userSettings');
 
 var HOST = 'exp.host';
@@ -21,21 +21,32 @@ function ApiError(code, env, message) {
   return err;
 }
 
-var getBaseUrlAsync = co.wrap(function *() {
+var getBaseUrlAsync = async function () {
   // TODO: Let you specify host and port with command line arguments (use config module)
-  var {api} = yield userSettings.readFileAsync();
+  var {api} = await userSettings.readFileAsync();
   var host = (api && api.host) || HOST;
   var port = (api && api.port) || PORT;
   var baseUrl = (api && api.baseUrl) || ('http://' + host + ':' + port + '/--/api');
   return baseUrl;
-});
+};
 
-var callMethodAsync = co.wrap(function *(methodName, args) {
-  // TODO: Make this configurable at some point
-  var baseUrl = yield getBaseUrlAsync();
+var callMethodAsync = async function (methodName, args) {
+
+  var baseUrl = await getBaseUrlAsync();
+
+  // TODO: Make it so we don't read the userSettings file twice in a row needlessly,
+  // ... but not a big deal for now
+  var settings = await userSettings.readFileAsync();
+  var {username, hashedPassword} = settings;
+  //log("username=", username, "hashedPassword=", hashedPassword);
+
   var url = baseUrl + '/' + encodeURIComponent(methodName) + '/' + encodeURIComponent(JSON.stringify(args));
-  //console.log("url=", url);
-  var response = yield request.promise.post(url);
+  if (username && hashedPassword) {
+    url += '?username=' + encodeURIComponent(username) + '&hashedPassword=' + encodeURIComponent(hashedPassword);
+  }
+  //log("url=", url);
+
+  var response = await request.promise.post(url);
   var body = response.body;
   try {
     var response = JSON.parse(body);
@@ -47,7 +58,7 @@ var callMethodAsync = co.wrap(function *(methodName, args) {
     throw ApiError(response.code, response.err.env, response.err);
   }
   return response;
-});
+};
 
 module.exports = {
   callMethodAsync,

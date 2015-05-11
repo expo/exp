@@ -6,10 +6,12 @@
 
 'use strict';
 
-var co = require('co');
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+
 var instapromise = require('instapromise');
 var request = require('request');
 
+var log = require('./log');
 var userSettings = require('./userSettings');
 
 var HOST = 'exp.host';
@@ -23,7 +25,7 @@ function ApiError(code, env, message) {
   return err;
 }
 
-var getBaseUrlAsync = co.wrap(function* () {
+var getBaseUrlAsync = _asyncToGenerator(function* () {
   // TODO: Let you specify host and port with command line arguments (use config module)
 
   var _ref = yield userSettings.readFileAsync();
@@ -36,11 +38,24 @@ var getBaseUrlAsync = co.wrap(function* () {
   return baseUrl;
 });
 
-var callMethodAsync = co.wrap(function* (methodName, args) {
-  // TODO: Make this configurable at some point
+var callMethodAsync = _asyncToGenerator(function* (methodName, args) {
+
   var baseUrl = yield getBaseUrlAsync();
+
+  // TODO: Make it so we don't read the userSettings file twice in a row needlessly,
+  // ... but not a big deal for now
+  var settings = yield userSettings.readFileAsync();
+  var username = settings.username;
+  var hashedPassword = settings.hashedPassword;
+
+  log('username=', username, 'hashedPassword=', hashedPassword);
+
   var url = baseUrl + '/' + encodeURIComponent(methodName) + '/' + encodeURIComponent(JSON.stringify(args));
-  //console.log("url=", url);
+  if (username && hashedPassword) {
+    url += '?username=' + encodeURIComponent(username) + '&hashedPassword=' + encodeURIComponent(hashedPassword);
+  }
+  log('url=', url);
+
   var response = yield request.promise.post(url);
   var body = response.body;
   try {

@@ -56,6 +56,7 @@ module.exports = {
         type: 'input',
         name: 'fullName',
         message: 'Full Name',
+        default: settingsData.fullName,
         validate: function (val) {
           // TODO: Validate
           return true;
@@ -89,6 +90,7 @@ module.exports = {
       cleartextPassword: cleartextPassword || answers.cleartextPassword,
       email: email || answers.email,
       phoneNumber: phoneNumber || answers.phoneNumber,
+      fullName: fullName || answers.fullName,
     };
 
     // Store only the hashed version of someone's password
@@ -98,12 +100,12 @@ module.exports = {
     var result = yield api.callMethodAsync('adduser', data);
 
     var user = result.user;
+    user.hashedPassword = data.hashedPassword;
 
     if (user) {
       yield userSettings.writeFileAsync(user);
       return result;
     } else {
-      console.log("result=", result);
       throw new Error("Unexpected Error: No user returned from the API");
     }
 
