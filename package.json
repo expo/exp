@@ -29,7 +29,7 @@
   "homepage": "https://github.com/650Industries/exponent-server#readme",
   "dependencies": {
     "@ccheever/crayon": "^5.0.0",
-    "@exponent/json-parse-async": "^1.0.0",
+    "@exponent/json-file": "^2.0.0",
     "@exponent/spawn-async": "^1.0.1",
     "babel-runtime": "^5.2.2",
     "co": "^4.5.2",

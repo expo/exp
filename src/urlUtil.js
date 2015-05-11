@@ -6,7 +6,7 @@
 var co = require('co');
 var fs = require('fs');
 var instapromise = require('instapromise');
-var jsonParseAsync = require('@exponent/json-parse-async');
+var jsonFile = require('@exponent/json-file');
 var path = require('path');
 var request = require('request');
 
@@ -16,7 +16,7 @@ var config = require('./config');
 var DEFAULT_URL_FILE = '.exponent.url';
 
 var entryPointAsync = async function() {
-  var pkg = await jsonParseAsync('package.json');
+  var pkg = await jsonFile.readAsync('package.json');
   var entryPoint = pkg.main || 'index.js';
   return entryPoint;
 }
