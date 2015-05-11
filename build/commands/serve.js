@@ -9,7 +9,6 @@ var co = require('co');
 var crayon = require('@ccheever/crayon');
 var inquirerAsync = require('inquirer-async');
 var instapromise = require('instapromise');
-var jsonParseAsync = require('@exponent/json-parse-async');
 var ngrok = require('ngrok');
 var path = require('path');
 var simpleSpinner = require('simple-spinner');

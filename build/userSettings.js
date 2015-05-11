@@ -1,9 +1,23 @@
 'use strict';
 
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+
+var writeFileAsync = _asyncToGenerator(function* (data) {
+  yield mkdirp.promise(dotExponentDirectory());
+  return jsonFile.writeAsync(userSettingsFile(), data);
+});
+
+var readFileAsync = _asyncToGenerator(function* () {
+  return jsonFile.readAsync(userSettingsFile(), { cantReadFileDefault: {} });
+});
+
+var mergeFileAsync = _asyncToGenerator(function* (data) {
+  return jsonFile.mergeAsync(userSettingsFile(), data);
+});
+
 var _ = require('lodash-node');
-var co = require('co');
-var fs = require('fs');
 var instapromise = require('instapromise');
+var jsonFile = require('@exponent/json-file');
 var mkdirp = require('mkdirp');
 var path = require('path');
 
@@ -19,36 +33,8 @@ function dotExponentDirectory() {
   return path.join(process.env.HOME, '.exponent');
 }
 
-var writeFileAsync = co.wrap(function* (data) {
-  yield mkdirp.promise(dotExponentDirectory());
-  yield fs.promise.writeFile(userSettingsFile(), JSON.stringify(data, null, 2), 'utf8');
-  return data;
-});
-
-var readFileAsync = co.wrap(function* () {
-  try {
-    var json = yield fs.promise.readFile(userSettingsFile(), 'utf8');
-  } catch (e) {
-    // File not found or not readable
-    return {};
-  }
-
-  try {
-    return JSON.parse(json);
-  } catch (e) {
-    throw new Error('Invalid JSON in settings file ' + userSettingsFile() + ':' + e);
-  }
-});
-
-var mergeAsync = co.wrap(function* (data) {
-  // TODO: Make this atomic/transactional (but its probably OK to not worry about this for now)
-  var oldData = yield readFileAsync();
-  var newData = _.assign(oldData, data); // N.B.: oldData actually gets mutated here
-  return yield writeFileAsync(newData);
-});
-
 module.exports = {
-  mergeAsync: mergeAsync,
+  mergeFileAsync: mergeFileAsync,
   readFileAsync: readFileAsync,
   userSettingsFile: userSettingsFile,
   writeFileAsync: writeFileAsync };
