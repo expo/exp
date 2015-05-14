@@ -39,7 +39,11 @@ if (require.main === module) {
     }
   }, function (err) {
     if (err._isCommandError) {
-      log.error(err.message);
+      if (err.code) {
+        log.error(crayon.orange.bold(err.code) + ' ' + crayon.red(err.message));
+      } else {
+        log.error(err.message);
+      }
     } else if (err._isApiError) {
       log.error(crayon.orange.bold('API Error') + ' ' + crayon.red(err.message));
     } else {

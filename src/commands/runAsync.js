@@ -28,8 +28,9 @@ module.exports = function(command, argv) {
 
   var cmd = commands[command];
   if (!cmd && command !== 'help') {
-    log.error("Unknown command: " + command);
-    return help.runAsync({argv:{_:[]}});
+    var env = {argv:{_:[]}};
+    help.runAsync(env);
+    return Promise.reject(CommandError('UNKNOWN_COMMAND', env, "No such command: " + command));
   }
 
   var run;

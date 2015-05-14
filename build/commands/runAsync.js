@@ -1,5 +1,7 @@
 'use strict';
 
+var _Promise = require('babel-runtime/core-js/promise')['default'];
+
 var crayon = require('@ccheever/crayon');
 
 var CommandError = require('./CommandError');
@@ -30,8 +32,9 @@ module.exports = function (command, argv) {
 
   var cmd = commands[command];
   if (!cmd && command !== 'help') {
-    log.error('Unknown command: ' + command);
-    return help.runAsync({ argv: { _: [] } });
+    var env = { argv: { _: [] } };
+    help.runAsync(env);
+    return _Promise.reject(CommandError('UNKNOWN_COMMAND', env, 'No such command: ' + command));
   }
 
   var run;
