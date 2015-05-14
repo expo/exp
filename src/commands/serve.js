@@ -13,22 +13,21 @@ var config = require('../config');
 var log = require('../log');
 var urlUtil = require('../urlUtil');
 var userSettings = require('../userSettings');
-var waitAsync = require('../waitAsync');
 
 
 module.exports = {
   name: 'serve',
   description: "Starts a local server to serve your app and gives you a URL to it",
-  args: ["(project-dir)"],
+  args: ["[project-dir]"],
   options: [
-    ['--path', "The path to the place where your package is", '.'],
-    ['--port', "The port to run the server on", "Random (9000-9999)"],
-    ['--ngrokSubdomain', "The ngrok subdomain to use", (config.ngrok && config.ngrok.subdomain)],
-    ['--ngrokAuthToken', "The ngrok authToken to use", (config.ngrok && config.ngrok.authToken)],
-    ['--send', "An e-mail address or phone number to send a link to"]
+    ['--path=PATH', "The path to the place where your package is", '.'],
+    ['--port=PORT', "The port to run the server on", "Random (9000-9999)"],
+    ['--ngrokSubdomain=SUBDOMAIN', "The ngrok subdomain to use", (config.ngrok && config.ngrok.subdomain)],
+    ['--ngrokAuthToken=AUTH_TOKEN', "The ngrok authToken to use", (config.ngrok && config.ngrok.authToken)],
+    ['--send=EMAIL_OR_PHONE_NUMBER', "An e-mail address or phone number to send a link to"]
   ],
   help: "Starts a local server to serve your app and gives you a URL to it",
-  runAsync: co.wrap(function *(env) {
+  runAsync: async function (env) {
       var argv = env.argv;
       var args = argv._;
 
@@ -40,8 +39,8 @@ module.exports = {
       }
 
       // TODO: These two functions are sort of redundant
-      var mainModulePath = yield urlUtil.guessMainModulePathAsync();
-      var entryPoint = yield urlUtil.entryPointAsync();
+      var mainModulePath = await urlUtil.guessMainModulePathAsync();
+      var entryPoint = await urlUtil.entryPointAsync();
       log(crayon.gray("Using mainModulePath of", mainModulePath, "and an entry point of", entryPoint));
 
       var ngrokSubdomain = argv['ngrok-subdomain'] || (config.ngrok && config.ngrok.subdomain) || undefined;
@@ -127,7 +126,7 @@ module.exports = {
 
       //log(crayon.green("Started packager and ngrok"));
 
-      var httpUrl = yield urlUtil.getTestedMainBundleUrlAsync();
+      var httpUrl = await urlUtil.getTestedMainBundleUrlAsync();
       var expUrl = urlUtil.expUrlFromHttpUrl(httpUrl);
 
       waitingForUrl = false;
@@ -149,11 +148,11 @@ module.exports = {
       if (sendTo) {
         log(crayon.gray("Sending URL to", sendTo));
         try {
-          var result = yield urlUtil.sendUrlAsync(sendTo, expUrl);
+          var result = await urlUtil.sendUrlAsync(sendTo, expUrl);
         } catch (e) {
           log.error("Failed to send link to", sendTo);
         }
       }
 
-  }),
+  },
 };

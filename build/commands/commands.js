@@ -1,7 +1,7 @@
 'use strict';
 
 var commands = {
-  serve: require('./serve'),
+  serve: require('./pm2serve'),
   url: require('./url'),
   bundle: require('./bundle'),
   adduser: require('./adduser'),

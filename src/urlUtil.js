@@ -3,7 +3,7 @@
  *
  */
 
-var co = require('co');
+var _ = require('lodash-node');
 var fs = require('fs');
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
@@ -13,30 +13,16 @@ var request = require('request');
 var api = require('./api');
 var config = require('./config');
 
-var DEFAULT_URL_FILE = '.exponent.url';
-
 var entryPointAsync = async function() {
-  var pkg = await jsonFile.readAsync('package.json');
-  var entryPoint = pkg.main || 'index.js';
-  return entryPoint;
+  // TODO: Allow configurations that point to iOS main and Android main, etc.
+  // and are checked before looking at 'main'
+  return await config.packageJsonFile.getAsync('main', 'index.js');
 }
 
 var guessMainModulePathAsync = async function () {
   var entryPoint = await entryPointAsync();
   return entryPoint.replace(/\.js$/, '');
 }
-
-function urlFilePath() {
-  return path.resolve('.', path.join(config.relativePath, DEFAULT_URL_FILE));
-}
-
-var writeUrlFileAsync = co.wrap(function *(url) {
-  return yield fs.promise.writeFile(urlFilePath(), url, 'utf8');
-});
-
-var readUrlFileAsync = co.wrap(function *() {
-  return yield fs.promise.readFile(urlFilePath(), 'utf8');
-});
 
 function constructUrlFromBaseUrl(baseUrl, opts) {
   var url = baseUrl;
@@ -58,30 +44,33 @@ function constructUrlFromBaseUrl(baseUrl, opts) {
   return url;
 }
 
-var constructUrlAsync = async function (opts) {
-  var baseUrl = await readUrlFileAsync();
+async function constructUrlAsync(opts) {
+  if (_.isString(opts)) {
+    opts = {type: opts};
+  }
   opts = opts || {};
+  var key = opts.type;
+  var baseUrl = await config.expInfoFile.getAsync(key + 'BaseUrl');
   opts.mainModulePath = opts.mainModulePath || await guessMainModulePathAsync();
   return constructUrlFromBaseUrl(baseUrl, opts);
-};
+}
 
-var mainBundleUrlAsync = co.wrap(function *(opts) {
-  return yield constructUrlAsync(opts);
-});
+async function mainBundleUrlAsync(opts) {
+  return await constructUrlAsync(opts);
+}
 
-var getTestedMainBundleUrlAsync = co.wrap(function *(opts) {
-  var url = yield mainBundleUrlAsync(opts);
-  //console.log("Testing url " + url);
-  return yield testUrlAsync(url);
-});
+async function getTestedMainBundleUrlAsync(opts) {
+  var url = await mainBundleUrlAsync(opts);
+  return await testUrlAsync(url);
+}
 
-var testUrlAsync = co.wrap(function *(url) {
-  var response = yield request.promise.get(url);
+async function testUrlAsync(url) {
+  var response = await request.promise.get(url);
   if (!(response.statusCode == 200)) {
     throw new Error("Problem reading from URL " + url + "\nstatusCode=" + response.statusCode);
   }
   return url;
-});
+}
 
 function expUrlFromHttpUrl(url) {
   return ('' + url).replace(/^http(s?)/,'exp');
@@ -92,9 +81,8 @@ function sendUrlAsync(recipient, expUrl) {
 }
 
 module.exports = {
+  constructUrlFromBaseUrl,
   expUrlFromHttpUrl,
-  readUrlFileAsync,
-  writeUrlFileAsync,
   getTestedMainBundleUrlAsync,
   mainBundleUrlAsync,
   sendUrlAsync,

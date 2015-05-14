@@ -1,5 +1,7 @@
 'use strict';
 
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+
 var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default'];
 
 var _Promise = require('babel-runtime/core-js/promise')['default'];
@@ -19,15 +21,14 @@ var config = require('../config');
 var log = require('../log');
 var urlUtil = require('../urlUtil');
 var userSettings = require('../userSettings');
-var waitAsync = require('../waitAsync');
 
 module.exports = {
   name: 'serve',
   description: 'Starts a local server to serve your app and gives you a URL to it',
-  args: ['(project-dir)'],
-  options: [['--path', 'The path to the place where your package is', '.'], ['--port', 'The port to run the server on', 'Random (9000-9999)'], ['--ngrokSubdomain', 'The ngrok subdomain to use', config.ngrok && config.ngrok.subdomain], ['--ngrokAuthToken', 'The ngrok authToken to use', config.ngrok && config.ngrok.authToken], ['--send', 'An e-mail address or phone number to send a link to']],
+  args: ['[project-dir]'],
+  options: [['--path=PATH', 'The path to the place where your package is', '.'], ['--port=PORT', 'The port to run the server on', 'Random (9000-9999)'], ['--ngrokSubdomain=SUBDOMAIN', 'The ngrok subdomain to use', config.ngrok && config.ngrok.subdomain], ['--ngrokAuthToken=AUTH_TOKEN', 'The ngrok authToken to use', config.ngrok && config.ngrok.authToken], ['--send=EMAIL_OR_PHONE_NUMBER', 'An e-mail address or phone number to send a link to']],
   help: 'Starts a local server to serve your app and gives you a URL to it',
-  runAsync: co.wrap(function* (env) {
+  runAsync: _asyncToGenerator(function* (env) {
     var argv = env.argv;
     var args = argv._;
 
@@ -119,12 +120,10 @@ module.exports = {
       });;
     }
 
-    var _ref = yield [urlWrittenP, packagerReady];
+    var _yield = _slicedToArray(yield[(urlWrittenP, packagerReady)], 2);
 
-    var _ref2 = _slicedToArray(_ref, 2);
-
-    var ngrokUrl = _ref2[0];
-    var packagerBuffer = _ref2[1];
+    var ngrokUrl = _yield[0];
+    var packagerBuffer = _yield[1];
 
     //log(crayon.green("Started packager and ngrok"));
 
