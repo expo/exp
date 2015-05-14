@@ -30,6 +30,11 @@ var testUrlAsync = _asyncToGenerator(function* (url) {
   return url;
 });
 
+var httpRedirectUrlAsync = _asyncToGenerator(function* (url) {
+  var baseUrl = yield api.getExpHostBaseUrlAsync();
+  return baseUrl + '/--/to-exp/' + encodeURIComponent(url);
+});
+
 /**
  * A module for working with the URL file
  *
@@ -95,5 +100,6 @@ module.exports = {
   sendUrlAsync: sendUrlAsync,
   testUrlAsync: testUrlAsync,
   entryPointAsync: entryPointAsync,
-  guessMainModulePathAsync: guessMainModulePathAsync };
+  guessMainModulePathAsync: guessMainModulePathAsync,
+  httpRedirectUrlAsync: httpRedirectUrlAsync };
 //# sourceMappingURL=sourcemaps/urlUtil.js.map

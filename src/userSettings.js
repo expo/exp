@@ -9,6 +9,10 @@ function userSettingsFile() {
   return path.join(dotExponentDirectory(), 'exponent.json');
 }
 
+function userSettingsJsonFile() {
+  return new jsonFile(userSettingsFile());
+}
+
 function dotExponentDirectory() {
   if (!process.env.HOME) {
     throw new Error("Can't determine your home directory; make sure your $HOME environment variable is set.");
@@ -16,22 +20,10 @@ function dotExponentDirectory() {
   return path.join(process.env.HOME, '.exponent');
 }
 
-async function writeFileAsync(data) {
-  await mkdirp.promise(dotExponentDirectory());
-  return jsonFile.writeAsync(userSettingsFile(), data);
-}
+module.exports = userSettingsJsonFile;
 
-async function readFileAsync() {
-  return jsonFile.readAsync(userSettingsFile(), {cantReadFileDefault:{}});
-}
-
-async function mergeFileAsync(data) {
-  return jsonFile.mergeAsync(userSettingsFile(), data);
-}
-
-module.exports = {
-  mergeFileAsync,
-  readFileAsync,
+_.assign(module.exports, {
+  userSettingsJsonFile,
   userSettingsFile,
-  writeFileAsync,
-};
+  dotExponentDirectory,
+});

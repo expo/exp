@@ -21,22 +21,28 @@ function ApiError(code, env, message) {
   return err;
 }
 
-var getBaseUrlAsync = async function () {
-  // TODO: Let you specify host and port with command line arguments (use config module)
-  var {api} = await userSettings.readFileAsync();
+async function getExpHostBaseUrlAsync() {
+  var api = await userSettings().getAsync('api', null);
   var host = (api && api.host) || HOST;
   var port = (api && api.port) || PORT;
-  var baseUrl = (api && api.baseUrl) || ('http://' + host + ':' + port + '/--/api');
+  var baseUrl = (api && api.baseUrl) || ('http://' + host + ':' + port);
+  return baseUrl;
+}
+
+async function getApiBaseUrlAsync() {
+  // TODO: Let you specify host and port with command line arguments (use config module)
+  var expHostBaseUrl = await getExpHostBaseUrlAsync();
+  var baseUrl = expHostBaseUrl + '/--/api';
   return baseUrl;
 };
 
 var callMethodAsync = async function (methodName, args) {
 
-  var baseUrl = await getBaseUrlAsync();
+  var baseUrl = await getApiBaseUrlAsync();
 
   // TODO: Make it so we don't read the userSettings file twice in a row needlessly,
   // ... but not a big deal for now
-  var settings = await userSettings.readFileAsync();
+  var settings = await userSettings().readAsync();
   var {username, hashedPassword} = settings;
   //log("username=", username, "hashedPassword=", hashedPassword);
 
@@ -62,5 +68,6 @@ var callMethodAsync = async function (methodName, args) {
 
 module.exports = {
   callMethodAsync,
-  getBaseUrlAsync,
+  getExpHostBaseUrlAsync,
+  getApiBaseUrlAsync,
 };

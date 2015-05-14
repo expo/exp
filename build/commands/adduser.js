@@ -1,5 +1,7 @@
 'use strict';
 
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+
 var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default'];
 
 var _ = require('lodash-node');
@@ -16,7 +18,7 @@ module.exports = {
   name: 'adduser',
   description: 'Creates a user on exp.host',
   help: '',
-  runAsync: co.wrap(function* (env) {
+  runAsync: _asyncToGenerator(function* (env) {
     var argv = env.argv;
     var args = argv._;
 
@@ -35,7 +37,7 @@ module.exports = {
     phoneNumber = phoneNumber || argv.phoneNumber;
     fullName = fullName || argv.fullName;
 
-    var settingsData = yield userSettings.readFileAsync();
+    var settingsData = yield userSettings().readAsync();
 
     var questions = [];
 
@@ -110,7 +112,7 @@ module.exports = {
     user.hashedPassword = data.hashedPassword;
 
     if (user) {
-      yield userSettings.writeFileAsync(user);
+      yield userSettings().writeAsync(user);
       return result;
     } else {
       throw new Error('Unexpected Error: No user returned from the API');

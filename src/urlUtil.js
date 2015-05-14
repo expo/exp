@@ -80,6 +80,11 @@ function sendUrlAsync(recipient, expUrl) {
   return api.callMethodAsync('send', [recipient, expUrl]);
 }
 
+async function httpRedirectUrlAsync(url) {
+  var baseUrl = await api.getExpHostBaseUrlAsync();
+  return baseUrl + '/--/to-exp/' + encodeURIComponent(url);
+}
+
 module.exports = {
   constructUrlFromBaseUrl,
   expUrlFromHttpUrl,
@@ -89,4 +94,5 @@ module.exports = {
   testUrlAsync,
   entryPointAsync,
   guessMainModulePathAsync,
+  httpRedirectUrlAsync,
 };

@@ -96,7 +96,7 @@ module.exports = {
 
       var sendTo = argv.send;
       if (sendTo === true) {
-        var settings = userSettings.readFileAsync();
+        var settings = userSettings().readAsync();
         sendTo = args[1] || settings.phoneNumber || settings.email || null;
       }
 

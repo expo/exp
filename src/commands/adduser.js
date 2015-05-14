@@ -12,7 +12,7 @@ module.exports = {
   name: 'adduser',
   description: "Creates a user on exp.host",
   help: "",
-  runAsync: co.wrap(function *(env) {
+  runAsync: async function (env) {
     var argv = env.argv;
     var args = argv._;
     var [_cmd, username, cleartextPassword, fullName, email, phoneNumber] = args;
@@ -22,7 +22,7 @@ module.exports = {
     phoneNumber = phoneNumber || argv.phoneNumber;
     fullName = fullName || argv.fullName;
 
-    var settingsData = yield userSettings.readFileAsync();
+    var settingsData = await userSettings().readAsync();
 
     var questions = [];
 
@@ -83,7 +83,7 @@ module.exports = {
     }
 
     // TODO: Make this more of a Promise/yieldable situation so we can continue inline here
-    var answers = yield inquirerAsync.promptAsync(questions);
+    var answers = await inquirerAsync.promptAsync(questions);
 
     var data = {
       username: username || answers.username,
@@ -97,17 +97,17 @@ module.exports = {
     data.hashedPassword = password.hashPassword(data.cleartextPassword);
     delete data.cleartextPassword;
 
-    var result = yield api.callMethodAsync('adduser', data);
+    var result = await api.callMethodAsync('adduser', data);
 
     var user = result.user;
     user.hashedPassword = data.hashedPassword;
 
     if (user) {
-      yield userSettings.writeFileAsync(user);
+      await userSettings().writeAsync(user);
       return result;
     } else {
       throw new Error("Unexpected Error: No user returned from the API");
     }
 
-  }),
+  },
 };
