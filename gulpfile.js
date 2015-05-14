@@ -1,9 +1,5 @@
 var gulp = require('gulp');
 var babel = require('@exponent/gulp-babel');
-var changed = require('gulp-changed');
-var plumber = require('gulp-plumber');
-var sourcemaps = require('gulp-sourcemaps');
-var watch = require('gulp-watch');
 
 babel.task(gulp);
 
@@ -16,4 +12,5 @@ babel.task(gulp);
 //     .pipe(gulp.dest(paths.dest));
 // });
 
-gulp.task('default', ['babel']);
+gulp.task('default', ['babel-watch']);
+gulp.task('build', ['babel']);

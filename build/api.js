@@ -1,3 +1,9 @@
+/**
+ *
+ * Makes an API call to exp.host
+ *
+ */
+
 'use strict';
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
@@ -16,12 +22,6 @@ var getApiBaseUrlAsync = _asyncToGenerator(function* () {
   var baseUrl = expHostBaseUrl + '/--/api';
   return baseUrl;
 });
-
-/*eU
-
- * Makes an API call to exp.host
- *
- */
 
 var instapromise = require('instapromise');
 var request = require('request');

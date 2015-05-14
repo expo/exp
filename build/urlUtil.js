@@ -1,3 +1,8 @@
+/**
+ * A module for working with the URL file
+ *
+ */
+
 'use strict';
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
@@ -34,11 +39,6 @@ var httpRedirectUrlAsync = _asyncToGenerator(function* (url) {
   var baseUrl = yield api.getExpHostBaseUrlAsync();
   return baseUrl + '/--/to-exp/' + encodeURIComponent(url);
 });
-
-/**
- * A module for working with the URL file
- *
- */
 
 var _ = require('lodash-node');
 var fs = require('fs');

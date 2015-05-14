@@ -103,7 +103,7 @@ module.exports = {
     user.hashedPassword = data.hashedPassword;
 
     if (user) {
-      await userSettings().writeAsync(user);
+      await userSettings().mergeAsync(user);
       return result;
     } else {
       throw new Error("Unexpected Error: No user returned from the API");
