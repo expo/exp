@@ -34,7 +34,7 @@ var PackagerController = (function () {
   _createClass(PackagerController, [{
     key: 'start',
     value: function start() {
-      return this.startAsync();
+      throw new Error('Use `.startAsync()` instead of `.start()`');
     }
   }, {
     key: 'startAsync',
@@ -49,7 +49,8 @@ var PackagerController = (function () {
         this.opts.port = yield freeportAsync(19000);
       }
       this._packager = child_process.spawn(config.packagerPath, ['--port=' + this.opts.port, '--root=' + root, '--assetRoots=' + root], {
-        stdio: [process.stdin, 'pipe', process.stderr] });
+        stdio: [process.stdin, 'pipe', process.stderr],
+        detached: false });
 
       this._packager.stdout.on('readable', function () {
         var chunk;
@@ -70,7 +71,7 @@ var PackagerController = (function () {
   }, {
     key: 'stop',
     value: function stop() {
-      return this.stopAsync();
+      throw new Error('Use `.stopAsync()` instead of `.stop()`');
     }
   }, {
     key: 'stopAsync',
@@ -82,6 +83,7 @@ var PackagerController = (function () {
           // TODO: Figure out how to close whatever needs to be closed
           // to make the process exit if this child process is the only
           // thing holding it up
+          //console.log("Stopping packager");
           _this3._packager.once('exit', fulfill);
           _this3._packager.kill();
         } else {

@@ -9,6 +9,7 @@ var pm2NameAsync = _asyncToGenerator(function* () {
 });
 
 var crayon = require('@ccheever/crayon');
+var freeportAsync = require('freeport-async');
 var inquirerAsync = require('inquirer-async');
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
@@ -47,12 +48,8 @@ module.exports = {
     var ngrokSubdomain = argv['ngrok-subdomain'] || config.ngrok && config.ngrok.subdomain || undefined;
     var ngrokAuthToken = argv['ngrok-auth-token'] || config.ngrok && config.ngrok.authToken || undefined;
 
-    var port = argv.port;
-    if (port == null) {
-      port = 9000 + Math.floor(Math.random() * 1000);
-    }
-
-    var pm2name = 'exp-serve.<hash>.<pkg-name>';
+    var port = argv.port || (yield freeportAsync(9000));
+    var pm2name = yield pm2NameAsync();
   }),
   pm2NameAsync: pm2NameAsync };
 //# sourceMappingURL=../sourcemaps/commands/pm2serve.js.map

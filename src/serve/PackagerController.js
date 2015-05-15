@@ -21,7 +21,7 @@ class PackagerController {
   }
 
   start() {
-    return this.startAsync();
+    throw new Error("Use `.startAsync()` instead of `.start()`");
   }
 
   async startAsync() {
@@ -35,6 +35,7 @@ class PackagerController {
     }
     this._packager = child_process.spawn(config.packagerPath, ["--port=" + this.opts.port, "--root=" + root, "--assetRoots=" + root,], {
       stdio: [process.stdin, 'pipe', process.stderr],
+      detached: false,
     });
 
     this._packager.stdout.on('readable', () => {
@@ -56,15 +57,17 @@ class PackagerController {
   }
 
   stop() {
-    return this.stopAsync();
+    throw new Error("Use `.stopAsync()` instead of `.stop()`");
   }
 
   stopAsync() {
+
     return new Promise((fulfill, reject) => {
       if (this._packager) {
         // TODO: Figure out how to close whatever needs to be closed
         // to make the process exit if this child process is the only
         // thing holding it up
+        //console.log("Stopping packager");
         this._packager.once('exit', fulfill);
         this._packager.kill();
       } else {

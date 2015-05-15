@@ -1,4 +1,5 @@
 var crayon = require('@ccheever/crayon');
+var freeportAsync = require('freeport-async');
 var inquirerAsync = require('inquirer-async');
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
@@ -52,12 +53,10 @@ module.exports = {
     var ngrokSubdomain = argv['ngrok-subdomain'] || (config.ngrok && config.ngrok.subdomain) || undefined;
     var ngrokAuthToken = argv['ngrok-auth-token'] || (config.ngrok && config.ngrok.authToken) || undefined;
 
-    var port = argv.port;
-    if (port == null) {
-      port = 9000 + Math.floor(Math.random() * 1000);
-    }
+    var port = argv.port || await freeportAsync(9000);
+    var pm2name = await pm2NameAsync();
 
-    var pm2name = "exp-serve.<hash>.<pkg-name>";
+
   },
   pm2NameAsync,
 };
