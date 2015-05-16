@@ -64,7 +64,7 @@ async function getPm2AppByNameAsync(name) {
 module.exports = {
   start: {
     name: 'start',
-    description: "Starts a local server to serve your app and gives you a URL to it",
+    description: "Starts or restarts a local server to serve your app and gives you a URL to it",
     args: ["[project-dir]"],
     options: [
       ['--path', "The path to the place where your package is", '.'],

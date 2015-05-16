@@ -5,12 +5,11 @@ var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['def
 var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default'];
 
 var _ = require('lodash-node');
-var co = require('co');
 var inquirerAsync = require('inquirer-async');
-var instapromise = require('instapromise');
 
 var api = require('../api');
 var CommandError = require('./CommandError');
+var log = require('../log');
 var password = require('../password');
 var userSettings = require('../userSettings');
 
@@ -37,7 +36,7 @@ module.exports = {
     phoneNumber = phoneNumber || argv.phoneNumber;
     fullName = fullName || argv.fullName;
 
-    var settingsData = yield userSettings().readAsync();
+    var settingsData = yield userSettings.readAsync();
 
     var questions = [];
 
@@ -112,7 +111,9 @@ module.exports = {
 
     if (user) {
       user.hashedPassword = data.hashedPassword;
-      yield userSettings().mergeAsync(user);
+      yield userSettings.mergeAsync(user);
+      log('Success!');
+      console.log(user);
       return result;
     } else {
       throw new Error('Unexpected Error: No user returned from the API');

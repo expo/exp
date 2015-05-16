@@ -1,10 +1,9 @@
 var _ = require('lodash-node');
-var co = require('co');
 var inquirerAsync = require('inquirer-async');
-var instapromise = require('instapromise');
 
 var api = require('../api');
 var CommandError = require('./CommandError');
+var log = require('../log');
 var password = require('../password');
 var userSettings = require('../userSettings');
 
@@ -22,7 +21,7 @@ module.exports = {
     phoneNumber = phoneNumber || argv.phoneNumber;
     fullName = fullName || argv.fullName;
 
-    var settingsData = await userSettings().readAsync();
+    var settingsData = await userSettings.readAsync();
 
     var questions = [];
 
@@ -103,7 +102,9 @@ module.exports = {
 
     if (user) {
       user.hashedPassword = data.hashedPassword;
-      await userSettings().mergeAsync(user);
+      await userSettings.mergeAsync(user);
+      log("Success!");
+      console.log(user);
       return result;
     } else {
       throw new Error("Unexpected Error: No user returned from the API");

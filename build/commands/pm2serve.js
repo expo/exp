@@ -72,7 +72,7 @@ function packageJsonFullPath() {
 module.exports = {
   start: {
     name: 'start',
-    description: 'Starts a local server to serve your app and gives you a URL to it',
+    description: 'Starts or restarts a local server to serve your app and gives you a URL to it',
     args: ['[project-dir]'],
     options: [['--path', 'The path to the place where your package is', '.'], ['--port', 'The port to run the server on', 'Random free port'],
     //['--ngrokSubdomain', "The ngrok subdomain to use", (config.ngrok && config.ngrok.subdomain)],

@@ -22,7 +22,7 @@ function ApiError(code, env, message) {
 }
 
 async function getExpHostBaseUrlAsync() {
-  var api = await userSettings().getAsync('api', null);
+  var api = await userSettings.getAsync('api', null);
   var host = (api && api.host) || HOST;
   var port = (api && api.port) || PORT;
   var baseUrl = (api && api.baseUrl) || ('http://' + host + ':' + port);
@@ -42,7 +42,7 @@ var callMethodAsync = async function (methodName, args) {
 
   // TODO: Make it so we don't read the userSettings file twice in a row needlessly,
   // ... but not a big deal for now
-  var settings = await userSettings().readAsync();
+  var settings = await userSettings.readAsync();
   var {username, hashedPassword} = settings;
   //log("username=", username, "hashedPassword=", hashedPassword);
 

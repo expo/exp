@@ -9,7 +9,7 @@
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
 
 var getExpHostBaseUrlAsync = _asyncToGenerator(function* () {
-  var api = yield userSettings().getAsync('api', null);
+  var api = yield userSettings.getAsync('api', null);
   var host = api && api.host || HOST;
   var port = api && api.port || PORT;
   var baseUrl = api && api.baseUrl || 'http://' + host + ':' + port;
@@ -48,7 +48,7 @@ var callMethodAsync = _asyncToGenerator(function* (methodName, args) {
 
   // TODO: Make it so we don't read the userSettings file twice in a row needlessly,
   // ... but not a big deal for now
-  var settings = yield userSettings().readAsync();
+  var settings = yield userSettings.readAsync();
   var username = settings.username;
   var hashedPassword = settings.hashedPassword;
 

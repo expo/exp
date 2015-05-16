@@ -3,7 +3,7 @@ var inquirerAsync = require('inquirer-async');
 var userSettings = require('./userSettings');
 
 async function askForMobileNumberAsync() {
-  var phoneNumberFromSettings = await userSettings().getAsync('phoneNumber', null);
+  var phoneNumberFromSettings = await userSettings.getAsync('phoneNumber', null);
   console.log("Enter a mobile number or e-mail and we'll send a link to your phone.");
   var answers = await inquirerAsync.promptAsync([{
     type: 'input',

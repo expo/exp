@@ -15,14 +15,20 @@ function userSettingsJsonFile() {
   return new jsonFile(userSettingsFile(), { cantReadFileDefault: {} });
 }
 
+var mkdirped = false;
 function dotExponentDirectory() {
   if (!process.env.HOME) {
     throw new Error('Can\'t determine your home directory; make sure your $HOME environment variable is set.');
   }
-  return path.join(process.env.HOME, '.exponent');
+  var dirPath = path.join(process.env.HOME, '.exponent');
+  if (!mkdirped) {
+    mkdirp.sync(dirPath);
+    mkdirped = true;
+  }
+  return dirPath;
 }
 
-module.exports = userSettingsJsonFile;
+module.exports = userSettingsJsonFile();
 
 _.assign(module.exports, {
   userSettingsJsonFile: userSettingsJsonFile,
