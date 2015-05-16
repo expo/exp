@@ -1,5 +1,4 @@
 var crayon = require('@ccheever/crayon');
-var delayAsync = require('delay-async');
 var freeportAsync = require('freeport-async');
 var instapromise = require('instapromise');
 var network = require('@exponent/network');
@@ -10,7 +9,7 @@ var log = require('../log');
 var PackagerController = require('./PackagerController');
 var urlUtil = require('../urlUtil');
 
-module.exports = async function (opts) {
+async function _serve(opts) {
 
   var expSettings = await config.expInfoFile.readAsync();
   opts = opts || {};
@@ -69,8 +68,6 @@ module.exports = async function (opts) {
       log.error("Error while shutting down.");
     });
 
-
-
     throw e;
   }
 
@@ -86,6 +83,8 @@ module.exports = async function (opts) {
     port,
     ngrokBaseUrl, lanBaseUrl, localhostBaseUrl,
     ngrokUrl, lanUrl, localhostUrl,
+    err: null,
+    state: 'RUNNING',
     });
 
   var [_data, _true, _pc] = await Promise.all([writeInfoFile$, urlUtil.testUrlAsync(localhostUrl)]);
@@ -93,6 +92,13 @@ module.exports = async function (opts) {
   return _.assign(_data, {packageController: pc});
 
 }
+
+module.exports = function (opts) {
+  return _serve(opts).catch(function (err) {
+    config.expInfoFile.update('err', err.stack());
+  });
+};
+
 
 if (require.main === module) {
   module.exports().then(crayon.cyan.log, (err) => {

@@ -5,7 +5,7 @@ var inquirerAsync = require('inquirer-async');
 var instapromise = require('instapromise');
 var ngrok = require('ngrok');
 var path = require('path');
-var simpleSpinner = require('simple-spinner');
+var simpleSpinner = require('@exponent/simple-spinner');
 var stream = require('stream');
 
 var api = require('../api');

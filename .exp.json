@@ -1,9 +1,0 @@
-{
-  "port": 19940,
-  "ngrokBaseUrl": "https://774754fd.ngrok.com",
-  "lanBaseUrl": "http://192.168.1.73:19940",
-  "localhostBaseUrl": "http://localhost:19940",
-  "ngrokUrl": "https://774754fd.ngrok.com/index.includeRequire.runModule.bundle?dev=false",
-  "lanUrl": "http://192.168.1.73:19940/index.includeRequire.runModule.bundle?dev=false",
-  "localhostUrl": "http://localhost:19940/index.includeRequire.runModule.bundle?dev=false"
-}

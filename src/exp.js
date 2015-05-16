@@ -21,8 +21,8 @@ if (!hasYield) {
 var child_process = require('child_process');
 var crayon = require('@ccheever/crayon');
 var instapromise = require('instapromise');
-var minimist = require('minimist');
 
+var argv = require('./argv');
 var commands = require('./commands/commands');
 var config = require('./config');
 var log = require('./log');
@@ -30,15 +30,16 @@ var log = require('./log');
 module.exports = require('./commands/runAsync');
 
 if (require.main === module) {
-  var argv = minimist(process.argv.slice(2));
   module.exports(argv._[0], argv).then(function (result) {
     if (result != null) {
-      console.error("\n");
-      log(crayon.gray("\n") + crayon.gray(result));
+      if (argv.debug) {
+        console.error("\n");
+        log(crayon.gray("\n") + crayon.gray(result));
+      }
     }
   }, function (err) {
     if (err._isCommandError) {
-      if (err.code) {
+      if (false) { //if (err.code) {
         log.error(crayon.orange.bold(err.code) + ' ' + crayon.red(err.message));
       } else {
         log.error(err.message);

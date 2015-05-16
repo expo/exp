@@ -1,12 +1,17 @@
 'use strict';
 
 var commands = {
-  serve: require('./pm2serve'),
+  //serve: require('./serve'),
+  init: require('./init'),
+  start: require('./pm2serve').start,
+  stop: require('./pm2serve').stop,
+  restart: require('./pm2serve').start,
   url: require('./url'),
-  bundle: require('./bundle'),
+  send: require('./send'),
   adduser: require('./adduser'),
   login: require('./login'),
-  'new': require('./new') };
+  bundle: require('./bundle'),
+  logs: require('./logs') };
 
 module.exports = commands;
 //# sourceMappingURL=../sourcemaps/commands/commands.js.map

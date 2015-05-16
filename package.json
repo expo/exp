@@ -1,6 +1,6 @@
 {
   "name": "exponent-server",
-  "version": "0.3.1",
+  "version": "1.0.0",
   "description": "For serving code to the Exponent app",
   "main": "index.js",
   "scripts": {
@@ -29,9 +29,10 @@
   "homepage": "https://github.com/650Industries/exponent-server#readme",
   "dependencies": {
     "@ccheever/crayon": "^5.0.0",
-    "@exponent/json-file": "^2.2.0",
+    "@exponent/json-file": "^2.3.3",
     "@exponent/md5hex": "^1.0.0",
     "@exponent/network": "^1.1.0",
+    "@exponent/simple-spinner": "^1.0.2",
     "@exponent/spawn-async": "^1.0.1",
     "babel-runtime": "^5.2.2",
     "co": "^4.5.2",
@@ -43,7 +44,7 @@
     "instapromise": "^1.0.0",
     "lodash-node": "^3.8.0",
     "minimist": "^1.1.1",
-    "mkdirp": "^0.5.0",
+    "mkdirp": "^0.5.1",
     "ngrok": "^0.1.99",
     "node-libs-browser": "^0.5.0",
     "nomnom": "^1.8.1",
@@ -54,7 +55,6 @@
     "react-native": "^0.4.1",
     "react-native-webpack-server": "^0.1.7",
     "request": "^2.55.0",
-    "simple-spinner": "0.0.3",
     "webpack": "^1.9.5",
     "webpack-dev-server": "^1.8.2",
     "window-size": "^0.1.0",

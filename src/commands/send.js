@@ -2,6 +2,7 @@ var crayon = require('@ccheever/crayon');
 var qrcodeTerminal = require('qrcode-terminal');
 var simpleSpinner = require('@exponent/simple-spinner');
 
+var askUser = require('../askUser');
 var CommandError = require('./CommandError');
 var log = require('../log');
 var sendTo = require('./sendTo');
@@ -9,7 +10,7 @@ var urlOpts = require('./urlOpts');
 var urlUtil = require('../urlUtil');
 
 module.exports = {
-  name: 'url',
+  name: 'send',
   args: ['[recipient]'],
   options: [
     ['--sendTo', "Specifies the mobile number or e-mail address to send this URL to"],
@@ -37,32 +38,33 @@ module.exports = {
       url = urlUtil.expUrlFromHttpUrl(url);
     }
 
-    console.log(url);
-
-    if (argv.qr) {
-      qrcodeTerminal.generate(url);
-    }
-
-    var test = argv.test;
-    if (test) {
-      try {
-        log("Testing loading the URL...");
-        simpleSpinner.start();
-        var ok = await urlUtil.testUrlAsync(httpUrl);
-        simpleSpinner.stop();
-        log("OK.");
-      } catch (e) {
-        throw CommandError('RUN_EXP_START_FIRST', env, "You may need to run `exp start` to get a URL\n" + e.message);
-      }
-    }
+    console.log("Using URL:");
+    crayon.log(url);
+    console.log();
 
     var recipient = argv.sendTo || args[1];
-
-    if (recipient) {
-      await sendTo.sendUrlAysnc(url, recipient);
+    if (!recipient) {
+      recipient = await askUser.askForMobileNumberAsync();
     }
 
-    return url;
+    if (recipient) {
 
+      var test = !argv.notest;
+      if (test) {
+        try {
+          log("Testing loading the URL...");
+          simpleSpinner.start();
+          var ok = await urlUtil.testUrlAsync(httpUrl);
+          simpleSpinner.stop();
+          log("OK.");
+        } catch (e) {
+          throw CommandError('RUN_EXP_START_FIRST', env, "You may need to run `exp start` to get a URL\n" + e.message);
+        }
+      }
+
+      await sendTo.sendUrlAysnc(url, recipient);
+    } else {
+      log.gray("(Not sending anything because you didn't specify a recipient.)");
+    }
   },
 };

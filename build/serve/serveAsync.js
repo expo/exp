@@ -6,19 +6,7 @@ var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default']
 
 var _Promise = require('babel-runtime/core-js/promise')['default'];
 
-var crayon = require('@ccheever/crayon');
-var delayAsync = require('delay-async');
-var freeportAsync = require('freeport-async');
-var instapromise = require('instapromise');
-var network = require('@exponent/network');
-var ngrok = require('ngrok');
-
-var config = require('../config');
-var log = require('../log');
-var PackagerController = require('./PackagerController');
-var urlUtil = require('../urlUtil');
-
-module.exports = _asyncToGenerator(function* (opts) {
+var _serve = _asyncToGenerator(function* (opts) {
 
   var expSettings = yield config.expInfoFile.readAsync();
   opts = opts || {};
@@ -93,7 +81,9 @@ module.exports = _asyncToGenerator(function* (opts) {
   var writeInfoFile$ = config.expInfoFile.mergeAsync({
     port: port,
     ngrokBaseUrl: ngrokBaseUrl, lanBaseUrl: lanBaseUrl, localhostBaseUrl: localhostBaseUrl,
-    ngrokUrl: ngrokUrl, lanUrl: lanUrl, localhostUrl: localhostUrl });
+    ngrokUrl: ngrokUrl, lanUrl: lanUrl, localhostUrl: localhostUrl,
+    err: null,
+    state: 'RUNNING' });
 
   var _ref3 = yield _Promise.all([writeInfoFile$, urlUtil.testUrlAsync(localhostUrl)]);
 
@@ -105,6 +95,23 @@ module.exports = _asyncToGenerator(function* (opts) {
 
   return _.assign(_data, { packageController: pc });
 });
+
+var crayon = require('@ccheever/crayon');
+var freeportAsync = require('freeport-async');
+var instapromise = require('instapromise');
+var network = require('@exponent/network');
+var ngrok = require('ngrok');
+
+var config = require('../config');
+var log = require('../log');
+var PackagerController = require('./PackagerController');
+var urlUtil = require('../urlUtil');
+
+module.exports = function (opts) {
+  return _serve(opts)['catch'](function (err) {
+    config.expInfoFile.update('err', err.stack());
+  });
+};
 
 if (require.main === module) {
   module.exports().then(crayon.cyan.log, function (err) {

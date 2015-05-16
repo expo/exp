@@ -155,4 +155,4 @@ module.exports = {
       }
     }
   }) };
-//# sourceMappingURL=../sourcemaps/commands/serve.js.map
+//# sourceMappingURL=../sourcemaps/commands/archivedServe.js.map

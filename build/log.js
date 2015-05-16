@@ -16,6 +16,20 @@ log.error = function error() {
   console.error.apply(console, args);
 };
 
+log.warn = function warn() {
+  var prefix = crayon.yellow('[') + crayon.gray('exp') + crayon.yellow(']');
+  var args = [prefix].concat(Array.prototype.slice.call(arguments, 0).map(function (x) {
+    return crayon.yellow(x);
+  }));
+  console.warn.apply(console, args);
+};
+
+log.gray = function () {
+  var prefix = '[exp]';
+  var args = [prefix].concat(Array.prototype.slice.call(arguments, 0));
+  crayon.gray.error.apply(crayon, args);
+};
+
 log.crayon = crayon;
 
 module.exports = log;

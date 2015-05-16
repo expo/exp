@@ -1,0 +1,1 @@
+{"version":3,"sources":["commands/_urlOpts.js"],"names":[],"mappings":";;AAAA,MAAM,CAAC,OAAO,IAAI,CAAC,EAAE,CAAC,SAAK,CAAC,CAAC,EAAE,CAAC,CAAC,GAAE,CAAC,EAAC,CAAC","file":"commands/_urlOpts.js","sourcesContent":["module.exports = [1, 2, ...[3, 4], 5];\n"],"sourceRoot":"/source/"}

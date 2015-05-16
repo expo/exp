@@ -3,9 +3,12 @@ var crayon = require('@ccheever/crayon');
 var fs = require('fs');
 var instapromise = require('instapromise');
 var request = require('request');
+var simpleSpinner = require('@exponent/simple-spinner');
 
+var CommandError = require('./CommandError');
 var log = require('../log');
 var urlUtil = require('../urlUtil');
+var urlOpts = require('./urlOpts');
 
 module.exports = {
   name: 'bundle',
@@ -14,16 +17,14 @@ module.exports = {
     ['--dev', "Whether to set the dev flag"],
     ['--minify', "Whether to minify the bundle"],
     ['--mainModulePath', "Path to the main module"],
+    ...(urlOpts.options('localhost')),
   ],
   help: '',
-  runAsync: co.wrap(function *(env) {
+  runAsync: async function (env) {
     var argv = env.argv;
     var args = argv._;
 
-
-    var dev = argv.dev || true;
-    var minify = argv.minify;
-    var mainModulePath = argv.mainModulePath;
+    var uo = urlOpts.optsFromEnv(env, {type: 'localhost', dev: true});
 
     var filepath = args[1];
     var outStream = process.stdout;
@@ -31,22 +32,26 @@ module.exports = {
       outStream = fs.createWriteStream(filepath);
     }
 
-    var url = yield urlUtil.mainBundleUrlAsync({dev, minify, mainModulePath});
-    log("Requesting bundle from", url);
+    var url = await urlUtil.mainBundleUrlAsync(uo);
+    log("Requesting bundle from", url, "...");
     if (filepath) {
       log("Saving to", filepath);
     }
 
     try {
-      var response = yield request.promise.get(url);
+
+      simpleSpinner.start();
+      var response = await request.promise.get(url);
+      simpleSpinner.stop();
       if (response.statusCode != 200) {
-        throw new Error("Non-200 response: " + response.statusCode + ": " + response.statusMessage);
+        throw CommandError('BAD_RESPONSE', env, "Non-200 response: " + response.statusCode + ": " + response.statusMessage);
       }
     } catch (e) {
-      throw new Error("Failed to download bundle; did you run `exp serve`?\n" + e);
+      throw CommandError('FAILED_TO_DOWNLOAD_BUNDLE', env, "Failed to download bundle; did you run `exp start`?\n" + e);
     }
 
-    var bytes = yield outStream.promise.write(response.body);
+    await outStream.promise.write(response.body);
+    var bytes = response.body.length;
     if (filepath) {
       outStream.close();
     }
@@ -63,5 +68,5 @@ module.exports = {
 
     return result;
 
-  }),
+  },
 };
