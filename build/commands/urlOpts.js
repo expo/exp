@@ -36,17 +36,17 @@ function optsFromEnv(env, def) {
     opts.dev = false;
   }
 
-  if (argv.minifiy) {
-    opts.minifiy = true;
+  if (argv.minify) {
+    opts.minify = true;
   }
 
   if (argv.nominify) {
-    opts.minifiy = false;
+    opts.minify = false;
   }
 
   opts.mainModulePath = argv.mainModulePath;
 
-  return def;
+  return opts;
 }
 
 module.exports = {

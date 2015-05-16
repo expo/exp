@@ -5,8 +5,11 @@ var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['def
 var sendUrlAysnc = _asyncToGenerator(function* (url, recipient) {
   log('Sending URL to', recipient);
   simpleSpinner.start();
-  var result = yield api.callMethodAsync('send', [recipient, url]);
-  simpleSpinner.stop();
+  try {
+    var result = yield api.callMethodAsync('send', [recipient, url]);
+  } finally {
+    simpleSpinner.stop();
+  }
   log('Sent.');
   return result;
 });

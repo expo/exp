@@ -2,6 +2,7 @@
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
 
+var crayon = require('@ccheever/crayon');
 var fs = require('fs');
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
@@ -28,6 +29,7 @@ module.exports = {
     var dirName = args[1];
     if (dirName) {
       yield mkdirp.promise(dirName);
+      log('Setting up an Exponent project at', path.resolve(dirName));
       process.chdir(dirName);
     }
 
@@ -37,11 +39,11 @@ module.exports = {
     try {
       pkg = yield pkgJsonFile.readAsync();
     } catch (e) {
-      console.error(e);
+      //console.error(e);
 
       // No package.json, so let's create it
-      log('No package.json file found. Using `npm init` to help you create one.');
-      log('Answer the questions and a package.json will be created for you.');
+      log(crayon.cyan('No package.json file found. Using `npm init` to help you create one.'));
+      log(crayon.cyan('Answer the questions and a package.json will be created for you.'));
       var _zero = yield spawnAsync('npm', ['init'], { stdio: 'inherit' });
       pkg = yield pkgJsonFile.readAsync();
     }

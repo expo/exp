@@ -4,7 +4,7 @@ var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['def
 
 var askForMobileNumberAsync = _asyncToGenerator(function* () {
   var phoneNumberFromSettings = yield userSettings().getAsync('phoneNumber', null);
-  console.log('Enter a mobile number or e-mail and we\'ll send a link to your phone...');
+  console.log('Enter a mobile number or e-mail and we\'ll send a link to your phone.');
   var answers = yield inquirerAsync.promptAsync([{
     type: 'input',
     name: 'mobileNumber',

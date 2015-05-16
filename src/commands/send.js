@@ -38,9 +38,7 @@ module.exports = {
       url = urlUtil.expUrlFromHttpUrl(url);
     }
 
-    console.log("Using URL:");
-    crayon.log(url);
-    console.log();
+    log("Your URL is\n\n" + crayon.underline(url) + "\n");
 
     var recipient = argv.sendTo || args[1];
     if (!recipient) {

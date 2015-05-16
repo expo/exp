@@ -7,8 +7,11 @@ var log = require('../log');
 async function sendUrlAysnc(url, recipient) {
   log("Sending URL to", recipient);
   simpleSpinner.start();
-  var result = await api.callMethodAsync('send', [recipient, url]);
-  simpleSpinner.stop();
+  try {
+    var result = await api.callMethodAsync('send', [recipient, url]);
+  } finally {
+    simpleSpinner.stop();
+  }
   log("Sent.");
   return result;
 }
