@@ -112,7 +112,7 @@ module.exports = {
     if (user) {
       user.hashedPassword = data.hashedPassword;
       yield userSettings.mergeAsync(user);
-      log('Success!');
+      log('Success.');
       console.log(user);
       return result;
     } else {
