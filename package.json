@@ -1,6 +1,6 @@
 {
   "name": "exponent-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "For serving code to the Exponent app",
   "main": "index.js",
   "scripts": {
@@ -48,6 +48,7 @@
     "ngrok": "^0.1.99",
     "node-libs-browser": "^0.5.0",
     "nomnom": "^1.8.1",
+    "pm2": "^0.12.14",
     "portfinder": "^0.4.0",
     "qrcode-terminal": "^0.9.5",
     "react": "^0.13.3",
