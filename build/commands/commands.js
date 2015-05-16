@@ -1,17 +1,27 @@
 'use strict';
 
+var _ = require('lodash-node');
+
 var commands = {
-  //serve: require('./serve'),
+
+  // Basic
   init: require('./init'),
   start: require('./pm2serve').start,
-  stop: require('./pm2serve').stop,
-  restart: require('./pm2serve').start,
   url: require('./url'),
+  stop: require('./pm2serve').stop,
+  restart: _.clone(require('./pm2serve').start),
   send: require('./send'),
+
+  // Publishing
   adduser: require('./adduser'),
   login: require('./login'),
+
+  // Advanced
   bundle: require('./bundle'),
+  status: require('./status'),
   logs: require('./logs') };
+
+commands.restart.name = 'restart';
 
 module.exports = commands;
 //# sourceMappingURL=../sourcemaps/commands/commands.js.map

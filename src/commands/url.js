@@ -24,7 +24,7 @@ module.exports = {
     var args = argv._;
     var err = null;
 
-    var uo = urlOpts.optsFromEnv(env, {type:'ngrok'});
+    var uo = urlOpts.optsFromEnv(env, {type: 'ngrok'});
 
     try {
       var httpUrl = await urlUtil.mainBundleUrlAsync(uo);
