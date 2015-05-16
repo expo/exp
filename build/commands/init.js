@@ -27,6 +27,7 @@ module.exports = {
 
     // 0. If there is a command line argument, make a new directory in the current directory and chdir to it
     var dirName = args[1];
+    var originalCwd = process.cwd();
     if (dirName) {
       yield mkdirp.promise(dirName);
       log('Setting up an Exponent project at', path.resolve(dirName));
@@ -59,6 +60,10 @@ module.exports = {
       log('Created an entry point for your app at', entryPoint);
     } catch (e) {
       log.warn('The entry point (' + entryPoint + ') already exists; refusing to overwrite.\n' + e + '\nIf you want to use the standard template sample file,\ndelete that file and rerun `exp init` again.');
+    }
+
+    if (process.cwd() != originalCwd) {
+      log('Set up your Exponent project in', process.cwd());
     }
   }) };
 //throw CommandError('ENTRY_POINT_EXISTS', env, "The entry point (" + entryPoint + ") already exists; refusing to overwrite.\n" + e + "\nDelete that file and rerun `exp init` to try again.");

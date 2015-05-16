@@ -9,9 +9,11 @@ var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
 var path = require('path');
 var request = require('request');
+var simpleSpinner = require('@exponent/simple-spinner');
 
 var api = require('./api');
 var config = require('./config');
+var log = require('./log');
 
 var entryPointAsync = async function() {
   // TODO: Allow configurations that point to iOS main and Android main, etc.
@@ -85,6 +87,29 @@ async function httpRedirectUrlAsync(url) {
   return baseUrl + '/--/to-exp/' + encodeURIComponent(url);
 }
 
+async function testLoadingUrlWithLogging(httpUrl) {
+
+  log("Testing loading the URL...");
+  simpleSpinner.start();
+  var err = undefined;
+  try {
+    var ok = await testUrlAsync(httpUrl);
+  } catch (e) {
+    log(e);
+    err = e;
+    throw err;
+  } finally {
+    simpleSpinner.stop();
+    console.log(5);
+    if (err) {
+      log(err);
+      throw err;
+    }
+  }
+  log("OK.");
+
+}
+
 module.exports = {
   constructUrlFromBaseUrl,
   expUrlFromHttpUrl,
@@ -95,4 +120,5 @@ module.exports = {
   entryPointAsync,
   guessMainModulePathAsync,
   httpRedirectUrlAsync,
+  testLoadingUrlWithLogging,
 };

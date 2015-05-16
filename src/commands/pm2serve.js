@@ -25,9 +25,8 @@ function packageJsonFullPath() {
 
 async function pm2NameAsync() {
   var packageName = await jsonFile.getAsync('package.json', 'name');
-  return 'exp-serve/' + packageName;
-  // var pkgJsonHash = md5hex(packageJsonFullPath(), 6);
-  // return 'exp-serve/' + pkgJsonHash + '.' + packageName;
+  var pkgJsonHash = md5hex(packageJsonFullPath(), 8);
+  return 'exp-serve/' + packageName + ':' + pkgJsonHash;
 }
 
 async function getPm2AppByIdAsync(id) {
@@ -107,11 +106,12 @@ module.exports = {
         if (pm2Id) {
 
           // If this is already being managed by pm2, then restart it
-          var app = await getPm2AppByIdAsync(pm2Id);
+          //var app = await getPm2AppByIdAsync(pm2Id);
+          var app = await getPm2AppByNameAsync(pm2Name);
           if (app) {
             log("pm2 managed process exists; restarting it");
-            await pm2.promise.restart(pm2Id);
-            var app_ = await getPm2AppByIdAsync(pm2Id);
+            await pm2.promise.restart(app.pm_id);
+            //var app_ = await getPm2AppByIdAsync(pm2Id);
             needToStart = false;
           } else {
             log("Can't find pm2 managed process", pm2Id, " so will start a new one");
@@ -137,8 +137,9 @@ module.exports = {
 
         var app = await getPm2AppByNameAsync(pm2Name);
 
-        if (!app) {
-          //log.error("pm2Name=", pm2Name, "apps=", apps);
+        if (app) {
+          await config.expInfoFile.mergeAsync({pm2Name, pm2Id: app.pm_id});
+        } else {
           throw CommandError('PM2_ERROR_STARTING_PROCESS', env, "Something went wrong starting exp serve:");
         }
 

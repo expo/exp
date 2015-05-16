@@ -40,15 +40,39 @@ var httpRedirectUrlAsync = _asyncToGenerator(function* (url) {
   return baseUrl + '/--/to-exp/' + encodeURIComponent(url);
 });
 
+var testLoadingUrlWithLogging = _asyncToGenerator(function* (httpUrl) {
+
+  log('Testing loading the URL...');
+  simpleSpinner.start();
+  var err = undefined;
+  try {
+    var ok = yield testUrlAsync(httpUrl);
+  } catch (e) {
+    log(e);
+    err = e;
+    throw err;
+  } finally {
+    simpleSpinner.stop();
+    console.log(5);
+    if (err) {
+      log(err);
+      throw err;
+    }
+  }
+  log('OK.');
+});
+
 var _ = require('lodash-node');
 var fs = require('fs');
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
 var path = require('path');
 var request = require('request');
+var simpleSpinner = require('@exponent/simple-spinner');
 
 var api = require('./api');
 var config = require('./config');
+var log = require('./log');
 
 var entryPointAsync = _asyncToGenerator(function* () {
   // TODO: Allow configurations that point to iOS main and Android main, etc.
@@ -101,5 +125,6 @@ module.exports = {
   testUrlAsync: testUrlAsync,
   entryPointAsync: entryPointAsync,
   guessMainModulePathAsync: guessMainModulePathAsync,
-  httpRedirectUrlAsync: httpRedirectUrlAsync };
+  httpRedirectUrlAsync: httpRedirectUrlAsync,
+  testLoadingUrlWithLogging: testLoadingUrlWithLogging };
 //# sourceMappingURL=sourcemaps/urlUtil.js.map

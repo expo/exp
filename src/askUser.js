@@ -8,10 +8,10 @@ async function askForMobileNumberAsync() {
   var answers = await inquirerAsync.promptAsync([{
     type: 'input',
     name: 'mobileNumber',
-    message: "Your mobile number (or e-mail): ",
+    message: "Your mobile number or e-mail" + (phoneNumberFromSettings ? " (space to not send anything)" : '') + ":",
     default: phoneNumberFromSettings,
   }]);
-  return answers.mobileNumber;
+  return answers.mobileNumber.trim();
 }
 
 module.exports = {

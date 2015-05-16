@@ -7,6 +7,7 @@ var options = function (def) {
       ['--lan', "Use the LAN URL" + ((def === 'lan') ? " (default)" : '')],
       ['--localhost', "Use the localhost URL" + ((def === 'localhost') ? " (default)" : '')],
       ['--ngrok', "Use the ngrok URL" + ((def === 'ngrok') ? " (default)" : '')],
+      ['--redirect', "Generates an HTTP URL that will redirect you to your desired URL"],
       ['--dev', "Have the packager generate a dev bundle"],
       ['--minify', "Have the packager minify the bundle"],
       ['--mainModulePath', "Specify the path to the main module"],

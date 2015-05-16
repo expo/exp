@@ -8,9 +8,9 @@ var askForMobileNumberAsync = _asyncToGenerator(function* () {
   var answers = yield inquirerAsync.promptAsync([{
     type: 'input',
     name: 'mobileNumber',
-    message: 'Your mobile number (or e-mail): ',
+    message: 'Your mobile number or e-mail' + (phoneNumberFromSettings ? ' (space to not send anything)' : '') + ':',
     'default': phoneNumberFromSettings }]);
-  return answers.mobileNumber;
+  return answers.mobileNumber.trim();
 });
 
 var inquirerAsync = require('inquirer-async');

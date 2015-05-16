@@ -18,7 +18,7 @@ module.exports = {
   name: 'url',
   args: ['[recipient]'],
   options: [['--sendTo', 'Specifies the mobile number or e-mail address to send this URL to'], ['--qr', 'Will also generate a QR code for the URL'], ['--test', 'Will test to make sure the URL is valid']].concat(_toConsumableArray(urlOpts.options('ngrok'))),
-  description: 'Sends a link you can load the app you\'re developing to a phone number or e-mail address',
+  description: 'Displays the URL you can use to view your project in Exponent',
   help: 'You must have the server running for this command to work',
   runAsync: _asyncToGenerator(function* (env) {
     var argv = env.argv;
@@ -38,6 +38,10 @@ module.exports = {
       url = urlUtil.expUrlFromHttpUrl(url);
     }
 
+    if (argv.redirect) {
+      url = yield urlUtil.httpRedirectUrlAsync(url);
+    }
+
     console.log(url);
 
     if (argv.qr) {
@@ -46,15 +50,16 @@ module.exports = {
 
     var test = argv.test;
     if (test) {
+      log('Testing loading the URL...');
+      simpleSpinner.start();
       try {
-        log('Testing loading the URL...');
-        simpleSpinner.start();
         var ok = yield urlUtil.testUrlAsync(httpUrl);
-        simpleSpinner.stop();
-        log('OK.');
       } catch (e) {
         throw CommandError('RUN_EXP_START_FIRST', env, 'You may need to run `exp start` to get a URL\n' + e.message);
+      } finally {
+        simpleSpinner.stop();
       }
+      log('OK.');
     }
 
     var recipient = argv.sendTo || args[1];

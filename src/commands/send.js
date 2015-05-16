@@ -45,21 +45,21 @@ module.exports = {
       recipient = await askUser.askForMobileNumberAsync();
     }
 
-    if (recipient) {
-
-      var test = !argv.notest;
-      if (test) {
-        try {
-          log("Testing loading the URL...");
-          simpleSpinner.start();
-          var ok = await urlUtil.testUrlAsync(httpUrl);
-          simpleSpinner.stop();
-          log("OK.");
-        } catch (e) {
-          throw CommandError('RUN_EXP_START_FIRST', env, "You may need to run `exp start` to get a URL\n" + e.message);
-        }
+    var test = !argv.notest;
+    if (test) {
+      log("Testing loading the URL...");
+      simpleSpinner.start();
+      try {
+        var ok = await urlUtil.testUrlAsync(httpUrl);
+      } catch (e) {
+        throw CommandError('RUN_EXP_START_FIRST', env, "You may need to run `exp start` to get a URL\n" + e.message);
+      } finally {
+        simpleSpinner.stop();
       }
+      log("OK.");
+    }
 
+    if (recipient) {
       await sendTo.sendUrlAysnc(url, recipient);
     } else {
       log.gray("(Not sending anything because you didn't specify a recipient.)");

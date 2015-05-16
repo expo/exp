@@ -41,8 +41,14 @@ module.exports = {
     try {
 
       simpleSpinner.start();
-      var response = await request.promise.get(url);
-      simpleSpinner.stop();
+      try {
+        var response = await request.promise.get(url);
+      } catch (e) {
+        throw CommandError('NO_RESPONSE', env, "Server didn't respond.\n" + e.message);
+      } finally {
+        simpleSpinner.stop();
+      }
+
       if (response.statusCode != 200) {
         throw CommandError('BAD_RESPONSE', env, "Non-200 response: " + response.statusCode + ": " + response.statusMessage);
       }

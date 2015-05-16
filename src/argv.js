@@ -13,6 +13,7 @@ var minimistOpts = {
 
     'test',
     'http',
+    'redirect',
 
     'raw',
   ],
