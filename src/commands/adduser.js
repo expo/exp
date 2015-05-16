@@ -103,6 +103,7 @@ module.exports = {
     if (user) {
       user.hashedPassword = data.hashedPassword;
       await userSettings.mergeAsync(user);
+      delete user.hashedPassword;
       log("Success.");
       console.log(user);
       return result;

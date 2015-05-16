@@ -7,7 +7,7 @@ var commands = {
   start: require('./pm2serve').start,
   url: require('./url'),
   stop: require('./pm2serve').stop,
-  //restart: _.clone(require('./pm2serve').start),
+  restart: _.clone(require('./pm2serve').start),
   send: require('./send'),
 
   // Publishing
@@ -21,6 +21,7 @@ var commands = {
   logs: require('./logs'),
 };
 
-//commands.restart.name = 'restart';
+commands.restart.name = 'restart';
+commands.restart.description = "This is an alias of `start`. They both can be used to start or restart exp-serve";
 
 module.exports = commands;
