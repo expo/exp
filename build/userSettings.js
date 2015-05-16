@@ -12,7 +12,7 @@ function userSettingsFile() {
 }
 
 function userSettingsJsonFile() {
-  return new jsonFile(userSettingsFile());
+  return new jsonFile(userSettingsFile(), { cantReadFileDefault: {} });
 }
 
 function dotExponentDirectory() {
