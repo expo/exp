@@ -109,9 +109,9 @@ module.exports = {
     var result = yield api.callMethodAsync('adduser', data);
 
     var user = result.user;
-    user.hashedPassword = data.hashedPassword;
 
     if (user) {
+      user.hashedPassword = data.hashedPassword;
       yield userSettings().mergeAsync(user);
       return result;
     } else {

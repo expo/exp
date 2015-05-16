@@ -100,9 +100,9 @@ module.exports = {
     var result = await api.callMethodAsync('adduser', data);
 
     var user = result.user;
-    user.hashedPassword = data.hashedPassword;
 
     if (user) {
+      user.hashedPassword = data.hashedPassword;
       await userSettings().mergeAsync(user);
       return result;
     } else {
