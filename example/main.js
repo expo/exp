@@ -16,6 +16,7 @@ class ExampleApp extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <FixTouchEvents />
         <Text style={styles.title}>E X P O N E N T</Text>
         <Text style={styles.paragraph}>
           This is a simple example of what you can build with Exponent and React Native.
@@ -41,7 +42,7 @@ class ExampleApp extends React.Component {
             />
           <Text>... as is this duckie!</Text>
         </ScrollView>
-        <Text style={styles.paragraph}>E-mail exponent.team@gmail.com with feedback or questions :) & Thank you to Aaron Iba for being alpha tester #1!</Text>
+        <Text style={styles.paragraph}>E-mail exponent.team@gmail.com with feedback or questions!</Text>
       </View>
     );
   }
@@ -78,5 +79,16 @@ var styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
+
+class FixTouchEvents extends React.Component {
+  render() {
+    var paddingViews = [];
+    var n = this.props.numberOfPaddingViews || 30;
+    for (var i = 0; i < n; i++) {
+      paddingViews.push((<View></View>));
+    }
+    return (<View>{paddingViews}</View>);
+  }
+}
 
 AppRegistry.registerComponent('main', () => ExampleApp);
