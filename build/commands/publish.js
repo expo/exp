@@ -25,7 +25,7 @@ var uploadInfoAsync = _asyncToGenerator(function* (env) {
   var remoteFullPackageName;
   var remotePackageName;
   var remoteUsername;
-  var match = packageName.match(/^\@([a-zA-Z0-9_-]+)\/([a-zA-Z0-0_-]+)/);
+  var match = packageName.match(/^\@([a-zA-Z0-9_-]+)\/([a-zA-Z0-0_-]*)/);
 
   if (match) {
     remoteUsername = match[1];

@@ -23,7 +23,7 @@ module.exports = {
 
       var {username, hashedPassword} = settingsData;
 
-      var result = await api.callMethodAsync('adduser', {username, hashedPassword});
+      var result = await api.callMethodAsync('whoami', {username, hashedPassword});
 
       if (result.user) {
         log("Logged in as", result.user.username);

@@ -28,7 +28,7 @@ module.exports = {
       var username = settingsData.username;
       var hashedPassword = settingsData.hashedPassword;
 
-      var result = yield api.callMethodAsync('adduser', { username: username, hashedPassword: hashedPassword });
+      var result = yield api.callMethodAsync('whoami', { username: username, hashedPassword: hashedPassword });
 
       if (result.user) {
         log('Logged in as', result.user.username);
