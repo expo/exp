@@ -14,6 +14,7 @@ var commands = {
   adduser: require('./adduser'),
   login: require('./login'),
   whoami: require('./whoami'),
+  publish: require('./publish'),
 
   // Advanced
   bundle: require('./bundle'),
