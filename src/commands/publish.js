@@ -82,5 +82,7 @@ module.exports = {
 
     log("Published.");
 
+    console.log("exp://exp.host/" + result.packageFullName);
+
   },
 };
