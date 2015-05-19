@@ -1,6 +1,6 @@
 {
-  "name": "exponent-server",
-  "version": "1.2.1",
+  "name": "exp",
+  "version": "0.2.0",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/exponentjs/exponent-server.git"
+    "url": "git+https://github.com/exponentjs/exp.git"
   },
   "keywords": [
     "exponent",
@@ -24,9 +24,9 @@
   "author": "650 Industries",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/exponentjs/exponent-server/issues"
+    "url": "https://github.com/exponentjs/exp/issues"
   },
-  "homepage": "https://github.com/exponentjs/exponent-server#readme",
+  "homepage": "https://github.com/exponentjs/exp#readme",
   "dependencies": {
     "@ccheever/crayon": "^5.0.0",
     "@exponent/json-file": "^2.5.0",
