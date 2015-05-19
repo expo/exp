@@ -1,6 +1,6 @@
 {
   "name": "exponent-server",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
   "main": "index.js",
   "scripts": {
