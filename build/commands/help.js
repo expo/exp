@@ -95,7 +95,7 @@ module.exports = {
       if (cmd === 'help') {
         command = module.exports;
       } else {
-        command = commands[cmd];
+        command = commands[cmd]();
       }
       if (!command) {
         throw CommandError('UNKNOWN_COMMAND', env, 'No such command: ' + cmd);
@@ -109,7 +109,7 @@ module.exports = {
       var prefix = '    exp ';
       var longest = 0;
       for (var key of commandKeys) {
-        var command = commands[key];
+        var command = commands[key]();
         if (command.name.length > longest) {
           longest = command.name.length;
         }
@@ -121,7 +121,7 @@ module.exports = {
           command = module.exports;
         } else {
           var key = commandKeys[i];
-          command = commands[key];
+          command = commands[key]();
         }
         console.error(prefix + command.name + _spaces(longest - command.name.length + 2) + _indentHelp(command.description, ind));
       }

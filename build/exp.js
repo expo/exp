@@ -24,7 +24,6 @@ var crayon = require('@ccheever/crayon');
 var instapromise = require('instapromise');
 
 var argv = require('./argv');
-var commands = require('./commands/commands');
 var config = require('./config');
 var log = require('./log');
 

@@ -30,7 +30,12 @@ module.exports = function (command, argv) {
     return help.runAsync({ argv: argv });
   }
 
-  var cmd = commands[command];
+  var cmd;
+  try {
+    cmd = commands[command]();
+  } catch (e) {
+    cmd = undefined;
+  }
   if (!cmd && command !== 'help') {
     var env = { argv: { _: [] } };
     help.runAsync(env);

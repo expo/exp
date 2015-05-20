@@ -5,26 +5,52 @@ var _ = require('lodash-node');
 var commands = {
 
   // Basic
-  init: require('./init'),
-  start: require('./pm2serve').start,
-  url: require('./url'),
-  stop: require('./pm2serve').stop,
-  restart: _.clone(require('./pm2serve').start),
-  send: require('./send'),
+  init: function init() {
+    return require('./init');
+  },
+  start: function start() {
+    return require('./pm2serve').start;
+  },
+  url: function url() {
+    return require('./url');
+  },
+  stop: function stop() {
+    return require('./pm2serve').stop;
+  },
+  restart: function restart() {
+    var restart = _.clone(require('./pm2serve').start);
+    restart.namme = 'restart';
+    restart.description = 'This is an alias of `start`. They both can be used to start or restart exp-serve';
+    return restart;
+  },
+  send: function send() {
+    return require('./send');
+  },
 
   // Publishing
-  adduser: require('./adduser'),
-  login: require('./login'),
-  whoami: require('./whoami'),
-  publish: require('./publish'),
+  adduser: function adduser() {
+    return require('./adduser');
+  },
+  login: function login() {
+    return require('./login');
+  },
+  whoami: function whoami() {
+    return require('./whoami');
+  },
+  publish: function publish() {
+    return require('./publish');
+  },
 
   // Advanced
-  bundle: require('./bundle'),
-  status: require('./status'),
-  logs: require('./logs') };
-
-commands.restart.name = 'restart';
-commands.restart.description = 'This is an alias of `start`. They both can be used to start or restart exp-serve';
+  bundle: function bundle() {
+    return require('./bundle');
+  },
+  status: function status() {
+    return require('./status');
+  },
+  logs: function logs() {
+    return require('./logs');
+  } };
 
 module.exports = commands;
 //# sourceMappingURL=../sourcemaps/commands/commands.js.map
