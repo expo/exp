@@ -87,6 +87,11 @@ async function httpRedirectUrlAsync(url) {
   return baseUrl + '/--/to-exp/' + encodeURIComponent(url);
 }
 
+async function appetizeWebSimulatorUrlAsync(url) {
+  var baseUrl = await api.getExpHostBaseUrlAsync();
+  return baseUrl + '/--/appetize?url=' + encodeURIComponent(url);
+}
+
 async function testLoadingUrlWithLogging(httpUrl) {
 
   log("Testing loading the URL...");
@@ -111,6 +116,7 @@ async function testLoadingUrlWithLogging(httpUrl) {
 }
 
 module.exports = {
+  appetizeWebSimulatorUrlAsync,
   constructUrlFromBaseUrl,
   expUrlFromHttpUrl,
   getTestedMainBundleUrlAsync,

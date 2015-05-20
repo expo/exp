@@ -8,6 +8,7 @@ var minimistOpts = {
     'localhost',
     'lan',
     'ngrok',
+    'web',
 
     'qr',
 

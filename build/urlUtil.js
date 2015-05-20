@@ -40,6 +40,11 @@ var httpRedirectUrlAsync = _asyncToGenerator(function* (url) {
   return baseUrl + '/--/to-exp/' + encodeURIComponent(url);
 });
 
+var appetizeWebSimulatorUrlAsync = _asyncToGenerator(function* (url) {
+  var baseUrl = yield api.getExpHostBaseUrlAsync();
+  return baseUrl + '/--/appetize?url=' + encodeURIComponent(url);
+});
+
 var testLoadingUrlWithLogging = _asyncToGenerator(function* (httpUrl) {
 
   log('Testing loading the URL...');
@@ -117,6 +122,7 @@ function sendUrlAsync(recipient, expUrl) {
 }
 
 module.exports = {
+  appetizeWebSimulatorUrlAsync: appetizeWebSimulatorUrlAsync,
   constructUrlFromBaseUrl: constructUrlFromBaseUrl,
   expUrlFromHttpUrl: expUrlFromHttpUrl,
   getTestedMainBundleUrlAsync: getTestedMainBundleUrlAsync,

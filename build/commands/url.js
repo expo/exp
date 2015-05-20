@@ -38,6 +38,10 @@ module.exports = {
       url = urlUtil.expUrlFromHttpUrl(url);
     }
 
+    if (argv.web) {
+      url = yield urlUtil.appetizeWebSimulatorUrlAsync(url);
+    }
+
     if (argv.redirect) {
       url = yield urlUtil.httpRedirectUrlAsync(url);
     }

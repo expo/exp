@@ -13,6 +13,7 @@ var options = function (def) {
       ['--mainModulePath', "Specify the path to the main module"],
       ['--notest', "Don't bother testing the URL"],
       ['--http', "Generate an http:// URL instead of an exp:// URL"],
+      ['--web', "Generate a URL you can use to view your article in the Appetize web simulator"],
     ];
 }
 
@@ -26,9 +27,17 @@ function optsFromEnv(env, def) {
     throw CommandError('BAD_ARGS', env, "Specify at most one of --lan, --localhost, and --ngrok");
   }
 
+  if (!!argv.web && (!!argv.lan || !!argv.localhost)) {
+    throw CommandError('BAD_ARGS', env, "You can only generate web simulator URLs with ngrok");
+  }
+
   if (argv.lan) { opts.type = 'lan'; }
   if (argv.localhost) { opts.type = 'localhost'; }
   if (argv.ngrok) { opts.type = 'ngrok'; }
+
+  if (argv.web) {
+    opts.web = true;
+  }
 
   if (argv.dev) {
     opts.dev = true;

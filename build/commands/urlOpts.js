@@ -5,7 +5,7 @@ var _ = require('lodash-node');
 var CommandError = require('./CommandError');
 
 var options = function options(def) {
-  return [['--lan', 'Use the LAN URL' + (def === 'lan' ? ' (default)' : '')], ['--localhost', 'Use the localhost URL' + (def === 'localhost' ? ' (default)' : '')], ['--ngrok', 'Use the ngrok URL' + (def === 'ngrok' ? ' (default)' : '')], ['--redirect', 'Generates an HTTP URL that will redirect you to your desired URL'], ['--dev', 'Have the packager generate a dev bundle'], ['--minify', 'Have the packager minify the bundle'], ['--mainModulePath', 'Specify the path to the main module'], ['--notest', 'Don\'t bother testing the URL'], ['--http', 'Generate an http:// URL instead of an exp:// URL']];
+  return [['--lan', 'Use the LAN URL' + (def === 'lan' ? ' (default)' : '')], ['--localhost', 'Use the localhost URL' + (def === 'localhost' ? ' (default)' : '')], ['--ngrok', 'Use the ngrok URL' + (def === 'ngrok' ? ' (default)' : '')], ['--redirect', 'Generates an HTTP URL that will redirect you to your desired URL'], ['--dev', 'Have the packager generate a dev bundle'], ['--minify', 'Have the packager minify the bundle'], ['--mainModulePath', 'Specify the path to the main module'], ['--notest', 'Don\'t bother testing the URL'], ['--http', 'Generate an http:// URL instead of an exp:// URL'], ['--web', 'Generate a URL you can use to view your article in the Appetize web simulator']];
 };
 
 function optsFromEnv(env, def) {
@@ -18,6 +18,10 @@ function optsFromEnv(env, def) {
     throw CommandError('BAD_ARGS', env, 'Specify at most one of --lan, --localhost, and --ngrok');
   }
 
+  if (!!argv.web && (!!argv.lan || !!argv.localhost)) {
+    throw CommandError('BAD_ARGS', env, 'You can only generate web simulator URLs with ngrok');
+  }
+
   if (argv.lan) {
     opts.type = 'lan';
   }
@@ -26,6 +30,10 @@ function optsFromEnv(env, def) {
   }
   if (argv.ngrok) {
     opts.type = 'ngrok';
+  }
+
+  if (argv.web) {
+    opts.web = true;
   }
 
   if (argv.dev) {

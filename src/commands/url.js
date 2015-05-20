@@ -37,6 +37,10 @@ module.exports = {
       url = urlUtil.expUrlFromHttpUrl(url);
     }
 
+    if (argv.web) {
+      url = await urlUtil.appetizeWebSimulatorUrlAsync(url);
+    }
+
     if (argv.redirect) {
       url = await urlUtil.httpRedirectUrlAsync(url);
     }
