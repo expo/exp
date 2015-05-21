@@ -2,6 +2,8 @@
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
 
+var _Object$keys = require('babel-runtime/core-js/object/keys')['default'];
+
 var crayon = require('@ccheever/crayon');
 
 var api = require('../api');
@@ -32,7 +34,9 @@ module.exports = {
 
       if (result.user) {
         log('Logged in as', result.user.username);
-        console.log(result.user);
+        for (var key of _Object$keys(result.user)) {
+          console.log(key + ':', result.user[key]);
+        }
         return result.user;
       } else {
         throw NotLoggedIn('No such user or your password is wrong.');

@@ -27,7 +27,9 @@ module.exports = {
 
       if (result.user) {
         log("Logged in as", result.user.username);
-        console.log(result.user);
+        for (var key of Object.keys(result.user)) {
+          console.log(key + ':', result.user[key]);
+        }
         return result.user;
       } else {
         throw NotLoggedIn("No such user or your password is wrong.");
