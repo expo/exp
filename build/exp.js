@@ -26,10 +26,14 @@ var instapromise = require('instapromise');
 var argv = require('./argv');
 var config = require('./config');
 var log = require('./log');
+var update = require('./update');
 
 module.exports = require('./commands/runAsync');
 
 if (require.main === module) {
+
+  var checkForUpdate$ = update.checkForExpUpdateAsync();
+
   module.exports(argv._[0], argv).then(function (result) {
     if (result != null) {
       if (argv.debug) {
@@ -54,6 +58,22 @@ if (require.main === module) {
     }
   })['catch'](function (err) {
     log.error(err);
+  }).then(function () {
+    checkForUpdate$.then(function (result) {
+      switch (result.state) {
+        case 'up-to-date':
+          //crayon.gray.error(result.message);
+          break;
+        case 'out-of-date':
+          crayon.green.error(result.message);
+          break;
+        case 'ahead-of-published':
+          crayon.cyan.error(result.message);
+          break;
+        default:
+          log.error('Confused about what version of exp you have?');
+      }
+    });
   });
 }
 //# sourceMappingURL=sourcemaps/exp.js.map
