@@ -6,6 +6,7 @@ var commands = {
   init: () => require('./init'),
   start: () => require('./pm2serve').start,
   url: () => require('./url'),
+  web: () => require('./web'),
   stop: () => require('./pm2serve').stop,
   restart: () => {
     var restart = _.clone(require('./pm2serve').start);

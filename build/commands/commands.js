@@ -14,6 +14,9 @@ var commands = {
   url: function url() {
     return require('./url');
   },
+  web: function web() {
+    return require('./web');
+  },
   stop: function stop() {
     return require('./pm2serve').stop;
   },
