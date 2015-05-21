@@ -15,8 +15,9 @@ module.exports = {
   options: [
     ['--test', "Will test to make sure the URL is valid"],
   ],
-  description: "Displays the URL you can use to view your project in Exponent",
-  help: "You must have the server running for this command to work",
+  description: "Opens your article in a web simulator you can view in your browser",
+  help: "You must have the server running for this command to work. This command will also display" +
+    " a URL you can copy/paste and send to other people to view on their computers, etc.",
   runAsync: async function (env) {
     var argv = env.argv;
     var args = argv._;
