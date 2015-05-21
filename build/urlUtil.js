@@ -67,6 +67,34 @@ var testLoadingUrlWithLogging = _asyncToGenerator(function* (httpUrl) {
   log('OK.');
 });
 
+var urlFromEnvAsync = _asyncToGenerator(function* (env) {
+  var argv = env.argv;
+  var args = argv._;
+
+  var uo = urlOpts.optsFromEnv(env, { type: 'ngrok' });
+
+  try {
+    var httpUrl = yield mainBundleUrlAsync(uo);
+  } catch (e) {
+    throw CommandError('NO_URL', env, 'There doesn\'t seem to be a URL for this package. Try running `exp start` first.\n' + e.message);
+  }
+
+  var url = httpUrl;
+  if (!argv.http) {
+    url = expUrlFromHttpUrl(url);
+  }
+
+  if (argv.web) {
+    url = yield appetizeWebSimulatorUrlAsync(url);
+  }
+
+  if (argv.redirect) {
+    url = yield httpRedirectUrlAsync(url);
+  }
+
+  return url;
+});
+
 var _ = require('lodash-node');
 var fs = require('fs');
 var instapromise = require('instapromise');
@@ -76,8 +104,10 @@ var request = require('request');
 var simpleSpinner = require('@exponent/simple-spinner');
 
 var api = require('./api');
+var CommandError = require('./commands/CommandError');
 var config = require('./config');
 var log = require('./log');
+var urlOpts = require('./commands/urlOpts');
 
 var entryPointAsync = _asyncToGenerator(function* () {
   // TODO: Allow configurations that point to iOS main and Android main, etc.
@@ -132,5 +162,6 @@ module.exports = {
   entryPointAsync: entryPointAsync,
   guessMainModulePathAsync: guessMainModulePathAsync,
   httpRedirectUrlAsync: httpRedirectUrlAsync,
-  testLoadingUrlWithLogging: testLoadingUrlWithLogging };
+  testLoadingUrlWithLogging: testLoadingUrlWithLogging,
+  urlFromEnvAsync: urlFromEnvAsync };
 //# sourceMappingURL=sourcemaps/urlUtil.js.map

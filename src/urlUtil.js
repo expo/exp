@@ -12,8 +12,10 @@ var request = require('request');
 var simpleSpinner = require('@exponent/simple-spinner');
 
 var api = require('./api');
+var CommandError = require('./commands/CommandError');
 var config = require('./config');
 var log = require('./log');
+var urlOpts = require('./commands/urlOpts');
 
 var entryPointAsync = async function() {
   // TODO: Allow configurations that point to iOS main and Android main, etc.
@@ -115,6 +117,36 @@ async function testLoadingUrlWithLogging(httpUrl) {
 
 }
 
+async function urlFromEnvAsync(env) {
+  var argv = env.argv;
+  var args = argv._;
+
+  var uo = urlOpts.optsFromEnv(env, {type: 'ngrok'});
+
+  try {
+    var httpUrl = await mainBundleUrlAsync(uo);
+  } catch (e) {
+    throw CommandError('NO_URL', env, "There doesn't seem to be a URL for this package. Try running `exp start` first.\n" + e.message);
+  }
+
+  var url = httpUrl;
+  if (!argv.http) {
+    url = expUrlFromHttpUrl(url);
+  }
+
+  if (argv.web) {
+    url = await appetizeWebSimulatorUrlAsync(url);
+  }
+
+  if (argv.redirect) {
+    url = await httpRedirectUrlAsync(url);
+  }
+
+  return url;
+
+}
+
+
 module.exports = {
   appetizeWebSimulatorUrlAsync,
   constructUrlFromBaseUrl,
@@ -127,4 +159,5 @@ module.exports = {
   guessMainModulePathAsync,
   httpRedirectUrlAsync,
   testLoadingUrlWithLogging,
+  urlFromEnvAsync,
 };
