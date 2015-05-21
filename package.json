@@ -1,6 +1,6 @@
 {
   "name": "exp",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
   "main": "index.js",
   "scripts": {
@@ -52,12 +52,8 @@
     "portfinder": "^0.4.0",
     "qrcode-terminal": "^0.9.5",
     "react": "^0.13.3",
-    "react-hot-loader": "^1.2.7",
     "react-native": "^0.4.4",
-    "react-native-webpack-server": "^0.2.0",
     "request": "^2.55.0",
-    "webpack": "^1.9.7",
-    "webpack-dev-server": "^1.8.2",
     "window-size": "^0.1.0",
     "wordwrap": "^1.0.0"
   },
@@ -68,5 +64,8 @@
     "gulp-plumber": "^1.0.0",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-watch": "^4.2.4"
+  },
+  "peerDependencies": {
+    "npm": "*"
   }
 }
