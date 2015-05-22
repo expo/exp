@@ -26,7 +26,7 @@ module.exports = {
     var err = null;
 
     var url = await urlUtil.urlFromEnvAsync(env);
-    
+
     log("Your URL is\n\n" + crayon.underline(url) + "\n");
 
     var recipient = argv.sendTo || args[1];
@@ -39,6 +39,7 @@ module.exports = {
       log("Testing loading the URL...");
       simpleSpinner.start();
       try {
+        var httpUrl = url.replace('exp://', 'http://');
         var ok = await urlUtil.testUrlAsync(httpUrl);
       } catch (e) {
         throw CommandError('RUN_EXP_START_FIRST', env, "You may need to run `exp start` to get a URL\n" + e.message);
