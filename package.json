@@ -54,6 +54,7 @@
     "react-native": "^0.4.4",
     "request": "^2.55.0",
     "semver": "^4.3.4",
+    "simctl": "0.0.6",
     "window-size": "^0.1.0",
     "wordwrap": "^1.0.0"
   },

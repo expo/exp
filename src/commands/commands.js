@@ -7,6 +7,7 @@ var commands = {
   start: () => require('./pm2serve').start,
   url: () => require('./url'),
   web: () => require('./web'),
+  simulator: () => require('./simulator'),
   stop: () => require('./pm2serve').stop,
   restart: () => {
     var restart = _.clone(require('./pm2serve').start);

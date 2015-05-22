@@ -17,6 +17,9 @@ var commands = {
   web: function web() {
     return require('./web');
   },
+  simulator: function simulator() {
+    return require('./simulator');
+  },
   stop: function stop() {
     return require('./pm2serve').stop;
   },
