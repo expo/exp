@@ -31,4 +31,4 @@ module.exports = {
     log('Opening URL in simulator...');
     return url;
   }) };
-//# sourceMappingURL=../sourcemaps/commands/simulator.js.map
+//# sourceMappingURL=../sourcemaps/commands/startSimulator.js.map

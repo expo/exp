@@ -9,12 +9,13 @@ var urlOpts = require('./urlOpts');
 var urlUtil = require('../urlUtil');
 
 module.exports = {
-  name: 'start-simulator',
-  description: '(beta) Opens your article on the simulator',
-  help: '(beta) (Only works on Macs with Xcode installed)\n' + ', and currently only the iPhone 6 simulator works.',
+  name: 'open',
+  description: 'Opens your app in Exponent in a currently running simulator on your computer',
+  help: 'You must already have Exponent installed on a simulator on your computer ' + 'for this command to work. If you don\'t already, you can try `exp start-simulator`',
   runAsync: _asyncToGenerator(function* (env) {
     var argv = env.argv;
     var args = argv._;
+
     var url = args[1];
     if (!url) {
       try {
@@ -26,9 +27,7 @@ module.exports = {
       url = urlUtil.expUrlFromHttpUrl(httpUrl);
     }
     log(url);
-    log('Only the iPhone 6 simulator works right now (TODO)');
-    yield simulator.openUrlInUserChosenSimulatorAsync(url);
-    log('Opening URL in simulator...');
-    return url;
+
+    return simulator.openUrlOnSimulatorAsync(url);
   }) };
-//# sourceMappingURL=../sourcemaps/commands/simulator.js.map
+//# sourceMappingURL=../sourcemaps/commands/open.js.map

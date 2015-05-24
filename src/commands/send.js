@@ -39,8 +39,7 @@ module.exports = {
       log("Testing loading the URL...");
       simpleSpinner.start();
       try {
-        var httpUrl = url.replace('exp://', 'http://');
-        var ok = await urlUtil.testUrlAsync(httpUrl);
+        var ok = await urlUtil.testUrlAsync(url);
       } catch (e) {
         throw CommandError('RUN_EXP_START_FIRST', env, "You may need to run `exp start` to get a URL\n" + e.message);
       } finally {

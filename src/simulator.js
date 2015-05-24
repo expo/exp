@@ -144,16 +144,6 @@ async function openUrlOnSimulatorAsync(url) {
   return child_process.promise.exec('xcrun simctl openurl booted ' + JSON.stringify(url));
 }
 
-module.exports = {
-  listSimulatorsAndTemplatesAsync,
-  startSimulatorAsync,
-  askUserToPickASimulatorAsync,
-  listSimulatorsAsync,
-  installExponentOnSimulatorAsync,
-  openUrlOnSimulatorAsync,
-  openUrlInUserChosenSimulatorAsync,
-};
-
 async function openUrlInUserChosenSimulatorAsync(url) {
   var udid = await askUserToPickASimulatorAsync();
   await startSimulatorAsync(udid);
@@ -173,6 +163,16 @@ async function openUrlInUserChosenSimulatorAsync(url) {
   }
   return url;
 }
+
+module.exports = {
+  listSimulatorsAndTemplatesAsync,
+  startSimulatorAsync,
+  askUserToPickASimulatorAsync,
+  listSimulatorsAsync,
+  installExponentOnSimulatorAsync,
+  openUrlOnSimulatorAsync,
+  openUrlInUserChosenSimulatorAsync,
+};
 
 if (require.main === module) {
   openUrlInUserChosenSimulatorAsync(process.argv[2]).then(console.log, console.error);

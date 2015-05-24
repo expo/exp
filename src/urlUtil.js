@@ -69,9 +69,10 @@ async function getTestedMainBundleUrlAsync(opts) {
 }
 
 async function testUrlAsync(url) {
-  var response = await request.promise.get(url);
+  var httpUrl = url.replace(/^exp:\/\//, 'http://');
+  var response = await request.promise.get(httpUrl);
   if (!(response.statusCode == 200)) {
-    throw new Error("Problem reading from URL " + url + "\nstatusCode=" + response.statusCode);
+    throw new Error("Problem reading from URL " + httpUrl + "\nstatusCode=" + response.statusCode);
   }
   return url;
 }
