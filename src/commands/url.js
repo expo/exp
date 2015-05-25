@@ -50,7 +50,7 @@ module.exports = {
     var recipient = argv.sendTo || args[1];
 
     if (recipient) {
-      await sendTo.sendUrlAysnc(url, recipient);
+      await sendTo.sendUrlAsync(url, recipient);
     }
 
     return url;

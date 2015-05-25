@@ -50,7 +50,7 @@ module.exports = {
     }
 
     if (recipient) {
-      yield sendTo.sendUrlAysnc(url, recipient);
+      yield sendTo.sendUrlAsync(url, recipient);
     } else {
       log.gray('(Not sending anything because you didn\'t specify a recipient.)');
     }

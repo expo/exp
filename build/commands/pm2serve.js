@@ -161,7 +161,7 @@ module.exports = {
         log('Your URL is\n\n' + crayon.underline(url) + '\n');
 
         if (recipient) {
-          yield sendTo.sendUrlAysnc(url, recipient);
+          yield sendTo.sendUrlAsync(url, recipient);
         }
 
         return config.expInfoFile.readAsync();

@@ -4,7 +4,7 @@ var api = require('../api');
 var log = require('../log');
 
 
-async function sendUrlAysnc(url, recipient) {
+async function sendUrlAsync(url, recipient) {
   log("Sending URL to", recipient);
   simpleSpinner.start();
   try {
@@ -17,5 +17,5 @@ async function sendUrlAysnc(url, recipient) {
 }
 
 module.exports = {
-  sendUrlAysnc,
+  sendUrlAsync,
 }

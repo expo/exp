@@ -49,7 +49,7 @@ module.exports = {
     }
 
     if (recipient) {
-      await sendTo.sendUrlAysnc(url, recipient);
+      await sendTo.sendUrlAsync(url, recipient);
     } else {
       log.gray("(Not sending anything because you didn't specify a recipient.)");
     }
