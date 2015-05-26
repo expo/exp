@@ -28,7 +28,7 @@ var commands = {
   },
   restart: function restart() {
     var restart = _.clone(require('./pm2serve').start);
-    restart.namme = 'restart';
+    restart.name = 'restart';
     restart.description = 'This is an alias of `start`. They both can be used to start or restart exp-serve';
     return restart;
   },
