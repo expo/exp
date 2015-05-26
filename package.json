@@ -1,6 +1,6 @@
 {
   "name": "exp",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "@exponent/md5hex": "^1.0.0",
     "@exponent/network": "^1.1.0",
     "@exponent/simple-spinner": "^1.0.2",
-    "@exponent/spawn-async": "^1.0.1",
+    "@exponent/spawn-async": "^1.1.0",
     "babel-runtime": "^5.4.3",
     "co": "^4.5.4",
     "delay-async": "^1.0.0",
