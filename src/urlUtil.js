@@ -4,6 +4,7 @@
  */
 
 var _ = require('lodash-node');
+var crayon = require('@ccheever/crayon');
 var fs = require('fs');
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
@@ -141,6 +142,16 @@ async function urlFromEnvAsync(env) {
 
   if (argv.redirect) {
     url = await httpRedirectUrlAsync(url);
+  }
+
+  if (argv.short) {
+    try {
+      var result = await api.callMethodAsync('shortenUrl', {url});
+    } catch (e) {
+      throw Error("Failed to shorten URL: " + e.message);
+    }
+    crayon.gray.error(result.longUrl);
+    url = result.shortUrl;
   }
 
   return url;

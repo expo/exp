@@ -14,6 +14,7 @@ var options = function (def) {
       ['--notest', "Don't bother testing the URL"],
       ['--http', "Generate an http:// URL instead of an exp:// URL"],
       ['--web', "Generate a URL you can use to view your article in the Appetize web simulator"],
+      ['--short', "Generes a shortened URL that is easy to type in"],
     ];
 }
 
@@ -53,6 +54,10 @@ function optsFromEnv(env, def) {
 
   if (argv.nominify) {
     opts.minify = false;
+  }
+
+  if (argv.short) {
+    opts.short = true;
   }
 
   opts.mainModulePath = argv.mainModulePath;

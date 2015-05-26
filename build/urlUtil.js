@@ -93,10 +93,21 @@ var urlFromEnvAsync = _asyncToGenerator(function* (env) {
     url = yield httpRedirectUrlAsync(url);
   }
 
+  if (argv.short) {
+    try {
+      var result = yield api.callMethodAsync('shortenUrl', { url: url });
+    } catch (e) {
+      throw Error('Failed to shorten URL: ' + e.message);
+    }
+    crayon.gray.error(result.longUrl);
+    url = result.shortUrl;
+  }
+
   return url;
 });
 
 var _ = require('lodash-node');
+var crayon = require('@ccheever/crayon');
 var fs = require('fs');
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
