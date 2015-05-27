@@ -52,9 +52,25 @@ Or just type this into your terminal:
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.3/install.sh | bash
 ```
 
+Once `nvm` is installed, you should install the latest version of `iojs` and make the default. You can do this by pasting the following snippet into to your terminal.
+
+```bash
+nvm install iojs
+nvm alias default iojs
+# (Open a new terminal window)
+```
+
+When you open the new terminal window, typing `node -v` should show you a version number that matches the latest version of node/iojs.
+
 #### Installing `exp`
 
+Once you have the latest version of iojs/node in place, install `exp` globally.
 
+```bash
+npm install -g exp
+```
+
+You can verify that the installation worked by typing `exp
 
 ### Creating Your First Article
 
@@ -65,8 +81,54 @@ Go to your home directory by typing `cd` and then type
 exp init myarticle
 ```
 
-This will create a new directory called `myarticle` and fill it with
+This will create a new directory called `myarticle` and fill it with a `package.json` describing your article and its dependencies, etc., and an `index.js` which contains code for a basic sample article.
 
+### Viewing Your Article on Your Phone
+
+Now that you've done the basic setup, it's time to view your article on your phone!
+
+Type the command
+```bash
+exp start
+```
+into your terminal.
+
+This will start serving your article in a way that should be accessible by the Exponent app on your phone.
+
+What happens when you run `exp start` is that exp spawns the React Native packager as a daemon process managed by pm2. This will keep running until you run `exp stop` or restart your computer. It also starts an ngrok server that will tunnel the packager's output to the Internet-at-large so that Exponent onyour phone can access it, even if it isn't using your LAN wifi.
+
+#### If your phone is connected to your LAN Wi-fi, you can skip going through ngrok
+
+The command `exp url` has many options and is useful.
+
+Try
+```bash
+exp url --lan
+```
+
+This will give you a LAN URL that doesn't go through ngrok, which can be a lot snappier, especially if you have slow Internet or are far away from ngrok's proxies.
+
+### Viewing Your Article in the Simulator (Experimental)
+
+If you have Xcode and the iOS Simulator on your phone, then you can view your Exponent projects in the simulator. This is sometimes nice because switching windows is easier than switching over to looking at your phone sometimes.
+
+Run the command
+```bash
+exp start-simulator
+```
+
+You'll be presented with a choice of simulators. For now, the only one that works is the iPhone 6 simulator, so choose that.
+
+The Exponent app will start up in your simulator if everything is working right.
+
+Back at your terminal, run the command
+```bash
+exp open
+```
+
+This will open URL for your project in the Exponent app in the simulator. You need to have started it up with `exp start-simulator` but once you've done that, you can do `exp open` on different articles multiple times.
+
+There are still some kinks with this functionlaity so it should be considered beta.
 
 ### Using Exponent with an existing React Native Project
 
