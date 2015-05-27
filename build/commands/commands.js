@@ -59,6 +59,9 @@ var commands = {
   },
   logs: function logs() {
     return require('./logs');
+  },
+  version: function version() {
+    return require('./version');
   } };
 
 module.exports = commands;

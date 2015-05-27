@@ -28,6 +28,7 @@ var commands = {
   bundle: () => require('./bundle'),
   status: () => require('./status'),
   logs: () => require('./logs'),
+  version: () => require('./version'),
 };
 
 module.exports = commands;
