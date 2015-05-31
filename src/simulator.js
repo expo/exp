@@ -144,6 +144,11 @@ async function openUrlOnSimulatorAsync(url) {
   return child_process.promise.exec('xcrun simctl openurl booted ' + JSON.stringify(url));
 }
 
+async function chooseAndStartSimulatorAsync() {
+  var udid = await askUserToPickASimulatorAsync();
+  return await startSimulatorAsync(udid);
+}
+
 async function openUrlInUserChosenSimulatorAsync(url) {
   var udid = await askUserToPickASimulatorAsync();
   await startSimulatorAsync(udid);
@@ -172,9 +177,14 @@ module.exports = {
   installExponentOnSimulatorAsync,
   openUrlOnSimulatorAsync,
   openUrlInUserChosenSimulatorAsync,
+  chooseAndStartSimulatorAsync,
 };
 
 if (require.main === module) {
-  openUrlInUserChosenSimulatorAsync(process.argv[2]).then(console.log, console.error);
+  if (process.argv[2]) {
+    openUrlInUserChosenSimulatorAsync(process.argv[2]).then(console.log, console.error);
+  } else {
+    chooseAndStartSimulatorAsync().then(console.log, console.error);
+  }
   //askUserToPickASimulatorAsync().then(startSimulatorAsync, console.error).then(console.log, console.error);
 }

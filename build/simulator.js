@@ -118,6 +118,11 @@ var openUrlOnSimulatorAsync = _asyncToGenerator(function* (url) {
   return child_process.promise.exec('xcrun simctl openurl booted ' + JSON.stringify(url));
 });
 
+var chooseAndStartSimulatorAsync = _asyncToGenerator(function* () {
+  var udid = yield askUserToPickASimulatorAsync();
+  return yield startSimulatorAsync(udid);
+});
+
 var openUrlInUserChosenSimulatorAsync = _asyncToGenerator(function* (url) {
   var udid = yield askUserToPickASimulatorAsync();
   yield startSimulatorAsync(udid);
@@ -168,10 +173,15 @@ module.exports = {
   listSimulatorsAsync: listSimulatorsAsync,
   installExponentOnSimulatorAsync: installExponentOnSimulatorAsync,
   openUrlOnSimulatorAsync: openUrlOnSimulatorAsync,
-  openUrlInUserChosenSimulatorAsync: openUrlInUserChosenSimulatorAsync };
+  openUrlInUserChosenSimulatorAsync: openUrlInUserChosenSimulatorAsync,
+  chooseAndStartSimulatorAsync: chooseAndStartSimulatorAsync };
 
 if (require.main === module) {
-  openUrlInUserChosenSimulatorAsync(process.argv[2]).then(console.log, console.error);
+  if (process.argv[2]) {
+    openUrlInUserChosenSimulatorAsync(process.argv[2]).then(console.log, console.error);
+  } else {
+    chooseAndStartSimulatorAsync().then(console.log, console.error);
+  }
   //askUserToPickASimulatorAsync().then(startSimulatorAsync, console.error).then(console.log, console.error);
 }
 //# sourceMappingURL=sourcemaps/simulator.js.map
