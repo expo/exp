@@ -18,9 +18,7 @@ var commands = {
     return require('./web');
   },
   //'start-simulator': () => require('./startSimulator'),
-  open: function open() {
-    return require('./open');
-  },
+  //open: () => require('./open'),
   stop: function stop() {
     return require('./pm2serve').stop;
   },
