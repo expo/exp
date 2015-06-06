@@ -17,9 +17,7 @@ var commands = {
   web: function web() {
     return require('./web');
   },
-  'start-simulator': function startSimulator() {
-    return require('./startSimulator');
-  },
+  //'start-simulator': () => require('./startSimulator'),
   open: function open() {
     return require('./open');
   },
