@@ -179,7 +179,7 @@ We want to add in native modules to address all the common desires people have f
 
 ## Getting Help & Contacting the Developers
 
-The easiest way to get help is to sign into our [Slack](https://exponent-developers.slack.com), and ask in the `#help` channel.
+The easiest way to get help is to sign into our [Slack](http://exp.host/community), and ask in the `#help` channel.
 
 If you download the Exponent app, it will ask for your e-mail at signup and a Slack invite will be sent to you automatically.
 
