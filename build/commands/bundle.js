@@ -8,7 +8,7 @@ var co = require('co');
 var crayon = require('@ccheever/crayon');
 var fs = require('fs');
 var instapromise = require('instapromise');
-var request = require('request');
+var needle = require('needle');
 var simpleSpinner = require('@exponent/simple-spinner');
 
 var CommandError = require('./CommandError');
@@ -43,7 +43,7 @@ module.exports = {
 
       simpleSpinner.start();
       try {
-        var response = yield request.promise.get(url);
+        var response = yield needle.promise.get(url);
       } catch (e) {
         throw CommandError('NO_RESPONSE', env, 'Server didn\'t respond.\n' + e.message);
       } finally {

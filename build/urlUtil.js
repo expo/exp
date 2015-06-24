@@ -29,7 +29,7 @@ var getTestedMainBundleUrlAsync = _asyncToGenerator(function* (opts) {
 
 var testUrlAsync = _asyncToGenerator(function* (url) {
   var httpUrl = url.replace(/^exp:\/\//, 'http://');
-  var response = yield request.promise.get(httpUrl);
+  var response = yield needle.promise.get(httpUrl);
   if (!(response.statusCode == 200)) {
     throw new Error('Problem reading from URL ' + httpUrl + '\nstatusCode=' + response.statusCode);
   }
@@ -111,8 +111,8 @@ var crayon = require('@ccheever/crayon');
 var fs = require('fs');
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
+var needle = require('needle');
 var path = require('path');
-var request = require('request');
 var simpleSpinner = require('@exponent/simple-spinner');
 
 var api = require('./api');

@@ -5,7 +5,7 @@
  */
 
 var instapromise = require('instapromise');
-var request = require('request');
+var needle = require('needle');
 
 var log = require('./log');
 var userSettings = require('./userSettings');
@@ -52,18 +52,18 @@ var callMethodAsync = async function (methodName, args) {
   }
   //log("url=", url);
 
-  var response = await request.promise.post(url);
-  var body = response.body;
-  try {
-    var response = JSON.parse(body);
-  } catch (e) {
-    var err = new Error("Unparseable response from API server: " + body);
-    throw err;
+  var response = await needle.promise.post(url, null);
+  var ro = response.body;
+  // try {
+  //   var response = JSON.parse(body);
+  // } catch (e) {
+  //   var err = new Error("Unparseable response from API server: " + body);
+  //   throw err;
+  // }
+  if (ro.err) {
+    throw ApiError(ro.code, ro.err.env, ro.err);
   }
-  if (response.err) {
-    throw ApiError(response.code, response.err.env, response.err);
-  }
-  return response;
+  return ro;
 };
 
 module.exports = {
