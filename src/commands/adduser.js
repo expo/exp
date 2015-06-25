@@ -96,6 +96,9 @@ module.exports = {
     data.hashedPassword = password.hashPassword(data.cleartextPassword);
     delete data.cleartextPassword;
 
+    // We're logging in from a non-browser client
+    data.type = 'client';
+
     var result = await api.callMethodAsync('adduser', data);
 
     var user = result.user;

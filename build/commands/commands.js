@@ -39,6 +39,9 @@ var commands = {
   login: function login() {
     return require('./login');
   },
+  logout: function logout() {
+    return require('./logout');
+  },
   whoami: function whoami() {
     return require('./whoami');
   },

@@ -21,6 +21,7 @@ var commands = {
   // Publishing
   adduser: () => require('./adduser'),
   login: () => require('./login'),
+  logout: () => require('./logout'),
   whoami: () => require('./whoami'),
   publish: () => require('./publish'),
 
