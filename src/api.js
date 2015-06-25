@@ -9,6 +9,7 @@ var needle = require('needle');
 
 var log = require('./log');
 var userSettings = require('./userSettings');
+var session = require('./session');
 
 var HOST = 'exp.host';
 var PORT = 80;
@@ -47,12 +48,22 @@ var callMethodAsync = async function (methodName, args) {
   //log("username=", username, "hashedPassword=", hashedPassword);
 
   var url = baseUrl + '/' + encodeURIComponent(methodName) + '/' + encodeURIComponent(JSON.stringify(args));
-  if (username && hashedPassword) {
-    url += '?username=' + encodeURIComponent(username) + '&hashedPassword=' + encodeURIComponent(hashedPassword);
-  }
-  //log("url=", url);
 
-  var response = await needle.promise.post(url, null);
+  // Deprecated
+  // if (username && hashedPassword) {
+  //   url += '?username=' + encodeURIComponent(username) + '&hashedPassword=' + encodeURIComponent(hashedPassword);
+  // }
+
+  //log("url=", url);
+  var headers = {};
+  if (username) {
+    headers = {
+      'Exp-ClientId': await session.clientIdAsync(),
+      'Exp-Username': username,
+    }
+  }
+
+  var response = await needle.promise.post(url, null, {headers});
   var ro = response.body;
   // try {
   //   var response = JSON.parse(body);
