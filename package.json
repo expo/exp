@@ -54,6 +54,7 @@
     "react-native": "ide/react-native#2015-05-30-exp",
     "semver": "^4.3.6",
     "simctl": "0.0.6",
+    "slugid": "^1.0.3",
     "window-size": "^0.1.1",
     "wordwrap": "^1.0.0"
   },
