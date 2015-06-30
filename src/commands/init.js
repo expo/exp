@@ -25,6 +25,7 @@ module.exports = {
     var dirName = args[1];
     var originalCwd = process.cwd();
     if (dirName) {
+      dirName = dirName.toString();
       await mkdirp.promise(dirName);
       log("Setting up an Exponent project at", path.resolve(dirName));
       process.chdir(dirName);

@@ -29,6 +29,7 @@ module.exports = {
     var dirName = args[1];
     var originalCwd = process.cwd();
     if (dirName) {
+      dirName = dirName.toString();
       yield mkdirp.promise(dirName);
       log('Setting up an Exponent project at', path.resolve(dirName));
       process.chdir(dirName);
@@ -65,6 +66,7 @@ module.exports = {
     if (process.cwd() != originalCwd) {
       log('Set up your Exponent project in', process.cwd());
     }
-  }) };
+  })
+};
 //throw CommandError('ENTRY_POINT_EXISTS', env, "The entry point (" + entryPoint + ") already exists; refusing to overwrite.\n" + e + "\nDelete that file and rerun `exp init` to try again.");
 //# sourceMappingURL=../sourcemaps/commands/init.js.map
