@@ -4,6 +4,7 @@ var _toConsumableArray = require('babel-runtime/helpers/to-consumable-array')['d
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
 
+var _ = require('lodash-node');
 var co = require('co');
 var crayon = require('@ccheever/crayon');
 var fs = require('fs');
@@ -51,10 +52,24 @@ module.exports = {
       }
 
       if (response.statusCode != 200) {
+        if (_.isObject(response.body)) {
+          var errInfo = response.body;
+          log.error(errInfo.type, errInfo.message);
+          console.error(errInfo.snippet);
+          if (errInfo.type) {
+            throw CommandError(errInfo.type, env, 'Error in generating bundle');
+          }
+        } else {
+          log.error('Uknown Error:', response.body);
+        }
         throw CommandError('BAD_RESPONSE', env, 'Non-200 response: ' + response.statusCode + ': ' + response.statusMessage);
       }
     } catch (e) {
-      throw CommandError('FAILED_TO_DOWNLOAD_BUNDLE', env, 'Failed to download bundle; did you run `exp start`?\n' + e);
+      if (e._isCommandError) {
+        throw e;
+      } else {
+        throw CommandError('FAILED_TO_DOWNLOAD_BUNDLE', env, 'Failed to download bundle; did you run `exp start`?\n' + e);
+      }
     }
 
     yield outStream.promise.write(response.body);
@@ -66,12 +81,14 @@ module.exports = {
     var result = {
       err: null,
       url: url,
-      bytes: bytes };
+      bytes: bytes
+    };
 
     if (filepath) {
       result.savedTo = filepath;
     }
 
     return result;
-  }) };
+  })
+};
 //# sourceMappingURL=../sourcemaps/commands/bundle.js.map
