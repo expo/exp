@@ -95,7 +95,7 @@ async function _serve(opts) {
 
 module.exports = function (opts) {
   return _serve(opts).catch(function (err) {
-    config.expInfoFile.update('err', err.stack());
+    config.expInfoFile.update('err', err.stack);
   });
 };
 
