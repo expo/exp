@@ -83,7 +83,8 @@ var _serve = _asyncToGenerator(function* (opts) {
     ngrokBaseUrl: ngrokBaseUrl, lanBaseUrl: lanBaseUrl, localhostBaseUrl: localhostBaseUrl,
     ngrokUrl: ngrokUrl, lanUrl: lanUrl, localhostUrl: localhostUrl,
     err: null,
-    state: 'RUNNING' });
+    state: 'RUNNING'
+  });
 
   var _ref3 = yield _Promise.all([writeInfoFile$, urlUtil.testUrlAsync(localhostUrl)]);
 
@@ -109,7 +110,7 @@ var urlUtil = require('../urlUtil');
 
 module.exports = function (opts) {
   return _serve(opts)['catch'](function (err) {
-    config.expInfoFile.update('err', err.stack());
+    config.expInfoFile.update('err', err.stack);
   });
 };
 
