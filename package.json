@@ -51,7 +51,7 @@
     "pm2": "^0.14.0",
     "qrcode-terminal": "^0.10.0",
     "react": "^0.13.3",
-    "react-native": "ide/react-native#2015-05-30-exp",
+    "react-native": "ide/react-native#exp-latest",
     "semver": "^4.3.6",
     "simctl": "0.0.6",
     "slugid": "^1.0.3",
