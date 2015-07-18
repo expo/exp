@@ -34,7 +34,7 @@
     "@exponent/network": "^1.1.0",
     "@exponent/simple-spinner": "^1.0.2",
     "@exponent/spawn-async": "^1.1.0",
-    "babel-runtime": "^5.6.17",
+    "babel-runtime": "^5.7.0",
     "co": "^4.5.4",
     "delay-async": "^1.0.0",
     "freeport-async": "^1.1.0",
