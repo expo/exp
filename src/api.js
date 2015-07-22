@@ -55,12 +55,11 @@ var callMethodAsync = async function (methodName, args) {
   // }
 
   //log("url=", url);
-  var headers = {};
+  var headers = {
+    'Exp-ClientId': await session.clientIdAsync(),
+  };
   if (username) {
-    headers = {
-      'Exp-ClientId': await session.clientIdAsync(),
-      'Exp-Username': username,
-    }
+    headers['Exp-Username'] = username;
   }
 
   var response = await needle.promise.post(url, null, {headers});

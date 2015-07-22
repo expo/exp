@@ -51,10 +51,10 @@ var callMethodAsync = _asyncToGenerator(function* (methodName, args) {
   // ... but not a big deal for now
   var settings = yield userSettings.readAsync();
   var username = settings.username;
-  var hashedPassword = settings.hashedPassword;
 
   //log("username=", username, "hashedPassword=", hashedPassword);
 
+  var hashedPassword = settings.hashedPassword;
   var url = baseUrl + '/' + encodeURIComponent(methodName) + '/' + encodeURIComponent(JSON.stringify(args));
 
   // Deprecated
@@ -63,11 +63,11 @@ var callMethodAsync = _asyncToGenerator(function* (methodName, args) {
   // }
 
   //log("url=", url);
-  var headers = {};
+  var headers = {
+    'Exp-ClientId': yield session.clientIdAsync()
+  };
   if (username) {
-    headers = {
-      'Exp-ClientId': yield session.clientIdAsync(),
-      'Exp-Username': username };
+    headers['Exp-Username'] = username;
   }
 
   var response = yield needle.promise.post(url, null, { headers: headers });
@@ -87,5 +87,6 @@ var callMethodAsync = _asyncToGenerator(function* (methodName, args) {
 module.exports = {
   callMethodAsync: callMethodAsync,
   getExpHostBaseUrlAsync: getExpHostBaseUrlAsync,
-  getApiBaseUrlAsync: getApiBaseUrlAsync };
+  getApiBaseUrlAsync: getApiBaseUrlAsync
+};
 //# sourceMappingURL=sourcemaps/api.js.map
