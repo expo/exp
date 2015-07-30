@@ -2,7 +2,7 @@
   "name": "exp",
   "version": "0.10.0",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
