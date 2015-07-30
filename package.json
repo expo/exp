@@ -1,6 +1,6 @@
 {
   "name": "exp",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
   "main": "build/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "server",
     "react"
   ],
-  "author": "650 Industries",
+  "author": "exponent.team@gmail.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/exponentjs/exp/issues"
