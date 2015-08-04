@@ -14,3 +14,11 @@ for (let x of [
 ]) {
   module.exports[x] = require('./' + x);
 }
+
+for (let x of [
+  'PackagerController',
+  'serveAsync',
+  'waitForRunningAsync',
+]) {
+  module.exports[x] = require('./serve/' + x);
+}
