@@ -1,6 +1,6 @@
 {
   "name": "exp",
-  "version": "0.9.7",
+  "version": "0.10.0",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "@exponent/network": "^1.1.0",
     "@exponent/simple-spinner": "^1.0.2",
     "@exponent/spawn-async": "^1.1.0",
-    "babel-runtime": "^5.8.12",
+    "babel-runtime": "^5.8.19",
     "co": "^4.6.0",
     "delay-async": "^1.0.0",
     "freeport-async": "^1.1.0",
@@ -50,7 +50,7 @@
     "pm2": "^0.14.5",
     "qrcode-terminal": "^0.10.0",
     "react": "^0.13.3",
-    "react-native": "ide/react-native#exp-latest",
+    "react-native": "ide/react-native#2015-08-02-exp",
     "semver": "^5.0.1",
     "simctl": "0.0.6",
     "slugid": "^1.0.3",
