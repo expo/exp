@@ -2,19 +2,21 @@
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
 
+var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+
 var uploadInfoAsync = _asyncToGenerator(function* (env) {
   var us = yield userSettings.readAsync();
   var username = us.username;
   var hashedPassword = us.hashedPassword;
 
   if (!username || !hashedPassword) {
-    throw CommandError('NOT_LOGGED_IN', env, 'You aren\'t logged in to Exponent. Try running `exp adduser` or `exp login` before you publish.');
+    throw CommandError('NOT_LOGGED_IN', env, "You aren't logged in to Exponent. Try running `exp adduser` or `exp login` before you publish.");
   }
 
   var pkg = yield config.packageJsonFile.readAsync();
   var packageName = pkg.name;
   if (!packageName) {
-    throw CommandError('MISSING_PACKAGE_NAME', env, 'Your package.json must contain a package name to publish');
+    throw CommandError('MISSING_PACKAGE_NAME', env, "Your package.json must contain a package name to publish");
   }
 
   // Rules for remote package name:
@@ -43,7 +45,8 @@ var uploadInfoAsync = _asyncToGenerator(function* (env) {
   var ngrokUrl = yield urlUtil.mainBundleUrlAsync({
     type: 'ngrok',
     minify: true,
-    dev: false });
+    dev: false
+  });
 
   return {
     username: username,
@@ -53,7 +56,8 @@ var uploadInfoAsync = _asyncToGenerator(function* (env) {
     remoteUsername: remoteUsername,
     remotePackageName: remotePackageName,
     remoteFullPackageName: remoteFullPackageName,
-    ngrokUrl: ngrokUrl };
+    ngrokUrl: ngrokUrl
+  };
 });
 
 var simpleSpinner = require('@exponent/simple-spinner');
@@ -67,23 +71,34 @@ var userSettings = require('../userSettings');
 
 module.exports = {
   name: 'publish',
-  description: 'Publishes this article to exp.host',
+  description: "Publishes this article to exp.host",
   uploadInfoAsync: uploadInfoAsync,
   runAsync: _asyncToGenerator(function* (env) {
 
+    var argv = env.argv;
+    var args = argv._;
+    var stealth = argv.stealth;
+    var opts = {
+      stealth: stealth
+    };
+
     var uploadInfo = yield uploadInfoAsync(env);
-    log('Publishing package version', uploadInfo.packageVersion, 'as', uploadInfo.remoteFullPackageName, '...');
+
+    var infoWithOpts = _Object$assign({}, uploadInfo, opts);
+
+    log("Publishing package version", uploadInfo.packageVersion, "as", uploadInfo.remoteFullPackageName, "...");
     try {
       simpleSpinner.start();
-      var result = yield api.callMethodAsync('publish', [uploadInfo]);
+      var result = yield api.callMethodAsync('publish', [infoWithOpts]);
     } catch (e) {
       throw CommandError('PUBLISH_FAILED', env, e.message);
     } finally {
       simpleSpinner.stop();
     }
 
-    log('Published.');
+    log("Published.");
 
-    console.log('exp://exp.host/' + result.packageFullName);
-  }) };
+    console.log("exp://exp.host/" + result.packageFullName);
+  })
+};
 //# sourceMappingURL=../sourcemaps/commands/publish.js.map

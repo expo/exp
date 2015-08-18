@@ -69,11 +69,21 @@ module.exports = {
   uploadInfoAsync,
   runAsync: async function (env) {
 
-    var uploadInfo = await uploadInfoAsync(env);
+    let argv = env.argv;
+    let args = argv._;
+    let stealth = argv.stealth;
+    let opts = {
+      stealth,
+    };
+
+    let uploadInfo = await uploadInfoAsync(env);
+
+    let infoWithOpts = Object.assign({}, uploadInfo, opts);
+
     log("Publishing package version", uploadInfo.packageVersion, "as", uploadInfo.remoteFullPackageName, "...");
     try {
       simpleSpinner.start();
-      var result = await api.callMethodAsync('publish', [uploadInfo]);
+      var result = await api.callMethodAsync('publish', [infoWithOpts]);
     } catch (e) {
       throw CommandError('PUBLISH_FAILED', env, e.message);
     } finally {
