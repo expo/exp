@@ -56,6 +56,8 @@ module.exports = {
     //    ... but fail if it already exist
 
     var js = yield fs.promise.readFile(path.join(__dirname, '..', '..', 'example', 'main.js'), 'utf8');
+    var appName = path.basename(process.cwd());
+    js.replace('__NAME__', appName);
     try {
       yield fs.promise.writeFile(entryPoint, js, { encoding: 'utf8', flag: 'wx' });
       log('Created an entry point for your app at', entryPoint);
