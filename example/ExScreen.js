@@ -20,13 +20,20 @@ class ExScreen extends React.Component {
   }
 
   render() {
-    let { title, headerColor, ...props } = this.props;
+    let {
+      title,
+      headerColor,
+      scrollEnabled,
+      ...props,
+    } = this.props;
+
     return (
       <View {...props}>
         <ScrollView
           ref={component => { this._scrollView = component; }}
           contentContainerStyle={styles.contentContainer}
           contentInset={{ top: ExHeader.HEIGHT }}
+          scrollEnabled={scrollEnabled}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={this._handleScroll.bind(this)}>

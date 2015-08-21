@@ -30,6 +30,7 @@ class FirstExperience extends React.Component {
     super(props, context);
     this.state = {
       headerColor: '#007aff',
+      isBoxPressed: false,
     };
   }
 
@@ -43,24 +44,31 @@ class FirstExperience extends React.Component {
       <ExScreen
         title="__NAME__"
         headerColor={this.state.headerColor}
+        scrollEnabled={!this.state.isBoxPressed}
         style={styles.container}>
 
+        {/* Try editing this text and reloading your project in Exponent */}
         <Text style={styles.paragraph}>
           This is a simple example of what you can make with Exponent. Feel
           free to try modifying it and seeing what happens!
         </Text>
 
+        {/* Photo gallery demo */}
         <Text style={styles.sectionTitle}>Photo Gallery</Text>
         <ExPhotoGallery style={styles.gallery} />
 
+        {/* Bouncy boxes demo */}
         <Text style={styles.sectionTitle}>Interactive Components</Text>
         <ExBoxes
           colors={boxColors}
+          onPressBoxBegin={() => this.setState({ isBoxPressed: true })}
+          onPressBoxEnd={() => this.setState({ isBoxPressed: false })}
           onSelectColor={this._handleColorSelected.bind(this)}
           style={styles.boxes}
         />
-        <Text style={styles.note}>Try dragging and pressing the boxes.</Text>
+      <Text style={styles.note}>Try pressing and dragging the boxes.</Text>
 
+        {/* Publishing instructions */}
         <Text style={styles.sectionTitle}>Publishing</Text>
         <Text style={styles.paragraph}>
           When you are ready to share what your work, run <Text style={styles.code}>exp publish</Text>.

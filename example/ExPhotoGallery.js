@@ -44,7 +44,7 @@ class ExPhotoGallery extends React.Component {
 
   _renderPhoto(source, size) {
     return (
-      <View style={styles.photoContainer}>
+      <View key={source.uri} style={styles.photoContainer}>
         <Image source={source} style={[styles.photo, size]} />
       </View>
     );

@@ -24,6 +24,8 @@ class ExBoxes extends React.Component {
             key={color}
             color={color}
             onSelect={() => this.props.onSelectColor(color)}
+            onPressBegin={this.props.onPressBoxBegin}
+            onPressEnd={this.props.onPressBoxEnd}
           />
         )}
       </View>
@@ -41,10 +43,10 @@ class Box extends React.Component {
         onStartShouldSetPanResponder: () => true,
         onPanResponderGrant: this._handlePanGrant.bind(this),
         onPanResponderMove: this._handlePanMove.bind(this),
-        onShouldBlockNativeResponder: () => true,
         onPanResponderRelease: this._handlePanRelease.bind(this),
-        onPanResponderTerminate: this._handlePanRelease.bind(this),
+        onPanResponderTerminate: this._handlePanTerminate.bind(this),
       }),
+      isPressed: false,
       isPanning: false,
     };
   }
@@ -54,7 +56,12 @@ class Box extends React.Component {
       toValue: 0.95,
       tension: 300,
       friction: 20,
-    }).start();
+    }).start(result => {
+      if (result.finished && !this.state.isPressed && this.props.onPressBegin) {
+        this.setState({ isPressed: true });
+        this.props.onPressBegin();
+      }
+    });
   }
 
   _handlePanMove(event, gestureState) {
@@ -76,25 +83,39 @@ class Box extends React.Component {
   }
 
   _handlePanRelease(event, gestureState) {
-    if (!this.state.isPanning) {
-      if (this.props.onSelect) {
-        this.props.onSelect();
-      }
-    } else {
-      this.setState({ isPanning: false });
+    if (!this.state.isPanning && this.props.onSelect) {
+      this.props.onSelect();
+    }
+    this._restore();
+  }
+
+  _handlePanTerminate(event, gestureState) {
+    this._restore();
+  }
+
+  _restore() {
+    Animated.spring(this.state.scale, {
+      toValue: 1,
+      tension: 150,
+      friction: 5,
+    }).start();
+
+    if (this.state.isPanning) {
       this.state.position.flattenOffset();
       Animated.spring(this.state.position, {
         toValue: { x: 0, y: 0 },
         tension: 150,
         friction: 8,
       }).start();
+      this.setState({ isPanning: false });
     }
 
-    Animated.spring(this.state.scale, {
-      toValue: 1,
-      tension: 150,
-      friction: 5,
-    }).start();
+    if (this.state.isPressed) {
+      this.setState({ isPressed: false });
+      if (this.props.onPressEnd) {
+        this.props.onPressEnd();
+      }
+    }
   }
 
   render() {
@@ -104,7 +125,6 @@ class Box extends React.Component {
         style={[
           styles.box,
           { backgroundColor: this.props.color },
-          // { position: 'absolute' }
           {
             transform: [
               { scale: this.state.scale },
