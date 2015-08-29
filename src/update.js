@@ -1,4 +1,5 @@
 var child_process = require('child_process');
+let crayon = require('@ccheever/crayon');
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
 var path = require('path');
@@ -44,6 +45,9 @@ async function checkForExpUpdateAsync() {
     default:
       throw new Error("Confused about whether exp is up-to-date or not");
   }
+
+  state = 'deprecated';
+  message = message + "\n" + crayon.red("exp is now deprecated. xde, the new GUI that replaces exp, is available at\nhttps://github.com/exponentjs/xde");
 
   return {
     state,

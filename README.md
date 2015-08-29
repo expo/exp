@@ -1,6 +1,12 @@
 # exp
 The command-line tool for creating and publishing rich articles written with JavaScript and React Native
 
+# DEPRECATED
+
+`xde`, the GUI version of `exp` is available at [`https://github.com/exponentjs/xde`](https://github.com/exponentjs/xde).
+
+We recommend that you use xde instead of exp. We're going to put most of our development effort into xde going forward, and we believe it's already easier to use and more reliable than exp.
+
 # Quick Start
 
 Download Exponent onto your phone at http://exp.host/

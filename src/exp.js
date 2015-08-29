@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+var crayon = require('@ccheever/crayon');
+
 var hasYield = require('has-yield');
 if (!hasYield) {
   var log = require('./log');
@@ -19,7 +21,6 @@ if (!hasYield) {
 }
 
 var child_process = require('child_process');
-var crayon = require('@ccheever/crayon');
 var instapromise = require('instapromise');
 
 var argv = require('./argv');
@@ -58,6 +59,7 @@ if (require.main === module) {
     log.error(err);
   }).then(function () {
     checkForUpdate$.then(function (result) {
+      console.log("result.state=", result.state);
       switch (result.state) {
         case 'up-to-date':
           //crayon.gray.error(result.message);
@@ -67,6 +69,9 @@ if (require.main === module) {
           break;
         case 'ahead-of-published':
           crayon.cyan.error(result.message);
+          break;
+        case 'deprecated':
+          crayon.yellow.bold.error(result.message);
           break;
         default:
           log.error("Confused about what version of exp you have?");
