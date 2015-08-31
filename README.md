@@ -1,9 +1,6 @@
-# [DEPRECATED] exp <img src="http://slack.exponentjs.com/badge.svg">
-The command-line tool for creating and publishing rich articles written with JavaScript and React Native
+# [DEPRECATED] exp [![Slack](http://slack.exponentjs.com/badge.svg)](http://slack.exponentjs.com)
 
-# DEPRECATED
-
-`xde`, the GUI version of `exp` is available at [`https://github.com/exponentjs/xde`](https://github.com/exponentjs/xde).
+`exp` has been superseded by an app called `xde`: [`https://github.com/exponentjs/xde`](https://github.com/exponentjs/xde).
 
 We recommend that you use xde instead of exp. We're going to put most of our development effort into xde going forward, and we believe it's already easier to use and more reliable than exp.
 
