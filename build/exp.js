@@ -61,7 +61,7 @@ if (require.main === module) {
     log.error(err);
   }).then(function () {
     checkForUpdate$.then(function (result) {
-      console.log("result.state=", result.state);
+      // console.log("result.state=", result.state);
       switch (result.state) {
         case 'up-to-date':
           //crayon.gray.error(result.message);

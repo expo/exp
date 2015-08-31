@@ -18,7 +18,7 @@ function userSettingsJsonFile() {
 var mkdirped = false;
 function dotExponentDirectory() {
   if (!process.env.HOME) {
-    throw new Error('Can\'t determine your home directory; make sure your $HOME environment variable is set.');
+    throw new Error("Can't determine your home directory; make sure your $HOME environment variable is set.");
   }
   var dirPath = path.join(process.env.HOME, '.exponent');
   if (!mkdirped) {
@@ -33,5 +33,6 @@ module.exports = userSettingsJsonFile();
 _.assign(module.exports, {
   userSettingsJsonFile: userSettingsJsonFile,
   userSettingsFile: userSettingsFile,
-  dotExponentDirectory: dotExponentDirectory });
+  dotExponentDirectory: dotExponentDirectory
+});
 //# sourceMappingURL=sourcemaps/userSettings.js.map

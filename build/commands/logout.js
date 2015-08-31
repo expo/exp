@@ -11,8 +11,8 @@ var userSettings = require('../userSettings');
 
 module.exports = {
   name: 'login',
-  description: 'Login to exp.host',
-  help: '',
+  description: "Login to exp.host",
+  help: "",
   runAsync: _asyncToGenerator(function* (env) {
 
     var argv = env.argv;
@@ -21,5 +21,6 @@ module.exports = {
 
     var result = yield api.callMethodAsync('logout', env.argv);
     return true;
-  }) };
+  })
+};
 //# sourceMappingURL=../sourcemaps/commands/logout.js.map

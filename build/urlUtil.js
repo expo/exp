@@ -31,7 +31,7 @@ var testUrlAsync = _asyncToGenerator(function* (url) {
   var httpUrl = url.replace(/^exp:\/\//, 'http://');
   var response = yield needle.promise.get(httpUrl);
   if (!(response.statusCode == 200)) {
-    throw new Error('Problem reading from URL ' + httpUrl + '\nstatusCode=' + response.statusCode);
+    throw new Error("Problem reading from URL " + httpUrl + "\nstatusCode=" + response.statusCode);
   }
   return url;
 });
@@ -48,7 +48,7 @@ var appetizeWebSimulatorUrlAsync = _asyncToGenerator(function* (url) {
 
 var testLoadingUrlWithLogging = _asyncToGenerator(function* (httpUrl) {
 
-  log('Testing loading the URL...');
+  log("Testing loading the URL...");
   simpleSpinner.start();
   var err = undefined;
   try {
@@ -65,7 +65,7 @@ var testLoadingUrlWithLogging = _asyncToGenerator(function* (httpUrl) {
       throw err;
     }
   }
-  log('OK.');
+  log("OK.");
 });
 
 var urlFromEnvAsync = _asyncToGenerator(function* (env) {
@@ -77,7 +77,7 @@ var urlFromEnvAsync = _asyncToGenerator(function* (env) {
   try {
     var httpUrl = yield mainBundleUrlAsync(uo);
   } catch (e) {
-    throw CommandError('NO_URL', env, 'There doesn\'t seem to be a URL for this package. Try running `exp start` first.\n' + e.message);
+    throw CommandError('NO_URL', env, "There doesn't seem to be a URL for this package. Try running `exp start` first.\n" + e.message);
   }
 
   var url = httpUrl;
@@ -97,7 +97,7 @@ var urlFromEnvAsync = _asyncToGenerator(function* (env) {
     try {
       var result = yield api.callMethodAsync('shortenUrl', { url: url });
     } catch (e) {
-      throw Error('Failed to shorten URL: ' + e.message);
+      throw Error("Failed to shorten URL: " + e.message);
     }
     crayon.gray.error(result.longUrl);
     url = result.shortUrl;
@@ -135,9 +135,10 @@ var guessMainModulePathAsync = _asyncToGenerator(function* () {
 function constructUrlFromBaseUrl(baseUrl, opts) {
   var url = baseUrl;
   opts = opts || {};
-  var mainModulePath = opts.mainModulePath;
-  var dev = opts.dev;
-  var minify = opts.minify;
+  var _opts = opts;
+  var mainModulePath = _opts.mainModulePath;
+  var dev = _opts.dev;
+  var minify = _opts.minify;
 
   mainModulePath = mainModulePath || 'index.js';
   url += '/' + encodeURIComponent(mainModulePath) + '.';
@@ -175,5 +176,6 @@ module.exports = {
   guessMainModulePathAsync: guessMainModulePathAsync,
   httpRedirectUrlAsync: httpRedirectUrlAsync,
   testLoadingUrlWithLogging: testLoadingUrlWithLogging,
-  urlFromEnvAsync: urlFromEnvAsync };
+  urlFromEnvAsync: urlFromEnvAsync
+};
 //# sourceMappingURL=sourcemaps/urlUtil.js.map

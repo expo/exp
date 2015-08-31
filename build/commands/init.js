@@ -2,73 +2,153 @@
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
 
-var crayon = require('@ccheever/crayon');
-var fs = require('fs');
-var instapromise = require('instapromise');
+var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+
+var determineEntryPoint = _asyncToGenerator(function* (root) {
+  var pkgJson = packageJsonForRoot(root);
+  var main = yield pkgJson.getAsync('main', 'index.js');
+  // console.log("main=", main);
+  return main;
+});
+
+var _getReactNativeVersionAsync = _asyncToGenerator(function* () {
+  var xdePackageJson = jsonFile(path.join(__dirname, '../../package.json'));
+  return yield xdePackageJson.getAsync(['dependencies', 'react-native']);
+});
+
+var _installReactNativeInNewProjectWithRoot = _asyncToGenerator(function* (root) {
+  var nodeModulesPath = path.join(root, 'node_modules');
+  yield mkdirp.promise(nodeModulesPath);
+  yield fsExtra.copy.promise(path.join(__dirname, '../../node_modules/react-native'), path.join(nodeModulesPath, 'react-native'));
+});
+
+var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
+
+  var pp = path.parse(root);
+  var name = pp.name;
+
+  // opts = opts || {force: true};
+  opts = opts || {};
+
+  // let author = await userSettings.getAsync('email', null);
+  var author = "TODO";
+
+  var dependencies = {
+    'react-native': yield _getReactNativeVersionAsync()
+  };
+
+  var data = _Object$assign({
+    name: name,
+    version: '0.0.0',
+    description: "Hello Exponent!",
+    main: 'main.js',
+    author: author,
+    dependencies: dependencies
+  }, //license: "MIT",
+  // scripts: {
+  //   "test": "echo \"Error: no test specified\" && exit 1"
+  // },
+  info);
+
+  var pkgJson = jsonFile(path.join(root, 'package.json'));
+
+  var exists = yield existsAsync(pkgJson.file);
+  if (exists && !opts.force) {
+    throw NewExpError('WONT_OVERWRITE_WITHOUT_FORCE', "Refusing to create new Exp because package.json already exists at root");
+  }
+
+  yield mkdirp.promise(root);
+
+  var result = yield pkgJson.writeAsync(data);
+
+  yield fsExtra.promise.copy(TEMPLATE_ROOT, root);
+
+  // Custom code for replacing __NAME__ in main.js
+  var mainJs = yield fs.readFile.promise(path.join(TEMPLATE_ROOT, 'main.js'), 'utf8');
+  var customMainJs = mainJs.replace(/__NAME__/g, data.name);
+  result = yield fs.writeFile.promise(path.join(root, 'main.js'), customMainJs, 'utf8');
+
+  // Intall react-native
+  yield _installReactNativeInNewProjectWithRoot(root);
+
+  return data;
+});
+
+var expInfoAsync = _asyncToGenerator(function* (root) {
+  var pkgJson = packageJsonForRoot(root);
+  var pkg = yield pkgJson.readAsync();
+  var name = pkg.name;
+  var description = pkg.description;
+  return {
+    readableRoot: makePathReadable(root),
+    root: root,
+    name: name,
+    description: description
+  };
+});
+
+var expInfoSafeAsync = _asyncToGenerator(function* (root) {
+  try {
+    return yield expInfoAsync(root);
+  } catch (e) {
+    return null;
+  }
+});
+
 var jsonFile = require('@exponent/json-file');
+var existsAsync = require('exists-async');
+var fs = require('fs');
+var fsExtra = require('fs-extra');
 var mkdirp = require('mkdirp');
 var path = require('path');
 
-var spawnAsync = require('@exponent/spawn-async');
+var TEMPLATE_ROOT = path.resolve(path.join(__dirname, '../../example'));
 
-var CommandError = require('./CommandError');
-var log = require('../log');
+function NewExpError(code, message) {
+  var err = new Error(message);
+  err.code = code;
+  err._isNewExpError;
+  return err;
+}
+
+function packageJsonForRoot(root) {
+  return jsonFile(path.join(root, 'package.json'));
+}
+
+function getHomeDir() {
+  return process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'];
+}
+
+function makePathReadable(pth) {
+  var homedir = getHomeDir();
+  if (pth.substr(0, homedir.length) === homedir) {
+    return '~' + pth.substr(homedir.length);
+  } else {
+    return pth;
+  }
+}
 
 module.exports = {
   name: 'init',
-  description: 'Initializes a directory so it can be used with exp',
-  help: 'Asks you questions and then sets up a directory',
+  description: "Initializes a directory so it can be used with exp",
+  help: "Asks you questions and then sets up a directory",
   args: ['[path-to-project-dir]'],
   runAsync: _asyncToGenerator(function* (env) {
     var argv = env.argv;
     var args = argv._;
-
-    // Here is what this will do
-
-    // 0. If there is a command line argument, make a new directory in the current directory and chdir to it
     var dirName = args[1];
     var originalCwd = process.cwd();
-    if (dirName) {
-      dirName = dirName.toString();
-      yield mkdirp.promise(dirName);
-      log('Setting up an Exponent project at', path.resolve(dirName));
-      process.chdir(dirName);
-    }
-
-    // 1. If there is no package.json in the current directory, run npm init
-    var pkgJsonFile = jsonFile('package.json');
-    var pkg;
-    try {
-      pkg = yield pkgJsonFile.readAsync();
-    } catch (e) {
-      //console.error(e);
-
-      // No package.json, so let's create it
-      log(crayon.cyan('No package.json file found. Using `npm init` to help you create one.'));
-      log(crayon.cyan('Answer the questions and a package.json will be created for you.'));
-      var _zero = yield spawnAsync('npm', ['init'], { stdio: 'inherit' });
-      pkg = yield pkgJsonFile.readAsync();
-    }
-
-    var entryPoint = pkg.main || 'index.js';
-
-    // 2. Figure out the entry point of the app. Try to create that file with the template
-    //    ... but fail if it already exist
-
-    var js = yield fs.promise.readFile(path.join(__dirname, '..', '..', 'example', 'main.js'), 'utf8');
-    var appName = path.basename(process.cwd());
-    js.replace('__NAME__', appName);
-    try {
-      yield fs.promise.writeFile(entryPoint, js, { encoding: 'utf8', flag: 'wx' });
-      log('Created an entry point for your app at', entryPoint);
-    } catch (e) {
-      log.warn('The entry point (' + entryPoint + ') already exists; refusing to overwrite.\n' + e + '\nIf you want to use the standard template sample file,\ndelete that file and rerun `exp init` again.');
-    }
-
-    if (process.cwd() != originalCwd) {
-      log('Set up your Exponent project in', process.cwd());
-    }
+    var root = dirName || originalCwd;
+    var info = yield expInfoSafeAsync(root);
+    var opts = {};
+    opts.force = argv.force;
+    return yield createNewExpAsync(root, info, opts);
   })
 };
-//throw CommandError('ENTRY_POINT_EXISTS', env, "The entry point (" + entryPoint + ") already exists; refusing to overwrite.\n" + e + "\nDelete that file and rerun `exp init` to try again.");
+
+_Object$assign(module.exports, {
+  determineEntryPoint: determineEntryPoint,
+  createNewExpAsync: createNewExpAsync,
+  _getReactNativeVersionAsync: _getReactNativeVersionAsync
+});
 //# sourceMappingURL=../sourcemaps/commands/init.js.map

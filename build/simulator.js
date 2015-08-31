@@ -9,7 +9,7 @@ var listSimulatorsAsync = _asyncToGenerator(function* () {
     throw SimulatorNotAvailable(e);
   }
 
-  var lines = output.split('\n');
+  var lines = output.split("\n");
   var devices = [];
 
   var runtime;
@@ -28,7 +28,8 @@ var listSimulatorsAsync = _asyncToGenerator(function* () {
         devices.push({
           device: m[1],
           udid: m[2],
-          runtime: runtime });
+          runtime: runtime
+        });
       }
     }
   }
@@ -42,10 +43,11 @@ var listSimulatorsAndTemplatesAsync = _asyncToGenerator(function* () {
   } catch (e) {
     throw SimulatorNotAvailable(e);
   }
-  var lines = output.split('\n');
+  var lines = output.split("\n");
   var result = {
     devices: [],
-    templates: [] };
+    templates: []
+  };
   var bucket;
   for (var line of lines) {
     if (line === 'Known Devices:') {
@@ -60,15 +62,16 @@ var listSimulatorsAndTemplatesAsync = _asyncToGenerator(function* () {
             if (m) {
               result[bucket].push({
                 device: m[1],
-                udid: m[2] });
+                udid: m[2]
+              });
             } else {
-              throw SimulatorError('CANT_INTERPRET_OUTPUT', 'Couldn\'t understand device: ' + line);
+              throw SimulatorError('CANT_INTERPRET_OUTPUT', "Couldn't understand device: " + line);
             }
           } else {
             result[bucket].push(line);
           }
         } else {
-          var err = SimulatorError('CANT_INTERPRET_OUTPUT', 'Couldn\'t interpret the output from `xcrun instruments -s`');
+          var err = SimulatorError('CANT_INTERPRET_OUTPUT', "Couldn't interpret the output from `xcrun instruments -s`");
           err.output = output;
           throw err;
         }
@@ -85,7 +88,7 @@ var startSimulatorAsync = _asyncToGenerator(function* (udid) {
     if (e.code === 255) {
       return true;
     } else {
-      throw SimulatorError('FAILED_TO_START_SIMULATOR', 'Failed to start iOS Simulator: ' + e.message);
+      throw SimulatorError('FAILED_TO_START_SIMULATOR', "Failed to start iOS Simulator: " + e.message);
     }
   }
 });
@@ -96,16 +99,18 @@ var askUserToPickASimulatorAsync = _asyncToGenerator(function* () {
   for (var device of devices) {
     choices.push({
       name: device.device + ' (' + device.runtime + ')',
-      value: device.udid });
+      value: device.udid
+    });
   }
 
   choices = _(_.sortBy(choices, 'name')).reverse().valueOf();
 
   var answers = yield inquirerAsync.promptAsync([{
     type: 'list',
-    message: 'Choose an available device to use',
+    message: "Choose an available device to use",
     name: 'udid',
-    choices: choices }]);
+    choices: choices
+  }]);
 
   return answers.udid;
 });
@@ -135,9 +140,9 @@ var openUrlInUserChosenSimulatorAsync = _asyncToGenerator(function* (url) {
   } catch (e) {
     if (e.code === 5) {
       // This is OK I think
-      log.warn('Might not have been able to open URL on simulator');
+      log.warn("Might not have been able to open URL on simulator");
     } else {
-      throw SimulatorError('FAILED_TO_OPEN_URL', 'Couldn\'t open URL on simulator: ' + url + '\n' + e.message);
+      throw SimulatorError('FAILED_TO_OPEN_URL', "Couldn't open URL on simulator: " + url + "\n" + e.message);
     }
   }
   return url;
@@ -159,7 +164,7 @@ function SimulatorError(code, message) {
 }
 
 function SimulatorNotAvailable(e) {
-  return SimulatorError('SIMULATOR_NOT_AVAILABLE', 'Simulator not available: ' + e.message);
+  return SimulatorError('SIMULATOR_NOT_AVAILABLE', "Simulator not available: " + e.message);
 }
 
 function exponentAppPath() {
@@ -174,7 +179,8 @@ module.exports = {
   installExponentOnSimulatorAsync: installExponentOnSimulatorAsync,
   openUrlOnSimulatorAsync: openUrlOnSimulatorAsync,
   openUrlInUserChosenSimulatorAsync: openUrlInUserChosenSimulatorAsync,
-  chooseAndStartSimulatorAsync: chooseAndStartSimulatorAsync };
+  chooseAndStartSimulatorAsync: chooseAndStartSimulatorAsync
+};
 
 if (require.main === module) {
   if (process.argv[2]) {

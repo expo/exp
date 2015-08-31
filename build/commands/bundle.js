@@ -1,8 +1,8 @@
 'use strict';
 
-var _toConsumableArray = require('babel-runtime/helpers/to-consumable-array')['default'];
-
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+
+var _toConsumableArray = require('babel-runtime/helpers/to-consumable-array')['default'];
 
 var _ = require('lodash-node');
 var co = require('co');
@@ -19,8 +19,8 @@ var urlOpts = require('./urlOpts');
 
 module.exports = {
   name: 'bundle',
-  description: 'Saves the current bundle of your app to the terminal or a file',
-  options: [['--dev', 'Whether to set the dev flag'], ['--minify', 'Whether to minify the bundle'], ['--mainModulePath', 'Path to the main module']].concat(_toConsumableArray(urlOpts.options('localhost'))),
+  description: "Saves the current bundle of your app to the terminal or a file",
+  options: [['--dev', "Whether to set the dev flag"], ['--minify', "Whether to minify the bundle"], ['--mainModulePath', "Path to the main module"]].concat(_toConsumableArray(urlOpts.options('localhost'))),
   help: '',
   runAsync: _asyncToGenerator(function* (env) {
     var argv = env.argv;
@@ -35,9 +35,9 @@ module.exports = {
     }
 
     var url = yield urlUtil.mainBundleUrlAsync(uo);
-    log('Requesting bundle from', url, '...');
+    log("Requesting bundle from", url, "...");
     if (filepath) {
-      log('Saving to', filepath);
+      log("Saving to", filepath);
     }
 
     try {
@@ -46,7 +46,7 @@ module.exports = {
       try {
         var response = yield needle.promise.get(url);
       } catch (e) {
-        throw CommandError('NO_RESPONSE', env, 'Server didn\'t respond.\n' + e.message);
+        throw CommandError('NO_RESPONSE', env, "Server didn't respond.\n" + e.message);
       } finally {
         simpleSpinner.stop();
       }
@@ -57,18 +57,18 @@ module.exports = {
           log.error(errInfo.type, errInfo.message);
           console.error(errInfo.snippet);
           if (errInfo.type) {
-            throw CommandError(errInfo.type, env, 'Error in generating bundle');
+            throw CommandError(errInfo.type, env, "Error in generating bundle");
           }
         } else {
-          log.error('Uknown Error:', response.body);
+          log.error("Uknown Error:", response.body);
         }
-        throw CommandError('BAD_RESPONSE', env, 'Non-200 response: ' + response.statusCode + ': ' + response.statusMessage);
+        throw CommandError('BAD_RESPONSE', env, "Non-200 response: " + response.statusCode + ": " + response.statusMessage);
       }
     } catch (e) {
       if (e._isCommandError) {
         throw e;
       } else {
-        throw CommandError('FAILED_TO_DOWNLOAD_BUNDLE', env, 'Failed to download bundle; did you run `exp start`?\n' + e);
+        throw CommandError('FAILED_TO_DOWNLOAD_BUNDLE', env, "Failed to download bundle; did you run `exp start`?\n" + e);
       }
     }
 

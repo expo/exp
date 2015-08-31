@@ -19,12 +19,12 @@ function NotLoggedIn(message) {
 
 module.exports = {
   name: 'whoami',
-  description: 'Checks with the server and then says who you are logged in as',
+  description: "Checks with the server and then says who you are logged in as",
   runAsync: _asyncToGenerator(function* (env) {
     try {
       var settingsData = yield userSettings.readAsync();
       if (!settingsData || !settingsData.username || !settingsData.hashedPassword) {
-        throw NotLoggedIn('You\'re not logged in');
+        throw NotLoggedIn("You're not logged in");
       }
 
       var username = settingsData.username;
@@ -33,13 +33,13 @@ module.exports = {
       var result = yield api.callMethodAsync('whoami', { username: username, hashedPassword: hashedPassword });
 
       if (result.user) {
-        log('Logged in as', result.user.username);
+        log("Logged in as", result.user.username);
         for (var key of _Object$keys(result.user)) {
           console.log(key + ':', result.user[key]);
         }
         return result.user;
       } else {
-        throw NotLoggedIn('No such user or your password is wrong.');
+        throw NotLoggedIn("No such user or your password is wrong.");
       }
     } catch (e) {
       if (e._isNotLoggedIn) {
@@ -49,5 +49,6 @@ module.exports = {
         throw e;
       }
     }
-  }) };
+  })
+};
 //# sourceMappingURL=../sourcemaps/commands/whoami.js.map

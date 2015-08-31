@@ -51,10 +51,10 @@ var callMethodAsync = _asyncToGenerator(function* (methodName, args) {
   // ... but not a big deal for now
   var settings = yield userSettings.readAsync();
   var username = settings.username;
+  var hashedPassword = settings.hashedPassword;
 
   //log("username=", username, "hashedPassword=", hashedPassword);
 
-  var hashedPassword = settings.hashedPassword;
   var url = baseUrl + '/' + encodeURIComponent(methodName) + '/' + encodeURIComponent(JSON.stringify(args));
 
   // Deprecated

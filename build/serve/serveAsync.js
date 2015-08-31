@@ -30,9 +30,9 @@ var _serve = _asyncToGenerator(function* (opts) {
 
     // Shutdown packager
     var packagerShutdown$ = new _Promise(function (fulfill, reject) {
-      log('Attempting to shut down packager (' + pc._packager.pid + ')...');
+      log("Attempting to shut down packager (" + pc._packager.pid + ")...");
       pc._packager.on('exit', function (code) {
-        log('packager shut down.');
+        log("packager shut down.");
         fulfill(code);
         //console.log("process._getActiveRequests()", process._getActiveRequests().length);
         //console.log("process._getActiveHandles()", process._getActiveHandles().length);
@@ -43,15 +43,15 @@ var _serve = _asyncToGenerator(function* (opts) {
     // Shutdown ngrok
     var ngrokShutdown$ = new _Promise(function (fulfill, reject) {
       ngrokUrl$.then(function (ngrokBaseUrl) {
-        log('Shutting down ngrok...');
+        log("Shutting down ngrok...");
         return ngrok.promise.disconnect(ngrokBaseUrl).then(function (x) {
-          log('ngrok shutdown.');
+          log("ngrok shutdown.");
           fulfill(x);
         }, function (err) {
-          log.error('Disconnecting from ngrok failed', err);
+          log.error("Disconnecting from ngrok failed", err);
         });
       })['catch'](function (err) {
-        log.error('Failed to shutdown ngrok', err.message);
+        log.error("Failed to shutdown ngrok", err.message);
         reject(err);
       });
     });
@@ -64,7 +64,7 @@ var _serve = _asyncToGenerator(function* (opts) {
         }
       }
     })['catch'](function (err) {
-      log.error('Error while shutting down.');
+      log.error("Error while shutting down.");
     });
 
     throw e;

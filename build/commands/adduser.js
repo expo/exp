@@ -15,8 +15,8 @@ var userSettings = require('../userSettings');
 
 module.exports = {
   name: 'adduser',
-  description: 'Creates a user on exp.host',
-  help: '',
+  description: "Creates a user on exp.host",
+  help: "",
   runAsync: _asyncToGenerator(function* (env) {
     var argv = env.argv;
     var args = argv._;
@@ -49,7 +49,8 @@ module.exports = {
         validate: function validate(val) {
           // TODO: Validate username here
           return true;
-        } });
+        }
+      });
     }
 
     if (!cleartextPassword) {
@@ -60,7 +61,8 @@ module.exports = {
         validate: function validate(val) {
           // TODO: Validate
           return true;
-        } });
+        }
+      });
     }
 
     if (!fullName && !env.isLogin) {
@@ -72,15 +74,17 @@ module.exports = {
         validate: function validate(val) {
           // TODO: Validate
           return true;
-        } });
+        }
+      });
     }
 
     if (!email && !env.isLogin) {
       questions.push({
         type: 'input',
         name: 'email',
-        message: 'E-mail address',
-        'default': settingsData.email });
+        message: "E-mail address",
+        'default': settingsData.email
+      });
     }
 
     if (!phoneNumber && !env.isLogin) {
@@ -88,7 +92,8 @@ module.exports = {
         type: 'input',
         name: 'phoneNumber',
         message: 'Mobile phone number',
-        'default': settingsData.phoneNumber });
+        'default': settingsData.phoneNumber
+      });
     }
 
     // TODO: Make this more of a Promise/yieldable situation so we can continue inline here
@@ -99,7 +104,8 @@ module.exports = {
       cleartextPassword: cleartextPassword || answers.cleartextPassword,
       email: email || answers.email,
       phoneNumber: phoneNumber || answers.phoneNumber,
-      fullName: fullName || answers.fullName };
+      fullName: fullName || answers.fullName
+    };
 
     // Store only the hashed version of someone's password
     data.hashedPassword = password.hashPassword(data.cleartextPassword);
@@ -116,11 +122,12 @@ module.exports = {
       user.hashedPassword = data.hashedPassword;
       yield userSettings.mergeAsync(user);
       delete user.hashedPassword;
-      log('Success.');
+      log("Success.");
       console.log(user);
       return result;
     } else {
-      throw new Error('Unexpected Error: No user returned from the API');
+      throw new Error("Unexpected Error: No user returned from the API");
     }
-  }) };
+  })
+};
 //# sourceMappingURL=../sourcemaps/commands/adduser.js.map

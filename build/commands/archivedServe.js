@@ -24,10 +24,10 @@ var userSettings = require('../userSettings');
 
 module.exports = {
   name: 'serve',
-  description: 'Starts a local server to serve your app and gives you a URL to it',
-  args: ['[project-dir]'],
-  options: [['--path=PATH', 'The path to the place where your package is', '.'], ['--port=PORT', 'The port to run the server on', 'Random (9000-9999)'], ['--ngrokSubdomain=SUBDOMAIN', 'The ngrok subdomain to use', config.ngrok && config.ngrok.subdomain], ['--ngrokAuthToken=AUTH_TOKEN', 'The ngrok authToken to use', config.ngrok && config.ngrok.authToken], ['--send=EMAIL_OR_PHONE_NUMBER', 'An e-mail address or phone number to send a link to']],
-  help: 'Starts a local server to serve your app and gives you a URL to it',
+  description: "Starts a local server to serve your app and gives you a URL to it",
+  args: ["[project-dir]"],
+  options: [['--path=PATH', "The path to the place where your package is", '.'], ['--port=PORT', "The port to run the server on", "Random (9000-9999)"], ['--ngrokSubdomain=SUBDOMAIN', "The ngrok subdomain to use", config.ngrok && config.ngrok.subdomain], ['--ngrokAuthToken=AUTH_TOKEN', "The ngrok authToken to use", config.ngrok && config.ngrok.authToken], ['--send=EMAIL_OR_PHONE_NUMBER', "An e-mail address or phone number to send a link to"]],
+  help: "Starts a local server to serve your app and gives you a URL to it",
   runAsync: _asyncToGenerator(function* (env) {
     var argv = env.argv;
     var args = argv._;
@@ -36,13 +36,13 @@ module.exports = {
     var projectDir = args[1];
     if (projectDir) {
       process.chdir(projectDir);
-      log(crayon.gray('Using project at', process.cwd()));
+      log(crayon.gray("Using project at", process.cwd()));
     }
 
     // TODO: These two functions are sort of redundant
     var mainModulePath = yield urlUtil.guessMainModulePathAsync();
     var entryPoint = yield urlUtil.entryPointAsync();
-    log(crayon.gray('Using mainModulePath of', mainModulePath, 'and an entry point of', entryPoint));
+    log(crayon.gray("Using mainModulePath of", mainModulePath, "and an entry point of", entryPoint));
 
     var ngrokSubdomain = argv['ngrok-subdomain'] || config.ngrok && config.ngrok.subdomain || undefined;
     var ngrokAuthToken = argv['ngrok-auth-token'] || config.ngrok && config.ngrok.authToken || undefined;
@@ -55,12 +55,14 @@ module.exports = {
     var urlP = ngrok.promise.connect({
       port: port,
       authtoken: ngrokAuthToken,
-      subdomain: ngrokSubdomain });
+      subdomain: ngrokSubdomain
+    });
 
     //var root = path.resolve(__dirname, '..', '..');
     var root = config.absolutePath;
-    var packager = child_process.spawn(config.packagerPath, ['--port=' + port, '--root=' + root, '--assetRoots=' + root], {
-      stdio: [process.stdin, 'pipe', process.stderr] });
+    var packager = child_process.spawn(config.packagerPath, ["--port=" + port, "--root=" + root, "--assetRoots=" + root], {
+      stdio: [process.stdin, 'pipe', process.stderr]
+    });
 
     var outStream = new stream.Writable();
     outStream.buffer = '';
@@ -91,7 +93,7 @@ module.exports = {
       return urlUtil.writeUrlFileAsync(ngrokUrl);
     });
 
-    log(crayon.gray('The packager is starting up and building your initial bundle...'));
+    log(crayon.gray("The packager is starting up and building your initial bundle..."));
 
     var sendTo = argv.send;
     if (sendTo === true) {
@@ -102,14 +104,15 @@ module.exports = {
     var waitingForUserInput = false;
 
     if (!sendTo) {
-      console.log('Enter a phone number or an e-mail address if you want to have');
-      console.log('a link to view this project sent to your phone');
+      console.log("Enter a phone number or an e-mail address if you want to have");
+      console.log("a link to view this project sent to your phone");
 
       waitingForUserInput = true;
       inquirerAsync.promptAsync([{
         type: 'input',
         name: 'sendTo',
-        message: 'Mobile number or e-mail address (optional):' }]).then(function (answers) {
+        message: "Mobile number or e-mail address (optional):"
+      }]).then(function (answers) {
         waitingForUserInput = false;
         if (waitingForUrl) {
           simpleSpinner.start();
@@ -139,20 +142,21 @@ module.exports = {
     } else {
       simpleSpinner.stop();
     }
-    console.log('\nVisit this URL in the Exponent app on your phone to view this project:\n' + crayon.green(expUrl) + '\n');
+    console.log("\nVisit this URL in the Exponent app on your phone to view this project:\n" + crayon.green(expUrl) + "\n");
 
-    log(crayon.gray('Packager is running on port ' + port));
+    log(crayon.gray("Packager is running on port " + port));
     console.log(crayon.gray(packagerBuffer));
     console.log(crayon.gray(outStream.buffer));
     packager.stdout.pipe(process.stdout);
 
     if (sendTo) {
-      log(crayon.gray('Sending URL to', sendTo));
+      log(crayon.gray("Sending URL to", sendTo));
       try {
         var result = yield urlUtil.sendUrlAsync(sendTo, expUrl);
       } catch (e) {
-        log.error('Failed to send link to', sendTo);
+        log.error("Failed to send link to", sendTo);
       }
     }
-  }) };
+  })
+};
 //# sourceMappingURL=../sourcemaps/commands/archivedServe.js.map

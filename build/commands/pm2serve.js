@@ -72,13 +72,13 @@ function packageJsonFullPath() {
 module.exports = {
   start: {
     name: 'start',
-    description: 'Starts or restarts a local server to serve your app and gives you a URL to it',
-    args: ['[project-dir]'],
-    options: [['--path', 'The path to the place where your package is', '.'], ['--port', 'The port to run the server on', 'Random free port'],
+    description: "Starts or restarts a local server to serve your app and gives you a URL to it",
+    args: ["[project-dir]"],
+    options: [['--path', "The path to the place where your package is", '.'], ['--port', "The port to run the server on", "Random free port"],
     //['--ngrokSubdomain', "The ngrok subdomain to use", (config.ngrok && config.ngrok.subdomain)],
     //['--ngrokAuthToken', "The ngrok authToken to use", (config.ngrok && config.ngrok.authToken)],
-    ['--sendTo', 'A phone number or e-mail address to send a link to'], ['--nosend', 'Don\'t ask about sending a link to the server']],
-    help: 'Starts a local server to serve your app and gives you a URL to it.\n' + '[project-dir] defaults to \'.\'\n' + '\n' + 'If you don\'t specify a port, a random, free port will be chosen automatically.',
+    ['--sendTo', "A phone number or e-mail address to send a link to"], ['--nosend', "Don't ask about sending a link to the server"]],
+    help: "Starts a local server to serve your app and gives you a URL to it.\n" + "[project-dir] defaults to '.'\n" + "\n" + "If you don't specify a port, a random, free port will be chosen automatically.",
     runAsync: _asyncToGenerator(function* (env) {
       var argv = env.argv;
       var args = argv._;
@@ -112,18 +112,18 @@ module.exports = {
           //var app = await getPm2AppByIdAsync(pm2Id);
           var app = yield getPm2AppByNameAsync(pm2Name);
           if (app) {
-            log('pm2 managed process exists; restarting it');
+            log("pm2 managed process exists; restarting it");
             yield pm2.promise.restart(app.pm_id);
             //var app_ = await getPm2AppByIdAsync(pm2Id);
             needToStart = false;
           } else {
-            log('Can\'t find pm2 managed process', pm2Id, ' so will start a new one');
+            log("Can't find pm2 managed process", pm2Id, " so will start a new one");
             yield config.expInfoFile.deleteKeyAsync('pm2Id');
           }
         }
 
         if (needToStart) {
-          log('Starting exp-serve process under pm2');
+          log("Starting exp-serve process under pm2");
 
           // If it's not being managed by pm2 then start it
           var _apps = yield pm2.promise.start({
@@ -132,7 +132,8 @@ module.exports = {
             args: args_,
             watch: false,
             cwd: process.cwd(),
-            env: process.env });
+            env: process.env
+          });
         }
 
         var app = yield getPm2AppByNameAsync(pm2Name);
@@ -140,7 +141,7 @@ module.exports = {
         if (app) {
           yield config.expInfoFile.mergeAsync({ pm2Name: pm2Name, pm2Id: app.pm_id });
         } else {
-          throw CommandError('PM2_ERROR_STARTING_PROCESS', env, 'Something went wrong starting exp serve:');
+          throw CommandError('PM2_ERROR_STARTING_PROCESS', env, "Something went wrong starting exp serve:");
         }
 
         yield pm2.promise.disconnect();
@@ -150,15 +151,15 @@ module.exports = {
           recipient = yield askUser.askForMobileNumberAsync();
         }
 
-        log('Waiting for packager, etc. to start');
+        log("Waiting for packager, etc. to start");
         simpleSpinner.start();
         yield waitForRunningAsync(config.expInfoFile);
         simpleSpinner.stop();
-        log('Exponent is ready.');
+        log("Exponent is ready.");
 
         var httpUrl = yield urlUtil.mainBundleUrlAsync({ type: 'ngrok' });
         var url = urlUtil.expUrlFromHttpUrl(httpUrl);
-        log('Your URL is\n\n' + crayon.underline(url) + '\n');
+        log("Your URL is\n\n" + crayon.underline(url) + "\n");
 
         if (recipient) {
           yield sendTo.sendUrlAsync(url, recipient);
@@ -167,10 +168,10 @@ module.exports = {
         return config.expInfoFile.readAsync();
       }
 
-      log(crayon.gray('Using project at', process.cwd()));
+      log(crayon.gray("Using project at", process.cwd()));
       var mainModulePath = yield urlUtil.guessMainModulePathAsync();
       var entryPoint = yield urlUtil.entryPointAsync();
-      log(crayon.gray('Using mainModulePath of', mainModulePath, 'and an entry point of', entryPoint));
+      log(crayon.gray("Using mainModulePath of", mainModulePath, "and an entry point of", entryPoint));
 
       var ngrokSubdomain = argv['ngrok-subdomain'] || config.ngrok && config.ngrok.subdomain || undefined;
       var ngrokAuthToken = argv['ngrok-auth-token'] || config.ngrok && config.ngrok.authToken || undefined;
@@ -179,22 +180,25 @@ module.exports = {
       yield serveAsync({ port: port });
 
       return config.expInfoFile.readAsync();
-    }) },
+    })
+  },
   stop: {
     name: 'stop',
-    description: 'Stops the server',
+    description: "Stops the server",
     runAsync: _asyncToGenerator(function* (env) {
       yield pm2.promise.connect();
       try {
-        log('Stopping the server...');
+        log("Stopping the server...");
         yield pm2.promise.stop((yield pm2NameAsync()));
       } catch (e) {
-        log.error('Failed to stop the server\n' + e.message);
+        log.error("Failed to stop the server\n" + e.message);
       }
       yield pm2.promise.disconnect();
       yield config.expInfoFile.updateAsync({ state: 'STOPPED' });
-      log('Stopped.');
-    }) },
+      log("Stopped.");
+    })
+  },
   pm2NameAsync: pm2NameAsync,
-  setupServeAsync: setupServeAsync };
+  setupServeAsync: setupServeAsync
+};
 //# sourceMappingURL=../sourcemaps/commands/pm2serve.js.map

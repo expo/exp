@@ -21,12 +21,13 @@ var slugid = require('slugid');
 var userSettings = require('./userSettings');
 
 function _newIdentifier() {
-  var type = arguments[0] === undefined ? 'c' : arguments[0];
+  var type = arguments.length <= 0 || arguments[0] === undefined ? 'c' : arguments[0];
 
   return type + '-' + slugid.v4();
 }
 
 module.exports = {
   clientIdAsync: clientIdAsync,
-  setClientIdAsync: setClientIdAsync };
+  setClientIdAsync: setClientIdAsync
+};
 //# sourceMappingURL=sourcemaps/session.js.map

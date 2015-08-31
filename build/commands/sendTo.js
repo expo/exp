@@ -3,14 +3,14 @@
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
 
 var sendUrlAsync = _asyncToGenerator(function* (url, recipient) {
-  log('Sending URL to', recipient);
+  log("Sending URL to", recipient);
   simpleSpinner.start();
   try {
     var result = yield api.callMethodAsync('send', [recipient, url]);
   } finally {
     simpleSpinner.stop();
   }
-  log('Sent.');
+  log("Sent.");
   return result;
 });
 
@@ -20,5 +20,6 @@ var api = require('../api');
 var log = require('../log');
 
 module.exports = {
-  sendUrlAsync: sendUrlAsync };
+  sendUrlAsync: sendUrlAsync
+};
 //# sourceMappingURL=../sourcemaps/commands/sendTo.js.map

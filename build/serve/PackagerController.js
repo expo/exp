@@ -21,7 +21,8 @@ var PackagerController = (function () {
     _classCallCheck(this, PackagerController);
 
     var DEFAULT_OPTS = {
-      port: undefined };
+      port: undefined
+    };
     this.opts = _.assign(DEFAULT_OPTS, opts);
     this._givenOpts = opts;
 
@@ -34,7 +35,7 @@ var PackagerController = (function () {
   _createClass(PackagerController, [{
     key: 'start',
     value: function start() {
-      throw new Error('Use `.startAsync()` instead of `.start()`');
+      throw new Error("Use `.startAsync()` instead of `.start()`");
     }
   }, {
     key: 'startAsync',
@@ -48,9 +49,10 @@ var PackagerController = (function () {
         // code in serveAsync.js that also determines a free port
         this.opts.port = yield freeportAsync(19000);
       }
-      this._packager = child_process.spawn(config.packagerPath, ['--port=' + this.opts.port, '--root=' + root, '--assetRoots=' + root], {
+      this._packager = child_process.spawn(config.packagerPath, ["--port=" + this.opts.port, "--root=" + root, "--assetRoots=" + root], {
         stdio: [process.stdin, 'pipe', process.stderr],
-        detached: false });
+        detached: false
+      });
 
       this._packager.stdout.on('readable', function () {
         var chunk;
@@ -71,7 +73,7 @@ var PackagerController = (function () {
   }, {
     key: 'stop',
     value: function stop() {
-      throw new Error('Use `.stopAsync()` instead of `.stop()`');
+      throw new Error("Use `.stopAsync()` instead of `.stop()`");
     }
   }, {
     key: 'stopAsync',
@@ -87,7 +89,7 @@ var PackagerController = (function () {
           _this3._packager.once('exit', fulfill);
           _this3._packager.kill();
         } else {
-          reject(new Error('Packager hasn\'t been started'));
+          reject(new Error("Packager hasn't been started"));
         }
       });
     }

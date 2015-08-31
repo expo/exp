@@ -24,5 +24,6 @@ module.exports = {
   argv: argv,
   packagerPath: packagerPath,
   expInfoFile: expInfoFile,
-  packageJsonFile: packageJsonFile };
+  packageJsonFile: packageJsonFile
+};
 //# sourceMappingURL=sourcemaps/config.js.map

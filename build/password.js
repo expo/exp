@@ -8,5 +8,6 @@ function hashPassword(cleartextPassword) {
 }
 
 module.exports = {
-  hashPassword: hashPassword };
+  hashPassword: hashPassword
+};
 //# sourceMappingURL=sourcemaps/password.js.map

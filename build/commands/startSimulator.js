@@ -10,8 +10,8 @@ var urlUtil = require('../urlUtil');
 
 module.exports = {
   name: 'start-simulator',
-  description: '(beta) Opens your article on the simulator',
-  help: '(beta) (Only works on Macs with Xcode installed)\n' + ', and currently only the iPhone 6 simulator works.',
+  description: "(beta) Opens your article on the simulator",
+  help: "(beta) (Only works on Macs with Xcode installed)\n" + ", and currently only the iPhone 6 simulator works.",
   runAsync: _asyncToGenerator(function* (env) {
     var argv = env.argv;
     var args = argv._;
@@ -21,14 +21,15 @@ module.exports = {
         var uo = urlOpts.optsFromEnv(env, { type: 'localhost' });
         var httpUrl = yield urlUtil.mainBundleUrlAsync(uo);
       } catch (e) {
-        throw CommandError('EXP_START_FIRST', env, 'No URL detected; try running `exp start` first');
+        throw CommandError('EXP_START_FIRST', env, "No URL detected; try running `exp start` first");
       }
       url = urlUtil.expUrlFromHttpUrl(httpUrl);
     }
     log(url);
-    log('Only the iPhone 6 simulator works right now (TODO)');
+    log("Only the iPhone 6 simulator works right now (TODO)");
     yield simulator.openUrlInUserChosenSimulatorAsync(url);
-    log('Opening URL in simulator...');
+    log("Opening URL in simulator...");
     return url;
-  }) };
+  })
+};
 //# sourceMappingURL=../sourcemaps/commands/startSimulator.js.map

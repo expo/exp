@@ -1,14 +1,127 @@
-var crayon = require('@ccheever/crayon');
-var fs = require('fs');
-var instapromise = require('instapromise');
-var jsonFile = require('@exponent/json-file');
-var mkdirp = require('mkdirp');
-var path = require('path');
+let jsonFile = require('@exponent/json-file');
+let existsAsync = require('exists-async');
+let fs = require('fs');
+let fsExtra = require('fs-extra');
+let mkdirp = require('mkdirp');
+let path = require('path');
 
-var spawnAsync = require('@exponent/spawn-async');
+let TEMPLATE_ROOT = path.resolve(path.join(__dirname, '../../example'));
 
-var CommandError = require('./CommandError');
-var log = require('../log');
+function NewExpError(code, message) {
+  let err = new Error(message);
+  err.code = code;
+  err._isNewExpError;
+  return err;
+}
+
+function packageJsonForRoot(root) {
+  return jsonFile(path.join(root, 'package.json'));
+}
+
+async function determineEntryPoint(root) {
+  let pkgJson = packageJsonForRoot(root);
+  let main = await pkgJson.getAsync('main', 'index.js');
+  // console.log("main=", main);
+  return main;
+}
+
+async function _getReactNativeVersionAsync() {
+  let xdePackageJson =  jsonFile(path.join(__dirname, '../../package.json'));
+  return await xdePackageJson.getAsync(['dependencies', 'react-native']);
+}
+
+async function _installReactNativeInNewProjectWithRoot(root) {
+  let nodeModulesPath = path.join(root, 'node_modules');
+  await mkdirp.promise(nodeModulesPath);
+  await fsExtra.copy.promise(path.join(__dirname, '../../node_modules/react-native'), path.join(nodeModulesPath, 'react-native'));
+}
+
+async function createNewExpAsync(root, info, opts) {
+
+  let pp = path.parse(root);
+  let name = pp.name;
+
+  // opts = opts || {force: true};
+  opts = opts || {};
+
+  // let author = await userSettings.getAsync('email', null);
+  let author = "TODO";
+
+  let dependencies = {
+    'react-native': await _getReactNativeVersionAsync(),
+  };
+
+  let data = Object.assign({
+    name,
+    version: '0.0.0',
+    description: "Hello Exponent!",
+    main: 'main.js',
+    author,
+    dependencies,
+    //license: "MIT",
+    // scripts: {
+    //   "test": "echo \"Error: no test specified\" && exit 1"
+    // },
+  }, info);
+
+  let pkgJson = jsonFile(path.join(root, 'package.json'));
+
+  let exists = await existsAsync(pkgJson.file);
+  if (exists && !opts.force) {
+    throw NewExpError('WONT_OVERWRITE_WITHOUT_FORCE', "Refusing to create new Exp because package.json already exists at root");
+  }
+
+  await mkdirp.promise(root);
+
+  let result = await pkgJson.writeAsync(data);
+
+  await fsExtra.promise.copy(TEMPLATE_ROOT, root);
+
+  // Custom code for replacing __NAME__ in main.js
+  let mainJs = await fs.readFile.promise(path.join(TEMPLATE_ROOT, 'main.js'), 'utf8');
+  let customMainJs = mainJs.replace(/__NAME__/g, data.name);
+  result = await fs.writeFile.promise(path.join(root, 'main.js'), customMainJs, 'utf8');
+
+  // Intall react-native
+  await _installReactNativeInNewProjectWithRoot(root);
+
+  return data;
+
+}
+
+function getHomeDir() {
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}
+
+function makePathReadable(pth) {
+  let homedir = getHomeDir();
+  if (pth.substr(0, homedir.length) === homedir) {
+    return '~' + pth.substr(homedir.length);
+  } else {
+    return pth;
+  }
+}
+
+async function expInfoAsync(root) {
+  let pkgJson = packageJsonForRoot(root);
+  let pkg = await pkgJson.readAsync();
+  let name = pkg.name;
+  let description = pkg.description;
+  return {
+    readableRoot: makePathReadable(root),
+    root,
+    name,
+    description,
+  };
+}
+
+async function expInfoSafeAsync(root) {
+  try {
+    return await expInfoAsync(root);
+  } catch (e) {
+    return null;
+  }
+}
 
 module.exports = {
   name: 'init',
@@ -16,54 +129,20 @@ module.exports = {
   help: "Asks you questions and then sets up a directory",
   args: ['[path-to-project-dir]'],
   runAsync: async function (env) {
-    var argv = env.argv;
-    var args = argv._;
-
-    // Here is what this will do
-
-    // 0. If there is a command line argument, make a new directory in the current directory and chdir to it
-    var dirName = args[1];
-    var originalCwd = process.cwd();
-    if (dirName) {
-      dirName = dirName.toString();
-      await mkdirp.promise(dirName);
-      log("Setting up an Exponent project at", path.resolve(dirName));
-      process.chdir(dirName);
-    }
-
-    // 1. If there is no package.json in the current directory, run npm init
-    var pkgJsonFile = jsonFile('package.json');
-    var pkg;
-    try {
-      pkg = await pkgJsonFile.readAsync();
-    } catch (e) {
-      //console.error(e);
-
-      // No package.json, so let's create it
-      log(crayon.cyan("No package.json file found. Using `npm init` to help you create one."));
-      log(crayon.cyan("Answer the questions and a package.json will be created for you."));
-      var _zero = await spawnAsync('npm', ['init'], {stdio: 'inherit'});
-      pkg = await pkgJsonFile.readAsync();
-    }
-
-    var entryPoint = pkg.main || 'index.js';
-
-    // 2. Figure out the entry point of the app. Try to create that file with the template
-    //    ... but fail if it already exist
-
-    var js = await fs.promise.readFile(path.join(__dirname, '..', '..', 'example', 'main.js'), 'utf8');
-    try {
-      await fs.promise.writeFile(entryPoint, js, {encoding: 'utf8', flag: 'wx'});
-      log("Created an entry point for your app at", entryPoint);
-    } catch (e) {
-      log.warn("The entry point (" + entryPoint + ") already exists; refusing to overwrite.\n" + e + "\nIf you want to use the standard template sample file,\ndelete that file and rerun `exp init` again.")
-      //throw CommandError('ENTRY_POINT_EXISTS', env, "The entry point (" + entryPoint + ") already exists; refusing to overwrite.\n" + e + "\nDelete that file and rerun `exp init` to try again.");
-    }
-
-    if (process.cwd() != originalCwd) {
-      log("Set up your Exponent project in", process.cwd());
-    }
-
-
+    let argv = env.argv;
+    let args = argv._;
+    let dirName = args[1];
+    let originalCwd = process.cwd();
+    let root = dirName || originalCwd;
+    let info = await expInfoSafeAsync(root);
+    let opts = {};
+    opts.force = argv.force;
+    return await createNewExpAsync(root, info, opts);
   },
 };
+
+Object.assign(module.exports, {
+  determineEntryPoint,
+  createNewExpAsync,
+  _getReactNativeVersionAsync,
+});
