@@ -4,10 +4,10 @@ var instapromise = require('instapromise');
 var qrcodeTerminal = require('qrcode-terminal');
 var simpleSpinner = require('@exponent/simple-spinner');
 
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 var log = require('../log');
-var sendTo = require('./sendTo');
-var urlOpts = require('./urlOpts');
+var sendTo = require('../sendTo');
+var urlOpts = require('../urlOpts');
 var urlUtil = require('../urlUtil');
 
 module.exports = {

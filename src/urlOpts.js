@@ -1,6 +1,6 @@
 var _ = require('lodash-node');
 
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 
 var options = function (def) {
     return [

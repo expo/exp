@@ -1,7 +1,7 @@
 var simpleSpinner = require('@exponent/simple-spinner');
 
 var api = require('../api');
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 var config = require('../config');
 var log = require('../log');
 var urlUtil = require('../urlUtil');

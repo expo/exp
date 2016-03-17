@@ -2,7 +2,7 @@ var crayon = require('@ccheever/crayon');
 var windowSize = require('window-size');
 var wordwrap = require('wordwrap');
 
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 var commands = require('./commands');
 
 function showHelp(command) {

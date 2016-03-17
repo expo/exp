@@ -1,7 +1,7 @@
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 var log = require('../log');
 var simulator = require('../simulator');
-var urlOpts = require('./urlOpts');
+var urlOpts = require('../urlOpts');
 var urlUtil = require('../urlUtil');
 
 module.exports = {

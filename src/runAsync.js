@@ -1,9 +1,9 @@
 var crayon = require('@ccheever/crayon');
 
 var CommandError = require('./CommandError');
-var commands = require('./commands');
-var help = require('./help');
-var log = require('../log');
+var commands = require('./commands/commands');
+var help = require('./commands/help');
+var log = require('./log');
 
 function scriptName() {
   try {

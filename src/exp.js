@@ -28,7 +28,7 @@ var config = require('./config');
 var log = require('./log');
 var update = require('./update');
 
-module.exports = require('./commands/runAsync');
+module.exports = require('./runAsync');
 
 if (require.main === module) {
 

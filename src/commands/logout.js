@@ -1,7 +1,7 @@
 var _ = require('lodash-node');
 
 var api = require('../api');
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 var log = require('../log');
 var userSettings = require('../userSettings');
 

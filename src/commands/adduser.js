@@ -2,7 +2,7 @@ var _ = require('lodash-node');
 var inquirerAsync = require('inquirer-async');
 
 var api = require('../api');
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 var log = require('../log');
 var password = require('../password');
 var userSettings = require('../userSettings');

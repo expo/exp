@@ -6,10 +6,10 @@ var instapromise = require('instapromise');
 var needle = require('needle');
 var simpleSpinner = require('@exponent/simple-spinner');
 
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 var log = require('../log');
 var urlUtil = require('../urlUtil');
-var urlOpts = require('./urlOpts');
+var urlOpts = require('../urlOpts');
 
 module.exports = {
   name: 'bundle',

@@ -1,7 +1,7 @@
 var crayon = require('@ccheever/crayon');
 var pm2 = require('pm2');
 
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 var config = require('../config');
 var log = require('../log');
 var pm2serve = require('./pm2serve');

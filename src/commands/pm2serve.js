@@ -10,10 +10,10 @@ var pm2 = require('pm2');
 var simpleSpinner = require('@exponent/simple-spinner');
 
 var askUser = require('../askUser');
-var CommandError = require('./CommandError');
+var CommandError = require('../CommandError');
 var config = require('../config');
 var log = require('../log');
-var sendTo = require('../commands/sendTo');
+var sendTo = require('../sendTo');
 var serveAsync = require('../serve/serveAsync');
 var urlUtil = require('../urlUtil');
 var userSettings = require('../userSettings');
