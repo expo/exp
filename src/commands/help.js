@@ -3,7 +3,7 @@ var windowSize = require('window-size');
 var wordwrap = require('wordwrap');
 
 var CommandError = require('../CommandError');
-var commands = require('./commands');
+var commands = require('../commands');
 
 function showHelp(command) {
   var argsString = command.args ? command.args.join(' ') : '';

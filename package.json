@@ -66,8 +66,5 @@
     "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-watch": "^4.3.4"
-  },
-  "peerDependencies": {
-    "npm": "*"
   }
 }
