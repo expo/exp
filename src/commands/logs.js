@@ -27,9 +27,8 @@ module.exports = {
     var lines = argv.lines || 50;
 
     log("Use Ctrl-C to stop streaming logs");
-    
+
     await pm2.promise.connect();
     pm2.streamLogs(pm2Id, lines, !!argv.raw);
-
   },
 };

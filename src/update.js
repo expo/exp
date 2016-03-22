@@ -46,9 +46,6 @@ async function checkForExpUpdateAsync() {
       throw new Error("Confused about whether exp is up-to-date or not");
   }
 
-  state = 'deprecated';
-  message = message + "\n" + crayon.red("exp is now deprecated. xde, the new GUI that replaces exp, is available at\nhttps://github.com/exponentjs/xde");
-
   return {
     state,
     message,

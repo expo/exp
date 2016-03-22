@@ -19,10 +19,10 @@ var commands = {
   send: () => require('./commands/send'),
 
   // Publishing
-  adduser: () => require('./commands/adduser'),
-  login: () => require('./commands/login'),
-  logout: () => require('./commands/logout'),
-  whoami: () => require('./commands/whoami'),
+  adduser: () => require('./commands/adduser'), // done
+  login: () => require('./commands/login'), // done
+  logout: () => require('./commands/logout'), // done
+  whoami: () => require('./commands/whoami'), // done
   publish: () => require('./commands/publish'),
 
   // Advanced

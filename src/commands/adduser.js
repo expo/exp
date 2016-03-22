@@ -1,11 +1,12 @@
 var _ = require('lodash-node');
 var inquirerAsync = require('inquirer-async');
 
-var api = require('../api');
+import {
+  Login,
+} from 'xdl';
+
 var CommandError = require('../CommandError');
 var log = require('../log');
-var password = require('../password');
-var userSettings = require('../userSettings');
 
 module.exports = {
   name: 'adduser',
@@ -14,14 +15,9 @@ module.exports = {
   runAsync: async function (env) {
     var argv = env.argv;
     var args = argv._;
-    var [_cmd, username, cleartextPassword, fullName, email, phoneNumber] = args;
+    var [_cmd, username, password] = args;
     username = username || argv.username;
-    cleartextPassword = cleartextPassword || argv.password
-    email = email || argv.email;
-    phoneNumber = phoneNumber || argv.phoneNumber;
-    fullName = fullName || argv.fullName;
-
-    var settingsData = await userSettings.readAsync();
+    password = password || argv.password
 
     var questions = [];
 
@@ -30,7 +26,6 @@ module.exports = {
         type: 'input',
         name: 'username',
         message: 'username',
-        default: settingsData.username,
         validate: function (val) {
           // TODO: Validate username here
           return true;
@@ -38,10 +33,10 @@ module.exports = {
       });
     }
 
-    if (!cleartextPassword) {
+    if (!password) {
       questions.push({
         type: 'password',
-        name: 'cleartextPassword',
+        name: 'password',
         message: 'password',
         validate: function (val) {
           // TODO: Validate
@@ -50,69 +45,21 @@ module.exports = {
       });
     }
 
-    if (!fullName && !env.isLogin) {
-      questions.push({
-        type: 'input',
-        name: 'fullName',
-        message: 'Full Name',
-        default: settingsData.fullName,
-        validate: function (val) {
-          // TODO: Validate
-          return true;
-        },
-      });
-    }
-
-    if (!email && !env.isLogin) {
-      questions.push({
-        type: 'input',
-        name: 'email',
-        message: "E-mail address",
-        default: settingsData.email,
-      });
-    }
-
-    if (!phoneNumber && !env.isLogin) {
-      questions.push({
-        type: 'input',
-        name: 'phoneNumber',
-        message: 'Mobile phone number',
-        default: settingsData.phoneNumber,
-      });
-    }
-
-    // TODO: Make this more of a Promise/yieldable situation so we can continue inline here
     var answers = await inquirerAsync.promptAsync(questions);
 
     var data = {
       username: username || answers.username,
-      cleartextPassword: cleartextPassword || answers.cleartextPassword,
-      email: email || answers.email,
-      phoneNumber: phoneNumber || answers.phoneNumber,
-      fullName: fullName || answers.fullName,
+      password: password || answers.password,
     };
 
-    // Store only the hashed version of someone's password
-    data.hashedPassword = password.hashPassword(data.cleartextPassword);
-    delete data.cleartextPassword;
-
-    // We're logging in from a non-browser client
-    data.type = 'client';
-
-    var result = await api.callMethodAsync('adduser', data);
-
+    var result = await Login.loginOrAddUserAsync(data);
     var user = result.user;
 
     if (user) {
-      user.hashedPassword = data.hashedPassword;
-      await userSettings.mergeAsync(user);
-      delete user.hashedPassword;
       log("Success.");
-      console.log(user);
       return result;
     } else {
       throw new Error("Unexpected Error: No user returned from the API");
     }
-
   },
 };

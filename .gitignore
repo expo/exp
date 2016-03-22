@@ -28,3 +28,5 @@ node_modules
 
 # exp stuff
 .exponent.url
+
+build/

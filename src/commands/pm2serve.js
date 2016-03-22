@@ -85,8 +85,6 @@ module.exports = {
       await setupServeAsync(env);
 
       if (!argv.nodaemon) {
-        //log("Using pm2");
-
         var [pm2Name, pm2Id] = await Promise.all([
           pm2NameAsync(),
           config.expInfoFile.getAsync('pm2Id', null),
@@ -117,7 +115,6 @@ module.exports = {
             log("Can't find pm2 managed process", pm2Id, " so will start a new one");
             await config.expInfoFile.deleteKeyAsync('pm2Id');
           }
-
         }
 
         if (needToStart) {
@@ -133,7 +130,6 @@ module.exports = {
             env: process.env,
           });
         }
-
 
         var app = await getPm2AppByNameAsync(pm2Name);
 
@@ -165,9 +161,6 @@ module.exports = {
         }
 
         return config.expInfoFile.readAsync();
-
-
-
       }
 
       log(crayon.gray("Using project at", process.cwd()));
@@ -182,8 +175,6 @@ module.exports = {
       await serveAsync({port});
 
       return config.expInfoFile.readAsync();
-
-
     },
   },
   stop: {

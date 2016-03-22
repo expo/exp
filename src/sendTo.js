@@ -1,14 +1,15 @@
 var simpleSpinner = require('@exponent/simple-spinner');
+var log = require('./log');
 
-var api = require('../api');
-var log = require('../log');
-
+import {
+  Api,
+} from 'xdl';
 
 async function sendUrlAsync(url, recipient) {
   log("Sending URL to", recipient);
   simpleSpinner.start();
   try {
-    var result = await api.callMethodAsync('send', [recipient, url]);
+    var result = await Api.callMethodAsync('send', [recipient, url]);
   } finally {
     simpleSpinner.stop();
   }

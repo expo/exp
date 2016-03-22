@@ -26,6 +26,14 @@
     "url": "https://github.com/exponentjs/exp/issues"
   },
   "homepage": "https://github.com/exponentjs/exp#readme",
+  "devDependencies": {
+    "@exponent/gulp-babel": "^7.1.0",
+    "gulp": "^3.9.0",
+    "@exponent/gulp-changed": "^1.3.1",
+    "gulp-plumber": "^1.0.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-watch": "^4.3.4"
+  },
   "dependencies": {
     "@ccheever/crayon": "^5.0.0",
     "@exponent/json-file": "^3.0.0",
@@ -52,19 +60,11 @@
     "pm2": "^0.14.5",
     "qrcode-terminal": "^0.10.0",
     "react": "^0.13.3",
-    "react-native": "ide/react-native#2015-08-02-exp",
     "semver": "^5.0.1",
     "simctl": "0.0.6",
     "slugid": "^1.0.3",
     "window-size": "^0.1.2",
-    "wordwrap": "^1.0.0"
-  },
-  "devDependencies": {
-    "@exponent/gulp-babel": "^7.1.0",
-    "gulp": "^3.9.0",
-    "@exponent/gulp-changed": "^1.3.1",
-    "gulp-plumber": "^1.0.1",
-    "gulp-sourcemaps": "^1.5.2",
-    "gulp-watch": "^4.3.4"
+    "wordwrap": "^1.0.0",
+    "xdl": "^1.0.0"
   }
 }

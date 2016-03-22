@@ -27,8 +27,8 @@ module.exports = function(command, argv) {
   }
 
   var cmd;
-  try {
     cmd = commands[command]();
+  try {
   } catch (e) {
     cmd = undefined;
   }
