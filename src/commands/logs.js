@@ -17,10 +17,11 @@ module.exports = {
   runAsync: async function (env) {
     var argv = env.argv;
     var args = argv._;
+    var projectDir = args[1] || process.cwd();
 
     await pm2serve.setupServeAsync(env);
-    var pm2Id = await config.expInfoFile.getAsync('pm2Id', null);
-    if (!pm2Id) {
+    var pm2Id = await config.projectExpJsonFile(projectDir).getAsync('pm2Id', null);
+    if (pm2Id == null) {
       throw CommandError('NO_PM2_ID', env, "I can't find a server; try running `exp start` first.");
     }
 

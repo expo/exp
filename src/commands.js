@@ -4,19 +4,18 @@ var commands = {
 
   // Basic
   init: () => require('./commands/init'),
-  start: () => require('./commands/pm2serve').start,
-  url: () => require('./commands/url'),
-  web: () => require('./commands/web'),
+  start: () => require('./commands/pm2serve').start, //done
+  url: () => require('./commands/url'), // done
   //'start-simulator': () => require('./startSimulator'),
   open: () => require('./commands/open'),
-  stop: () => require('./commands/pm2serve').stop,
+  stop: () => require('./commands/pm2serve').stop, // done
   restart: () => {
     var restart = _.clone(require('./commands/pm2serve').start);
     restart.name = 'restart';
     restart.description = "This is an alias of `start`. They both can be used to start or restart exp-serve";
     return restart;
-  },
-  send: () => require('./commands/send'),
+  }, // done
+  send: () => require('./commands/send'), // done
 
   // Publishing
   adduser: () => require('./commands/adduser'), // done
@@ -26,10 +25,9 @@ var commands = {
   publish: () => require('./commands/publish'),
 
   // Advanced
-  bundle: () => require('./commands/bundle'),
-  status: () => require('./commands/status'),
-  logs: () => require('./commands/logs'),
-  version: () => require('./commands/version'),
+  status: () => require('./commands/status'), // done
+  logs: () => require('./commands/logs'), // done
+  version: () => require('./commands/version'), // done
 };
 
 module.exports = commands;

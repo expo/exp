@@ -1,5 +1,6 @@
 var child_process = require('child_process');
 var crayon = require('@ccheever/crayon');
+var delayAsync = require('delay-async');
 var freeportAsync = require('freeport-async');
 var inquirerAsync = require('inquirer-async');
 var instapromise = require('instapromise');
@@ -9,15 +10,18 @@ var path = require('path');
 var pm2 = require('pm2');
 var simpleSpinner = require('@exponent/simple-spinner');
 
+import {
+  RunPackager,
+  UrlUtils,
+  UserSettings,
+} from 'xdl';
+
 var askUser = require('../askUser');
 var CommandError = require('../CommandError');
 var config = require('../config');
 var log = require('../log');
 var sendTo = require('../sendTo');
-var serveAsync = require('../serve/serveAsync');
-var urlUtil = require('../urlUtil');
-var userSettings = require('../userSettings');
-var waitForRunningAsync = require('../serve/waitForRunningAsync');
+var urlOpts = require('../urlOpts');
 
 function packageJsonFullPath() {
   return path.resolve('package.json');
@@ -61,50 +65,55 @@ async function getPm2AppByNameAsync(name) {
   return a;
 }
 
+async function waitForRunningAsync(expFile) {
+  var state = await expFile.getAsync('state', null);
+  if (state === 'RUNNING') {
+    return true;
+  } else {
+    await delayAsync(500);
+    return waitForRunningAsync(expFile);
+  }
+}
+
 module.exports = {
   start: {
     name: 'start',
     description: "Starts or restarts a local server to serve your app and gives you a URL to it",
     args: ["[project-dir]"],
     options: [
-      ['--path', "The path to the place where your package is", '.'],
-      ['--port', "The port to run the server on", "Random free port"],
-      //['--ngrokSubdomain', "The ngrok subdomain to use", (config.ngrok && config.ngrok.subdomain)],
-      //['--ngrokAuthToken', "The ngrok authToken to use", (config.ngrok && config.ngrok.authToken)],
-      ['--sendTo', "A phone number or e-mail address to send a link to"],
-      ['--nosend', "Don't ask about sending a link to the server"],
+      ['--send-to', "A phone number or e-mail address to send a link to"],
+      ...(urlOpts.options()),
     ],
     help: "Starts a local server to serve your app and gives you a URL to it.\n" +
-      "[project-dir] defaults to '.'\n" +
-      "\n" +
-      "If you don't specify a port, a random, free port will be chosen automatically.",
+      "[project-dir] defaults to '.'",
     runAsync: async function (env) {
       var argv = env.argv;
       var args = argv._;
+      var projectDir = args[1] || process.cwd();
 
       await setupServeAsync(env);
 
+      // If run without --nodaemon, we spawn a new pm2 process that runs
+      // the same command with --nodaemon added.
       if (!argv.nodaemon) {
+        await urlOpts.optsFromEnvAsync(env);
+
         var [pm2Name, pm2Id] = await Promise.all([
           pm2NameAsync(),
-          config.expInfoFile.getAsync('pm2Id', null),
+          config.projectExpJsonFile(projectDir).getAsync('pm2Id', null),
         ]);
 
-        var bin = process.argv[0];
         var script = process.argv[1];
         var args_ = process.argv.slice(2);
         args_.push('--nodaemon');
 
         await pm2.promise.connect();
-
-        await config.expInfoFile.writeAsync({pm2Id, pm2Name, state: 'STARTING'});
+        await config.projectExpJsonFile(projectDir).writeAsync({pm2Id, pm2Name, state: 'STARTING'});
 
         // There is a race condition here, but let's just not worry about it for now...
         var needToStart = true;
-        if (pm2Id) {
-
+        if (pm2Id != null) {
           // If this is already being managed by pm2, then restart it
-          //var app = await getPm2AppByIdAsync(pm2Id);
           var app = await getPm2AppByNameAsync(pm2Name);
           if (app) {
             log("pm2 managed process exists; restarting it");
@@ -113,7 +122,7 @@ module.exports = {
             needToStart = false;
           } else {
             log("Can't find pm2 managed process", pm2Id, " so will start a new one");
-            await config.expInfoFile.deleteKeyAsync('pm2Id');
+            await config.projectExpJsonFile(projectDir).deleteKeyAsync('pm2Id');
           }
         }
 
@@ -132,55 +141,73 @@ module.exports = {
         }
 
         var app = await getPm2AppByNameAsync(pm2Name);
-
         if (app) {
-          await config.expInfoFile.mergeAsync({pm2Name, pm2Id: app.pm_id});
+          await config.projectExpJsonFile(projectDir).mergeAsync({pm2Name, pm2Id: app.pm_id});
         } else {
           throw CommandError('PM2_ERROR_STARTING_PROCESS', env, "Something went wrong starting exp serve:");
         }
 
         await pm2.promise.disconnect();
 
-        var recipient = argv.sendTo || null;
-        if (!recipient && !argv.nosend) {
-          recipient = await askUser.askForMobileNumberAsync();
+        var recipient;
+        if (!!argv['send-to']) {
+          if (!!argv['send-to'] != argv['send-to']) { // not a boolean
+            recipient = argv['send-to'];
+          } else {
+            recipient = await UserSettings.getAsync('sendTo', null);
+          }
+
+          if (!recipient) {
+            recipient = await askUser.askForSendToAsync();
+          }
         }
 
         log("Waiting for packager, etc. to start");
         simpleSpinner.start();
-        await waitForRunningAsync(config.expInfoFile);
+        await waitForRunningAsync(config.projectExpJsonFile(projectDir));
         simpleSpinner.stop();
         log("Exponent is ready.");
 
-        var httpUrl = await urlUtil.mainBundleUrlAsync({type: 'ngrok'});
-        var url = urlUtil.expUrlFromHttpUrl(httpUrl);
+        let url = await UrlUtils.constructManifestUrlAsync(projectDir);
         log("Your URL is\n\n" + crayon.underline(url) + "\n");
 
         if (recipient) {
           await sendTo.sendUrlAsync(url, recipient);
         }
 
-        return config.expInfoFile.readAsync();
+        return config.projectExpJsonFile(projectDir).readAsync();
       }
 
       log(crayon.gray("Using project at", process.cwd()));
-      var mainModulePath = await urlUtil.guessMainModulePathAsync();
-      var entryPoint = await urlUtil.entryPointAsync();
-      log(crayon.gray("Using mainModulePath of", mainModulePath, "and an entry point of", entryPoint));
 
-      var ngrokSubdomain = argv['ngrok-subdomain'] || (config.ngrok && config.ngrok.subdomain) || undefined;
-      var ngrokAuthToken = argv['ngrok-auth-token'] || (config.ngrok && config.ngrok.authToken) || undefined;
+      let pc = await RunPackager.runAsync({
+        root: path.resolve(process.cwd()),
+      });
 
-      var port = argv.port || await freeportAsync(9000);
-      await serveAsync({port});
+      pc.on('stdout', console.log);
+      pc.on('stderr', console.log);
 
-      return config.expInfoFile.readAsync();
+      await pc.startAsync();
+
+      config.projectExpJsonFile(projectDir).mergeAsync({
+        err: null,
+        state: 'RUNNING',
+      });
+
+      return config.projectExpJsonFile(projectDir).readAsync();
     },
   },
   stop: {
     name: 'stop',
     description: "Stops the server",
+    args: ["[project-dir]"],
     runAsync: async function (env) {
+      var argv = env.argv;
+      var args = argv._;
+      var projectDir = args[1] || process.cwd();
+
+      await setupServeAsync(env);
+
       await pm2.promise.connect();
       try {
         log("Stopping the server...");
@@ -189,7 +216,7 @@ module.exports = {
         log.error("Failed to stop the server\n" + e.message);
       }
       await pm2.promise.disconnect();
-      await config.expInfoFile.updateAsync({state: 'STOPPED'});
+      await config.projectExpJsonFile(projectDir).mergeAsync({state: 'STOPPED'});
       log("Stopped.");
     },
   },

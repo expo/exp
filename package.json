@@ -1,8 +1,11 @@
 {
   "name": "exp",
-  "version": "0.12.1",
+  "version": "0.13.4",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
   "main": "build/index.js",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -65,6 +68,6 @@
     "slugid": "^1.0.3",
     "window-size": "^0.1.2",
     "wordwrap": "^1.0.0",
-    "xdl": "^1.0.0"
+    "xdl": "^0.0.3"
   }
 }

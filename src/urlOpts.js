@@ -1,73 +1,58 @@
 var _ = require('lodash-node');
 
-var CommandError = require('../CommandError');
+import {
+  ProjectSettings,
+} from 'xdl';
 
-var options = function (def) {
+var CommandError = require('./CommandError');
+
+var options = function () {
     return [
-      ['--lan', "Use the LAN URL" + ((def === 'lan') ? " (default)" : '')],
-      ['--localhost', "Use the localhost URL" + ((def === 'localhost') ? " (default)" : '')],
-      ['--ngrok', "Use the ngrok URL" + ((def === 'ngrok') ? " (default)" : '')],
-      ['--redirect', "Generates an HTTP URL that will redirect you to your desired URL"],
+      ['--ngrok', "Use the ngrok URL (default)"],
+      ['--lan', "Use the LAN URL"],
+      ['--localhost', "Use the localhost URL"],
       ['--dev', "Have the packager generate a dev bundle"],
+      ['--strict', "Have the packager use strict mode on the bundle"],
       ['--minify', "Have the packager minify the bundle"],
-      ['--mainModulePath', "Specify the path to the main module"],
-      ['--notest', "Don't bother testing the URL"],
+      ['--exp', "Generate an exp:// URL (default)"],
       ['--http', "Generate an http:// URL instead of an exp:// URL"],
-      ['--web', "Generate a URL you can use to view your article in the Appetize web simulator"],
-      ['--short', "Generes a shortened URL that is easy to type in"],
+      ['--redirect', "Generates an HTTP URL that will redirect you to your desired URL"],
     ];
 }
 
-function optsFromEnv(env, def) {
-
-  var opts = _.clone(def);
-
+async function optsFromEnvAsync(env, def) {
   var argv = env.argv;
+  var args = argv._;
+  var projectDir = args[1] || process.cwd();
+
+  var opts = await ProjectSettings.readAsync(projectDir);
 
   if ((!!argv.lan + !!argv.localhost + !!argv.ngrok) > 1) {
-    throw CommandError('BAD_ARGS', env, "Specify at most one of --lan, --localhost, and --ngrok");
+    throw CommandError('BAD_ARGS', env, "Specify at most one of --ngrok, --lan, and --localhost");
   }
 
-  if (!!argv.web && (!!argv.lan || !!argv.localhost)) {
-    throw CommandError('BAD_ARGS', env, "You can only generate web simulator URLs with ngrok");
+  if ((!!argv.exp + !!argv.http + !!argv.redirect) > 1) {
+    throw CommandError('BAD_ARGS', env, "Specify at most one of --exp, --http, and --redirect");
   }
 
-  if (argv.lan) { opts.type = 'lan'; }
-  if (argv.localhost) { opts.type = 'localhost'; }
-  if (argv.ngrok) { opts.type = 'ngrok'; }
+  if (argv.ngrok) { opts.hostType = 'ngrok'; }
+  if (argv.lan) { opts.hostType = 'lan'; }
+  if (argv.localhost) { opts.hostType = 'localhost'; }
 
-  if (argv.web) {
-    opts.web = true;
-  }
+  opts.dev = !!argv.dev;
+  opts.strict = !!argv.strict;
+  opts.minify = !!argv.minify;
 
-  if (argv.dev) {
-    opts.dev = true;
-  }
+  if (argv.exp) { opts.urlType = 'exp'; }
+  if (argv.http) { opts.urlType = 'http'; }
+  if (argv.redirect) { opts.urlType = 'redirect'; }
 
-  if (argv.nodev) {
-    opts.dev = false;
-  }
-
-  if (argv.minify) {
-    opts.minify = true;
-  }
-
-  if (argv.nominify) {
-    opts.minify = false;
-  }
-
-  if (argv.short) {
-    opts.short = true;
-  }
-
-  opts.mainModulePath = argv.mainModulePath;
-
+  await ProjectSettings.setAsync(projectDir, opts);
 
   return opts;
-
 }
 
 module.exports = {
   options,
-  optsFromEnv,
+  optsFromEnvAsync,
 };

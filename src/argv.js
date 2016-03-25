@@ -2,20 +2,16 @@ var minimist = require('minimist');
 
 var minimistOpts = {
   boolean: [
-    'dev',
-    'minify',
-
-    'localhost',
-    'lan',
     'ngrok',
-    'web',
-
-    'qr',
-
-    'test',
+    'lan',
+    'localhost',
+    'dev',
+    'strict',
+    'minify',
+    'exp',
     'http',
     'redirect',
-
+    'qr',
     'raw',
   ],
 };
