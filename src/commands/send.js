@@ -38,7 +38,7 @@ module.exports = {
     }
 
     var recipient;
-    if (!!argv['send-to'] != argv['send-to']) { // not a boolean
+    if (typeof(argv['send-to']) !== 'boolean') {
       recipient = argv['send-to'];
     } else {
       recipient = await UserSettings.getAsync('sendTo', null);

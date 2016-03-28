@@ -39,9 +39,9 @@ async function optsFromEnvAsync(env, def) {
   if (argv.lan) { opts.hostType = 'lan'; }
   if (argv.localhost) { opts.hostType = 'localhost'; }
 
-  opts.dev = !!argv.dev;
-  opts.strict = !!argv.strict;
-  opts.minify = !!argv.minify;
+  if (typeof(argv.dev) === 'boolean') { opts.dev = !!argv.dev; }
+  if (typeof(argv.strict) === 'boolean') { opts.strict = !!argv.strict; }
+  if (typeof(argv.minify) === 'boolean') { opts.minify = !!argv.minify; }
 
   if (argv.exp) { opts.urlType = 'exp'; }
   if (argv.http) { opts.urlType = 'http'; }

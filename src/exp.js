@@ -31,7 +31,6 @@ var update = require('./update');
 module.exports = require('./runAsync');
 
 if (require.main === module) {
-
   var checkForUpdate$ = update.checkForExpUpdateAsync();
 
   module.exports(argv._[0], argv).then(function (result) {

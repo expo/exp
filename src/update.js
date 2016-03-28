@@ -9,7 +9,6 @@ async function latestExpVersionAsync() {
   var packageName = await jsonFile(path.join(__dirname, '..', 'package.json')).getAsync('name');
   var version_ = await child_process.promise.exec('npm view ' + packageName + ' version');
   return version_.trim();
-
 }
 
 async function currentExpVersionAsync() {

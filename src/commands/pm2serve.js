@@ -11,6 +11,7 @@ var pm2 = require('pm2');
 var simpleSpinner = require('@exponent/simple-spinner');
 
 import {
+  PackagerController,
   RunPackager,
   UrlUtils,
   UserSettings,
@@ -151,7 +152,7 @@ module.exports = {
 
         var recipient;
         if (!!argv['send-to']) {
-          if (!!argv['send-to'] != argv['send-to']) { // not a boolean
+          if (typeof(argv['send-to']) !== 'boolean') {
             recipient = argv['send-to'];
           } else {
             recipient = await UserSettings.getAsync('sendTo', null);
@@ -192,6 +193,14 @@ module.exports = {
       config.projectExpJsonFile(projectDir).mergeAsync({
         err: null,
         state: 'RUNNING',
+      });
+
+      process.on('exit', () => {
+        PackagerController.exit();
+      });
+
+      process.on('SIGTERM', () => {
+        PackagerController.exit();
       });
 
       return config.projectExpJsonFile(projectDir).readAsync();
