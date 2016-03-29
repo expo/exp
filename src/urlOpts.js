@@ -20,7 +20,7 @@ var options = function () {
     ];
 }
 
-async function optsFromEnvAsync(env, def) {
+async function optsFromEnvAsync(env) {
   var argv = env.argv;
   var args = argv._;
   var projectDir = args[1] || process.cwd();
