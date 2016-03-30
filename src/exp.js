@@ -57,11 +57,16 @@ async function runAsync() {
     //  require(path.resolve(file))(program);
     //});
 
+    //require('./commands/init')(program);
     require('./commands/login')(program);
     require('./commands/logout')(program);
     require('./commands/logs')(program);
+    //require('./commands/open')(program);
+    //require('./commands/publish')(program);
+    require('./commands/send')(program);
     require('./commands/signup')(program);
     require('./commands/start')(program);
+    //require('./commands/startSimulator')(program);
     require('./commands/status')(program);
     require('./commands/stop')(program);
     require('./commands/url')(program);
