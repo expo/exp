@@ -60,7 +60,6 @@
     "needle": "^0.10.0",
     "ngrok": "^0.1.99",
     "node-libs-browser": "^0.5.2",
-    "pkginfo": "^0.4.0",
     "pm2": "^0.14.5",
     "qrcode-terminal": "^0.10.0",
     "react": "^0.13.3",

@@ -6,46 +6,52 @@ import {
 
 var CommandError = require('./CommandError');
 
-var options = function () {
-    return [
-      ['--ngrok', "Use the ngrok URL (default)"],
-      ['--lan', "Use the LAN URL"],
-      ['--localhost', "Use the localhost URL"],
-      ['--dev', "Have the packager generate a dev bundle"],
-      ['--strict', "Have the packager use strict mode on the bundle"],
-      ['--minify', "Have the packager minify the bundle"],
-      ['--exp', "Generate an exp:// URL (default)"],
-      ['--http', "Generate an http:// URL instead of an exp:// URL"],
-      ['--redirect', "Generates an HTTP URL that will redirect you to your desired URL"],
-    ];
+var addOptions = function (program) {
+  program
+    .option('-h, --host [mode]', 'ngrok (default), lan, localhost')
+    .option('-p, --protocol [mode]', 'exp (default), http, redirect')
+    .option('--ngrok', 'Same as --host ngrok')
+    .option('--lan', 'Same as --host lan')
+    .option('--localhost', 'Same as --host localhost')
+    .option('--dev', 'Turns dev flag on')
+    .option('--no-dev', 'Turns dev flag off')
+    .option('--strict', 'Turns strict flag on')
+    .option('--no-strict', 'Turns strict flag off')
+    .option('--minify', 'Turns minify flag on')
+    .option('--no-minify', 'Turns minify flag off')
+    .option('--exp', 'Same as --protocol exp')
+    .option('--http', 'Same as --protocol http')
+    .option('--redirect', 'Same as --protocol redirect');
 }
 
-async function optsFromEnvAsync(env) {
-  var argv = env.argv;
-  var args = argv._;
-  var projectDir = args[1] || process.cwd();
-
+async function optsAsync(projectDir, options) {
   var opts = await ProjectSettings.readAsync(projectDir);
 
-  if ((!!argv.lan + !!argv.localhost + !!argv.ngrok) > 1) {
-    throw CommandError('BAD_ARGS', env, "Specify at most one of --ngrok, --lan, and --localhost");
+  if ((!!options.host + !!options.lan + !!options.localhost + !!options.ngrok) > 1) {
+    throw CommandError('BAD_ARGS', env, "Specify at most one of --host, --ngrok, --lan, and --localhost");
   }
 
-  if ((!!argv.exp + !!argv.http + !!argv.redirect) > 1) {
-    throw CommandError('BAD_ARGS', env, "Specify at most one of --exp, --http, and --redirect");
+  if ((!!options.protocol + !!options.exp + !!options.http + !!options.redirect) > 1) {
+    throw CommandError('BAD_ARGS', env, "Specify at most one of --protocol, --exp, --http, and --redirect");
   }
 
-  if (argv.ngrok) { opts.hostType = 'ngrok'; }
-  if (argv.lan) { opts.hostType = 'lan'; }
-  if (argv.localhost) { opts.hostType = 'localhost'; }
+  if (options.host) { opts.hostType = options.host; }
+  if (options.ngrok) { opts.hostType = 'ngrok'; }
+  if (options.lan) { opts.hostType = 'lan'; }
+  if (options.localhost) { opts.hostType = 'localhost'; }
 
-  if (typeof(argv.dev) === 'boolean') { opts.dev = !!argv.dev; }
-  if (typeof(argv.strict) === 'boolean') { opts.strict = !!argv.strict; }
-  if (typeof(argv.minify) === 'boolean') { opts.minify = !!argv.minify; }
+  if (options.dev) { opts.dev = true; }
+  if (options.strict) { opts.strict = true; }
+  if (options.minify) { opts.minify = true; }
 
-  if (argv.exp) { opts.urlType = 'exp'; }
-  if (argv.http) { opts.urlType = 'http'; }
-  if (argv.redirect) { opts.urlType = 'redirect'; }
+  if (options.noDev) { opts.dev = false; }
+  if (options.noStrict) { opts.strict = false; }
+  if (options.noMinify) { opts.minify = false; }
+
+  if (options.protocol) { opts.urlType = options.protocol; }
+  if (options.exp) { opts.urlType = 'exp'; }
+  if (options.http) { opts.urlType = 'http'; }
+  if (options.redirect) { opts.urlType = 'redirect'; }
 
   await ProjectSettings.setAsync(projectDir, opts);
 
@@ -53,6 +59,6 @@ async function optsFromEnvAsync(env) {
 }
 
 module.exports = {
-  options,
-  optsFromEnvAsync,
+  addOptions,
+  optsAsync,
 };
