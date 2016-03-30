@@ -61,12 +61,13 @@ async function runAsync() {
     require('./commands/login')(program);
     require('./commands/logout')(program);
     require('./commands/logs')(program);
-    //require('./commands/open')(program);
     //require('./commands/publish')(program);
     require('./commands/send')(program);
     require('./commands/signup')(program);
     require('./commands/start')(program);
-    //require('./commands/startSimulator')(program);
+    require('./commands/simulator-install')(program);
+    require('./commands/simulator-open')(program);
+    require('./commands/simulator-start')(program);
     require('./commands/status')(program);
     require('./commands/stop')(program);
     require('./commands/url')(program);
