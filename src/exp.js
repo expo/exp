@@ -57,17 +57,23 @@ async function runAsync() {
     //  require(path.resolve(file))(program);
     //});
 
+    require('./commands/login')(program);
+    require('./commands/logout')(program);
+    require('./commands/logs')(program);
+    require('./commands/signup')(program);
+    require('./commands/start')(program);
+    require('./commands/status')(program);
+    require('./commands/stop')(program);
     require('./commands/url')(program);
     require('./commands/whoami')(program);
 
     program.parse(process.argv);
 
-    /*let subCommand = _.head(program.args)
+    let subCommand = process.argv[2];
     let commands = _.map(program.commands, '_name');
-    console.log('sldfjds ' + subCommand + ' ' + commands);
     if (!_.includes(commands, subCommand)) {
-      program.help()
-    }*/
+      console.log(`"${subCommand}" is not an exp command. See "exp --help" for the full list of commands.`);
+    }
   } catch (e) {
     console.error(e);
   }

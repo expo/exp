@@ -8,7 +8,7 @@ var CommandError = require('./CommandError');
 
 var addOptions = function (program) {
   program
-    .option('-h, --host [mode]', 'ngrok (default), lan, localhost')
+    .option('-m, --host [mode]', 'ngrok (default), lan, localhost')
     .option('-p, --protocol [mode]', 'exp (default), http, redirect')
     .option('--ngrok', 'Same as --host ngrok')
     .option('--lan', 'Same as --host lan')
@@ -40,13 +40,9 @@ async function optsAsync(projectDir, options) {
   if (options.lan) { opts.hostType = 'lan'; }
   if (options.localhost) { opts.hostType = 'localhost'; }
 
-  if (options.dev) { opts.dev = true; }
-  if (options.strict) { opts.strict = true; }
-  if (options.minify) { opts.minify = true; }
-
-  if (options.noDev) { opts.dev = false; }
-  if (options.noStrict) { opts.strict = false; }
-  if (options.noMinify) { opts.minify = false; }
+  if (options.dev) { opts.dev = options.dev; }
+  if (options.strict) { opts.strict = options.strict; }
+  if (options.minify) { opts.minify = options.minify; }
 
   if (options.protocol) { opts.urlType = options.protocol; }
   if (options.exp) { opts.urlType = 'exp'; }
