@@ -8,6 +8,11 @@ var glob = require('glob');
 var instapromise = require('instapromise');
 var path = require('path');
 var program = require('commander');
+var url = require('url');
+
+import {
+  Config,
+} from 'xdl';
 
 var log = require('./log');
 var update = require('./update');
@@ -51,6 +56,16 @@ Command.prototype.asyncActionProjectDir = function (asyncFn) {
 
 async function runAsync() {
   try {
+    if (process.env.SERVER_URL) {
+      let serverUrl = process.env.SERVER_URL;
+      if (!serverUrl.startsWith('http')) {
+        serverUrl = 'http://' + serverUrl;
+      }
+      let parsedUrl = url.parse(serverUrl);
+      Config.api.host = parsedUrl.hostname;
+      Config.api.port = parsedUrl.port;
+    }
+
     program.name = 'exp';
     program.version(require('../package.json').version);
     glob.sync('commands/*.js', {
