@@ -3,24 +3,33 @@
  *
  */
 
+import {
+  ProjectSettings,
+} from 'xdl';
+
 var jsonFile = require('@exponent/json-file');
 var path = require('path');
+var log = require('./log');
 
-var argv = require('./argv');
-
-var relativePath = argv.path || '.';
-var absolutePath = path.resolve('.', relativePath);
-
-var packagerPath = path.join(__dirname, '..', 'node_modules', 'react-native', 'packager', 'packager.sh');
-
-var expInfoFile = jsonFile('.exp.json', {cantReadFileDefault: {}});
 var packageJsonFile = jsonFile('package.json');
 
+function projectExpJsonFile(projectRoot) {
+  let jsonFilePath = path.join(ProjectSettings.dotExponentProjectDirectory(projectRoot), 'exp-cli.json');
+  return new jsonFile(jsonFilePath, {cantReadFileDefault: {}});
+}
+
+async function projectStatusAsync(projectRoot) {
+  if (ProjectSettings.dotExponentProjectDirectoryExists(projectRoot)) {
+    var state = await projectExpJsonFile(projectRoot).getAsync('state', null);
+    return state;
+  } else {
+    log.error("No project found at " + projectRoot);
+    return null;
+  }
+}
+
 module.exports = {
-  relativePath,
-  absolutePath,
-  argv,
-  packagerPath,
-  expInfoFile,
   packageJsonFile,
+  projectExpJsonFile,
+  projectStatusAsync,
 };

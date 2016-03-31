@@ -1,21 +1,22 @@
-var _ = require('lodash-node');
+import {
+  Login,
+} from 'xdl';
 
-var api = require('../api');
-var CommandError = require('./CommandError');
 var log = require('../log');
-var userSettings = require('../userSettings');
 
-module.exports = {
-  name: 'login',
-  description: "Login to exp.host",
-  help: "",
-  runAsync: async function (env) {
+async function action(options) {
+  let result = await Login.logoutAsync();
+  if (result) {
+    log("Success.");
+    return result;
+  } else {
+    throw new Error("Unexpected Error: Couldn't logout");
+  }
+}
 
-    var argv = env.argv;
-    var args = argv._;
-    var err = null;
-
-    var result = await api.callMethodAsync('logout', env.argv);
-    return true;
-  },
+module.exports = (program) => {
+  program
+    .command('logout')
+    .description('Logout from exp.host')
+    .asyncAction(action);
 };

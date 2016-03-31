@@ -1,47 +1,23 @@
-var crayon = require('@ccheever/crayon');
+import {
+  Login,
+} from 'xdl';
 
-var api = require('../api');
-var CommandError = require('./CommandError');
 var log = require('../log');
-var userSettings = require('../userSettings');
 
-function NotLoggedIn(message) {
-  var err = new Error(message);
-  err._isNotLoggedIn = true;
-  return err;
+async function action(options) {
+  let result = await Login.whoamiAsync();
+  if (result && result.user && result.user.username) {
+    log(`Logged in as ${result.user.username}`);
+    return result;
+  } else {
+    throw new Error("Unexpected Error: Couldn't get user information");
+  }
 }
 
-module.exports = {
-  name: 'whoami',
-  description: "Checks with the server and then says who you are logged in as",
-  runAsync: async function (env) {
-    try {
-      var settingsData = await userSettings.readAsync();
-      if (!settingsData || !settingsData.username || !settingsData.hashedPassword) {
-        throw NotLoggedIn("You're not logged in");
-      }
-
-      var {username, hashedPassword} = settingsData;
-
-      var result = await api.callMethodAsync('whoami', {username, hashedPassword});
-
-      if (result.user) {
-        log("Logged in as", result.user.username);
-        for (var key of Object.keys(result.user)) {
-          console.log(key + ':', result.user[key]);
-        }
-        return result.user;
-      } else {
-        throw NotLoggedIn("No such user or your password is wrong.");
-      }
-    } catch (e) {
-      if (e._isNotLoggedIn) {
-        console.error(e.message);
-        return null;
-      } else {
-        throw e;
-      }
-    }
-
-  },
+module.exports = (program) => {
+  program
+    .command('whoami')
+    .alias('w')
+    .description('Checks with the server and then says who you are logged in as')
+    .asyncAction(action);
 };

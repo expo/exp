@@ -1,81 +1,102 @@
 #!/usr/bin/env node
 
-var crayon = require('@ccheever/crayon');
-
-var hasYield = require('has-yield');
-if (!hasYield) {
-  var log = require('./log');
-  log.error("`yield` keyword not available; use iojs (or a version of node that supports yield and generators)");
-  console.error("You are currently using node " + process.version);
-  console.error("We recommend using nvm to install the latest version of iojs");
-  console.error("");
-  console.error(log.crayon.bold("https://github.com/creationix/nvm"));
-  console.error("");
-  console.error(" curl https://raw.githubusercontent.com/creationix/nvm/v0.25.1/install.sh | bash");
-  console.error(" nvm install iojs");
-  console.error(" nvm alias default iojs");
-  console.error("");
-  console.error(" # ... then open a new terminal window and try again");
-  console.error("");
-  process.exit(1);
-}
-
+var _ = require('lodash-node');
 var child_process = require('child_process');
+var Command = require('commander').Command;
+var crayon = require('@ccheever/crayon');
+var glob = require('glob');
 var instapromise = require('instapromise');
+var path = require('path');
+var program = require('commander');
 
-var argv = require('./argv');
-var config = require('./config');
 var log = require('./log');
 var update = require('./update');
+var urlOpts = require('./urlOpts');
 
-module.exports = require('./commands/runAsync');
+Command.prototype.urlOpts = function () {
+  urlOpts.addOptions(this);
+  return this;
+};
+
+Command.prototype.asyncAction = function (asyncFn) {
+  return this.action(async (...args) => {
+    try {
+      let result = await asyncFn(...args);
+    } catch (err) {
+     if (err._isCommandError) {
+       if (false) {
+         log.error(crayon.orange.bold(err.code) + ' ' + crayon.red(err.message));
+       } else {
+         log.error(err.message);
+       }
+     } else if (err._isApiError) {
+       log.error(crayon.red(err.message));
+     } else {
+       log.error(err.message);
+       crayon.gray.error(err.stack);
+     }
+   }
+  });
+}
+
+Command.prototype.asyncActionProjectDir = function (asyncFn) {
+  return this.asyncAction(async (projectDir, ...args) => {
+    if (!projectDir) {
+      projectDir = process.cwd();
+    }
+
+    return asyncFn(projectDir, ...args);
+  });
+}
+
+async function runAsync() {
+  try {
+    program.name = 'exp';
+    program.version(require('../package.json').version);
+    glob.sync('commands/*.js', {
+      cwd: __dirname,
+    }).forEach(file => {
+      require('./' + file)(program);
+    });
+
+    program.parse(process.argv);
+
+    let subCommand = process.argv[2];
+    if (subCommand) {
+      let commands = _.map(program.commands, '_name');
+      if (!_.includes(commands, subCommand)) {
+        console.log(`"${subCommand}" is not an exp command. See "exp --help" for the full list of commands.`);
+      }
+    } else {
+      program.help();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function checkForUpdateAsync() {
+  let checkForUpdate = await update.checkForExpUpdateAsync();
+  switch (checkForUpdate.state) {
+    case 'up-to-date':
+      break;
+    case 'out-of-date':
+      crayon.green.error(checkForUpdate.message);
+      break;
+    case 'ahead-of-published':
+      crayon.cyan.error(checkForUpdate.message);
+      break;
+    case 'deprecated':
+      crayon.yellow.bold.error(checkForUpdate.message);
+      break;
+    default:
+      log.error("Confused about what version of exp you have?");
+  }
+}
 
 if (require.main === module) {
-
-  var checkForUpdate$ = update.checkForExpUpdateAsync();
-
-  module.exports(argv._[0], argv).then(function (result) {
-    if (result != null) {
-      if (argv.debug) {
-        console.error("\n");
-        log(crayon.gray("\n") + crayon.gray(result));
-      }
-    }
-  }, function (err) {
-    if (err._isCommandError) {
-      if (false) { //if (err.code) {
-        log.error(crayon.orange.bold(err.code) + ' ' + crayon.red(err.message));
-      } else {
-        log.error(err.message);
-      }
-    } else if (err._isApiError) {
-      //log.error(crayon.orange.bold('API Error') + ' ' + crayon.red(err.message));
-      log.error(crayon.red(err.message));
-    } else {
-      log.error(err.message);
-      crayon.gray.error(err.stack);
-    }
-  }).catch((err) => {
-    log.error(err);
-  }).then(function () {
-    checkForUpdate$.then(function (result) {
-      // console.log("result.state=", result.state);
-      switch (result.state) {
-        case 'up-to-date':
-          //crayon.gray.error(result.message);
-          break;
-        case 'out-of-date':
-          crayon.green.error(result.message);
-          break;
-        case 'ahead-of-published':
-          crayon.cyan.error(result.message);
-          break;
-        case 'deprecated':
-          crayon.yellow.bold.error(result.message);
-          break;
-        default:
-          log.error("Confused about what version of exp you have?");
-      }
-    });
-  });
+  Promise.all([
+    runAsync(),
+    checkForUpdateAsync(),
+  ]);
 }

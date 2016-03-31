@@ -1,57 +1,52 @@
 var crayon = require('@ccheever/crayon');
 var qrcodeTerminal = require('qrcode-terminal');
-var simpleSpinner = require('@exponent/simple-spinner');
+
+import {
+  UrlUtils,
+} from 'xdl';
 
 var askUser = require('../askUser');
-var CommandError = require('./CommandError');
 var log = require('../log');
-var sendTo = require('./sendTo');
-var urlOpts = require('./urlOpts');
-var urlUtil = require('../urlUtil');
+var sendTo = require('../sendTo');
+var urlOpts = require('../urlOpts');
 
-module.exports = {
-  name: 'send',
-  args: ['[recipient]'],
-  options: [
-    ['--sendTo', "Specifies the mobile number or e-mail address to send this URL to"],
-    ['--qr', "Will also generate a QR code for the URL"],
-    ['--test', "Will test to make sure the URL is valid"],
-    ...(urlOpts.options('ngrok')),
-  ],
-  description: "Sends a link you can load the app you're developing to a phone number or e-mail address",
-  help: "You must have the server running for this command to work",
-  runAsync: async function (env) {
-    var argv = env.argv;
-    var args = argv._;
-    var err = null;
+async function action(projectDir, options) {
+  await urlOpts.optsAsync(projectDir, options);
 
-    var url = await urlUtil.urlFromEnvAsync(env);
+  let url = await UrlUtils.constructManifestUrlAsync(projectDir);
 
-    log("Your URL is\n\n" + crayon.underline(url) + "\n");
+  log("Your URL is\n\n" + crayon.underline(url) + "\n");
 
-    var recipient = argv.sendTo || args[1];
-    if (!recipient) {
-      recipient = await askUser.askForMobileNumberAsync();
-    }
+  if (options.qr) {
+    qrcodeTerminal.generate(url);
+    return;
+  }
 
-    var test = !argv.notest;
-    if (test) {
-      log("Testing loading the URL...");
-      simpleSpinner.start();
-      try {
-        var ok = await urlUtil.testUrlAsync(url);
-      } catch (e) {
-        throw CommandError('RUN_EXP_START_FIRST', env, "You may need to run `exp start` to get a URL\n" + e.message);
-      } finally {
-        simpleSpinner.stop();
-      }
-      log("OK.");
-    }
+  var recipient;
+  if (typeof(options.sendTo) !== 'boolean') {
+    recipient = options.sendTo;
+  } else {
+    recipient = await UserSettings.getAsync('sendTo', null);
+  }
 
-    if (recipient) {
-      await sendTo.sendUrlAsync(url, recipient);
-    } else {
-      log.gray("(Not sending anything because you didn't specify a recipient.)");
-    }
-  },
+  if (!recipient) {
+    recipient = await askUser.askForSendToAsync();
+  }
+
+  if (recipient) {
+    await sendTo.sendUrlAsync(url, recipient);
+  } else {
+    log.gray("(Not sending anything because you didn't specify a recipient.)");
+  }
+}
+
+module.exports = (program) => {
+  program
+    .command('send [project-dir]')
+    .description("Sends a link you can load the project you're developing to a phone number or e-mail address")
+    //.help('You must have the server running for this command to work')
+    .option('-s, --send-to', 'Specifies the mobile number or e-mail address to send this URL to')
+    .option('-q, --qr', 'Will generate a QR code for the URL')
+    .urlOpts()
+    .asyncActionProjectDir(action);
 };

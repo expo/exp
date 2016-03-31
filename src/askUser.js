@@ -1,25 +1,29 @@
 var inquirerAsync = require('inquirer-async');
 
-var userSettings = require('./userSettings');
+import {
+  UserSettings,
+} from 'xdl';
 
-async function askForMobileNumberAsync() {
-  var phoneNumberFromSettings = await userSettings.getAsync('phoneNumber', null);
+async function askForSendToAsync() {
+  var sendToFromSettings = await UserSettings.getAsync('sendTo', null);
   console.log("Enter a mobile number or e-mail and we'll send a link to your phone.");
   var answers = await inquirerAsync.promptAsync([{
     type: 'input',
-    name: 'mobileNumber',
-    message: "Your mobile number or e-mail" + (phoneNumberFromSettings ? " (space to not send anything)" : '') + ":",
-    default: phoneNumberFromSettings,
+    name: 'sendTo',
+    message: "Your mobile number or e-mail" + (sendToFromSettings ? " (space to not send anything)" : '') + ":",
+    default: sendToFromSettings,
   }]);
-  return answers.mobileNumber.trim();
+  let recipient = answers.sendTo.trim();
+  await UserSettings.mergeAsync({sendTo: recipient});
+  return recipient;
 }
 
 module.exports = {
-  askForMobileNumberAsync,
+  askForSendToAsync,
 };
 
 if (require.main === module) {
-  askForMobileNumberAsync().then(function (mobileNumber) {
-    console.log("Your mobile number is", mobileNumber);
+  askForSendToAsync().then(function (sendTo) {
+    console.log("Your mobile number or email is", sendTo);
   });
 }

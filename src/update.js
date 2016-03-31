@@ -9,7 +9,6 @@ async function latestExpVersionAsync() {
   var packageName = await jsonFile(path.join(__dirname, '..', 'package.json')).getAsync('name');
   var version_ = await child_process.promise.exec('npm view ' + packageName + ' version');
   return version_.trim();
-
 }
 
 async function currentExpVersionAsync() {
@@ -45,9 +44,6 @@ async function checkForExpUpdateAsync() {
     default:
       throw new Error("Confused about whether exp is up-to-date or not");
   }
-
-  state = 'deprecated';
-  message = message + "\n" + crayon.red("exp is now deprecated. xde, the new GUI that replaces exp, is available at\nhttps://github.com/exponentjs/xde");
 
   return {
     state,
