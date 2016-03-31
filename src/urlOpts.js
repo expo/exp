@@ -24,6 +24,18 @@ var addOptions = function (program) {
     .option('--redirect', 'Same as --protocol redirect');
 }
 
+function hasBooleanArg(rawArgs, argName) {
+  return _.includes(rawArgs, '--' + argName) || _.includes(rawArgs, '--no-' + argName);
+}
+
+function getBooleanArg(rawArgs, argName) {
+  if (_.includes(rawArgs, '--' + argName)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 async function optsAsync(projectDir, options) {
   var opts = await ProjectSettings.readAsync(projectDir);
 
@@ -40,9 +52,10 @@ async function optsAsync(projectDir, options) {
   if (options.lan) { opts.hostType = 'lan'; }
   if (options.localhost) { opts.hostType = 'localhost'; }
 
-  if (options.dev) { opts.dev = options.dev; }
-  if (options.strict) { opts.strict = options.strict; }
-  if (options.minify) { opts.minify = options.minify; }
+  let rawArgs = options.parent.rawArgs;
+  if (hasBooleanArg(rawArgs, 'dev')) { opts.dev = getBooleanArg(rawArgs, 'dev'); }
+  if (hasBooleanArg(rawArgs, 'strict')) { opts.strict = getBooleanArg(rawArgs, 'strict'); }
+  if (hasBooleanArg(rawArgs, 'minify')) { opts.minify = getBooleanArg(rawArgs, 'minify'); }
 
   if (options.protocol) { opts.urlType = options.protocol; }
   if (options.exp) { opts.urlType = 'exp'; }
