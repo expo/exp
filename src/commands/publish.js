@@ -1,98 +1,58 @@
+var crayon = require('@ccheever/crayon');
 var simpleSpinner = require('@exponent/simple-spinner');
 
-var api = require('../api');
-var CommandError = require('../CommandError');
+import {
+  Exp,
+} from 'xdl';
+
 var config = require('../config');
 var log = require('../log');
-var urlUtil = require('../urlUtil');
-var userSettings = require('../userSettings');
+var sendTo = require('../sendTo');
 
-async function uploadInfoAsync(env) {
-  var us = await userSettings.readAsync();
-  var {username, hashedPassword} = us;
-  if ((!username) || (!hashedPassword)) {
-    throw CommandError('NOT_LOGGED_IN', env, "You aren't logged in to Exponent. Try running `exp adduser` or `exp login` before you publish.");
+async function action(projectDir, options) {
+  let status = await config.projectStatusAsync(projectDir);
+  if (!status) {
+    return;
   }
 
-  var pkg = await config.packageJsonFile.readAsync();
-  var packageName = pkg.name;
-  if (!packageName) {
-    throw CommandError('MISSING_PACKAGE_NAME', env, "Your package.json must contain a package name to publish");
+  if (status !== 'RUNNING') {
+    log.error(`Exponent server not running for project at ${projectDir}`);
+    log.error(`Please run "exp start ${projectDir}" first.`);
+    return;
   }
 
-  // Rules for remote package name:
-  // 1. If the name is of the format `@username/package-name` then the remote package name is `@username/package-name`
-  // 2. If the name is just `package-name` then we conctruct `@username/package-name` from your logged in username
-  //    and the package name in package.json.
-
-
-  var remoteFullPackageName;
-  var remotePackageName;
-  var remoteUsername;
-  var match = packageName.match(/^\@([a-zA-Z0-9_-]+)\/([a-zA-Z0-0_-]*)/);
-
-  if (match) {
-    remoteUsername = match[1];
-    remotePackageName = match[2];
-  } else {
-    remoteUsername = username;
-    remotePackageName = packageName;
+  if (options.quiet) {
+    log('Not posting to Slack')
   }
 
-  remoteFullPackageName = '@' + remoteUsername + '/' + remotePackageName;
+  let recipient = await sendTo.getRecipient(options.sendTo);
+  log('Publishing...');
+  simpleSpinner.start();
 
-  var packageVersion = pkg.version;
-  var localPackageName = packageName;
-
-  var ngrokUrl = await urlUtil.mainBundleUrlAsync({
-    type: 'ngrok',
-    minify: true,
-    dev: false,
-  });
-
-  return {
-    username,
-    hashedPassword,
-    localPackageName,
-    packageVersion,
-    remoteUsername,
-    remotePackageName,
-    remoteFullPackageName,
-    ngrokUrl,
+  let opts = {
+    stealth: !!options.quiet,
   };
+  let result = await Exp.publishAsync(projectDir, opts);
 
+  simpleSpinner.stop();
+
+  log('Published');
+  log('Your URL is\n\n' + crayon.underline(result.expUrl) + '\n');
+
+  if (recipient) {
+    await sendTo.sendUrlAsync(result.expUrl, recipient);
+  }
+
+  return result;
 }
 
-module.exports = {
-  name: 'publish',
-  description: "Publishes this article to exp.host",
-  uploadInfoAsync,
-  runAsync: async function (env) {
-
-    let argv = env.argv;
-    let args = argv._;
-    let stealth = argv.stealth;
-    let opts = {
-      stealth,
-    };
-
-    let uploadInfo = await uploadInfoAsync(env);
-
-    let infoWithOpts = Object.assign({}, uploadInfo, opts);
-
-    log("Publishing package version", uploadInfo.packageVersion, "as", uploadInfo.remoteFullPackageName, "...");
-    try {
-      simpleSpinner.start();
-      var result = await api.callMethodAsync('publish', [infoWithOpts]);
-    } catch (e) {
-      throw CommandError('PUBLISH_FAILED', env, e.message);
-    } finally {
-      simpleSpinner.stop();
-    }
-
-    log("Published.");
-
-    console.log("exp://exp.host/" + result.packageFullName);
-
-  },
+module.exports = (program) => {
+  program
+    .command('publish [project-dir]')
+    .alias('p')
+    .description('Publishes your project to exp.host')
+    .option('-s, --send-to [dest]', 'A phone number or e-mail address to send a link to')
+    .option('-q, --quiet', "Don't send a link to our Slack")
+    //.help('You must have the server running for this command to work')
+    .asyncActionProjectDir(action);
 };

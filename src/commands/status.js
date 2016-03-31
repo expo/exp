@@ -11,14 +11,12 @@ var log = require('../log');
 
 async function action(projectDir, options) {
   if (options.all) {
-    var pm2 = path.resolve(path.join(require.resolve('pm2'), '..', 'bin', 'pm2'));
-    var list = child_process.spawn(pm2, ['list'], {stdio: 'inherit'});
+    let pm2 = path.resolve(path.join(require.resolve('pm2'), '..', 'bin', 'pm2'));
+    let list = child_process.spawn(pm2, ['list'], {stdio: 'inherit'});
   } else {
-    if (ProjectSettings.dotExponentProjectDirectoryExists(projectDir)) {
-      var state = await config.projectExpJsonFile(projectDir).getAsync('state', null);
-      log(state);
-    } else {
-      log.error("No project found at " + projectDir);
+    let status = await config.projectStatusAsync(projectDir);
+    if (status) {
+      log(status);
     }
   }
 }

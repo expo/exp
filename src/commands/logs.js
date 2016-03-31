@@ -24,6 +24,7 @@ async function action(projectDir, options) {
 module.exports = (program) => {
   program
     .command('logs [project-dir]')
+    .alias('l')
     .description('Streams the logs')
     .option('-l, --lines [number]', 'Number of lines of history to go back')
     .option('-r, --raw', 'View raw logs (with no prefixing)')

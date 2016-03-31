@@ -77,18 +77,7 @@ async function action(projectDir, options) {
 
     await pm2.promise.disconnect();
 
-    var recipient;
-    if (options.sendTo) {
-      if (typeof(options.sendTo) !== 'boolean') {
-        recipient = options.sendTo;
-      } else {
-        recipient = await UserSettings.getAsync('sendTo', null);
-      }
-
-      if (!recipient) {
-        recipient = await askUser.askForSendToAsync();
-      }
-    }
+    var recipient = await sendTo.getRecipient(options.sendTo);
 
     log("Waiting for packager, etc. to start");
     simpleSpinner.start();

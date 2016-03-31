@@ -53,32 +53,22 @@ async function runAsync() {
   try {
     program.name = 'exp';
     program.version(require('../package.json').version);
-    //glob.sync('./commands/**/*.js').forEach(file => {
-    //  require(path.resolve(file))(program);
-    //});
-
-    //require('./commands/init')(program);
-    require('./commands/login')(program);
-    require('./commands/logout')(program);
-    require('./commands/logs')(program);
-    //require('./commands/publish')(program);
-    require('./commands/send')(program);
-    require('./commands/signup')(program);
-    require('./commands/start')(program);
-    require('./commands/simulator-install')(program);
-    require('./commands/simulator-open')(program);
-    require('./commands/simulator-start')(program);
-    require('./commands/status')(program);
-    require('./commands/stop')(program);
-    require('./commands/url')(program);
-    require('./commands/whoami')(program);
+    glob.sync('commands/*.js', {
+      cwd: __dirname,
+    }).forEach(file => {
+      require('./' + file)(program);
+    });
 
     program.parse(process.argv);
 
     let subCommand = process.argv[2];
-    let commands = _.map(program.commands, '_name');
-    if (!_.includes(commands, subCommand)) {
-      console.log(`"${subCommand}" is not an exp command. See "exp --help" for the full list of commands.`);
+    if (subCommand) {
+      let commands = _.map(program.commands, '_name');
+      if (!_.includes(commands, subCommand)) {
+        console.log(`"${subCommand}" is not an exp command. See "exp --help" for the full list of commands.`);
+      }
+    } else {
+      program.help();
     }
   } catch (e) {
     console.error(e);
