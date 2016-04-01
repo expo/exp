@@ -3,13 +3,13 @@ import {
 } from 'xdl';
 
 async function action(options) {
-  await Simulator.openSimulatorAsync();
+  await Simulator.installExponentOnSimulatorAsync();
 }
 
 module.exports = (program) => {
   program
-    .command('simulator-start')
-    .description('Opens the iOS simulator')
+    .command('ios-install')
+    .description('Installs the Exponent app on the iOS simulator')
     //.help('Must have Xcode installed')
     .asyncAction(action);
 };
