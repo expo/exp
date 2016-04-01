@@ -139,7 +139,7 @@ module.exports = (program) => {
   program
     .command('start [project-dir]')
     .alias('r')
-    .description('Starts or restarts a local server to serve your app and gives you a URL to it')
+    .description('Starts or restarts a local server for your app and gives you a URL to it')
     .option('-s, --send-to [dest]', 'A phone number or e-mail address to send a link to')
     .option('-a, --android', 'Opens your app in Exponent on a connected Android device')
     .option('-i, --ios', 'Opens your app in Exponent in a currently running iOS simulator on your computer')

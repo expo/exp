@@ -78,7 +78,14 @@ async function runAsync() {
 
     let subCommand = process.argv[2];
     if (subCommand) {
-      let commands = _.map(program.commands, '_name');
+      let commands = [];
+      program.commands.forEach(command => {
+        commands.push(command['_name']);
+        let alias = command['_alias'];
+        if (alias) {
+          commands.push(alias);
+        }
+      });
       if (!_.includes(commands, subCommand)) {
         console.log(`"${subCommand}" is not an exp command. See "exp --help" for the full list of commands.`);
       }

@@ -43,7 +43,7 @@ async function action(projectDir, options) {
 module.exports = (program) => {
   program
     .command('send [project-dir]')
-    .description("Sends a link you can load the project you're developing to a phone number or e-mail address")
+    .description("Sends a link to your project to a phone number or e-mail address")
     //.help('You must have the server running for this command to work')
     .option('-s, --send-to', 'Specifies the mobile number or e-mail address to send this URL to')
     .option('-q, --qr', 'Will generate a QR code for the URL')

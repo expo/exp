@@ -8,9 +8,9 @@ var CommandError = require('./CommandError');
 
 var addOptions = function (program) {
   program
-    .option('-m, --host [mode]', 'ngrok (default), lan, localhost')
-    .option('-p, --protocol [mode]', 'exp (default), http, redirect')
-    .option('--ngrok', 'Same as --host ngrok')
+    .option('-m, --host [mode]', 'tunnel (default), lan, localhost. Type of host to use. "tunnel" allows you to view your link on other networks')
+    .option('-p, --protocol [mode]', 'exp (default), http, redirect. Type of protocol. "exp" is recommended right now')
+    .option('--tunnel', 'Same as --host tunnel')
     .option('--lan', 'Same as --host lan')
     .option('--localhost', 'Same as --host localhost')
     .option('--dev', 'Turns dev flag on')
@@ -39,8 +39,8 @@ function getBooleanArg(rawArgs, argName) {
 async function optsAsync(projectDir, options) {
   var opts = await ProjectSettings.readAsync(projectDir);
 
-  if ((!!options.host + !!options.lan + !!options.localhost + !!options.ngrok) > 1) {
-    throw CommandError('BAD_ARGS', env, "Specify at most one of --host, --ngrok, --lan, and --localhost");
+  if ((!!options.host + !!options.lan + !!options.localhost + !!options.tunnel) > 1) {
+    throw CommandError('BAD_ARGS', env, "Specify at most one of --host, --tunnel, --lan, and --localhost");
   }
 
   if ((!!options.protocol + !!options.exp + !!options.http + !!options.redirect) > 1) {
@@ -48,7 +48,7 @@ async function optsAsync(projectDir, options) {
   }
 
   if (options.host) { opts.hostType = options.host; }
-  if (options.ngrok) { opts.hostType = 'ngrok'; }
+  if (options.tunnel) { opts.hostType = 'ngrok'; }
   if (options.lan) { opts.hostType = 'lan'; }
   if (options.localhost) { opts.hostType = 'localhost'; }
 

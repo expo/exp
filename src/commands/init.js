@@ -13,6 +13,6 @@ module.exports = (program) => {
   program
     .command('init [project-dir]')
     .alias('i')
-    .description('Initializes a directory so it can be used with exp')
+    .description('Initializes a directory with an example project')
     .asyncActionProjectDir(action);
 };
