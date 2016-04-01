@@ -1,5 +1,4 @@
 var crayon = require('@ccheever/crayon');
-var qrcodeTerminal = require('qrcode-terminal');
 
 import {
   UrlUtils,
@@ -17,8 +16,11 @@ async function action(projectDir, options) {
 
   log("Your URL is\n\n" + crayon.underline(url) + "\n");
 
-  if (options.qr) {
-    qrcodeTerminal.generate(url);
+  let shouldQuit = false;
+  if (urlOpts.handleQROpt(url, options)) { shouldQuit = true; }
+  if (await urlOpts.handleMobileOptsAsync(url, options)) { shouldQuit = true; }
+
+  if (shouldQuit) {
     return;
   }
 
@@ -46,7 +48,6 @@ module.exports = (program) => {
     .description("Sends a link to your project to a phone number or e-mail address")
     //.help('You must have the server running for this command to work')
     .option('-s, --send-to', 'Specifies the mobile number or e-mail address to send this URL to')
-    .option('-q, --qr', 'Will generate a QR code for the URL')
     .urlOpts()
     .asyncActionProjectDir(action);
 };

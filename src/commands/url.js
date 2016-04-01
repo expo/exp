@@ -1,6 +1,4 @@
 var crayon = require('@ccheever/crayon');
-var qrcodeTerminal = require('qrcode-terminal');
-var simpleSpinner = require('@exponent/simple-spinner');
 
 import {
   UrlUtils,
@@ -16,10 +14,8 @@ async function action(projectDir, options) {
 
   log("Your URL is\n\n" + crayon.underline(url) + "\n");
 
-  if (options.qr) {
-    qrcodeTerminal.generate(url);
-    return;
-  }
+  urlOpts.handleQROpt(url, options);
+  await urlOpts.handleMobileOptsAsync(url, options);
 }
 
 module.exports = (program) => {
@@ -28,7 +24,6 @@ module.exports = (program) => {
     .alias('u')
     .description('Displays the URL you can use to view your project in Exponent')
     //.help('You must have the server running for this command to work')
-    .option('-q, --qr', 'Will generate a QR code for the URL')
     .urlOpts()
     .asyncActionProjectDir(action);
 };

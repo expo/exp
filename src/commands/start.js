@@ -4,10 +4,8 @@ var pm2 = require('pm2');
 var simpleSpinner = require('@exponent/simple-spinner');
 
 import {
-  Android,
   PackagerController,
   RunPackager,
-  Simulator,
   UrlUtils,
   UserSettings,
 } from 'xdl';
@@ -94,16 +92,8 @@ async function action(projectDir, options) {
       await sendTo.sendUrlAsync(url, recipient);
     }
 
-    if (options.android) {
-      log("Opening on Android device");
-      await Android.openUrlWithAdbAsync(url);
-    }
-
-    if (options.ios) {
-      log("Opening in iOS simulator");
-      await Simulator.openUrlInSimulatorAsync(url);
-      await Simulator.openSimulatorAsync();
-    }
+    urlOpts.handleQROpt(url, options);
+    await urlOpts.handleMobileOptsAsync(url, options);
 
     return config.projectExpJsonFile(projectDir).readAsync();
   }
@@ -141,8 +131,6 @@ module.exports = (program) => {
     .alias('r')
     .description('Starts or restarts a local server for your app and gives you a URL to it')
     .option('-s, --send-to [dest]', 'A phone number or e-mail address to send a link to')
-    .option('-a, --android', 'Opens your app in Exponent on a connected Android device')
-    .option('-i, --ios', 'Opens your app in Exponent in a currently running iOS simulator on your computer')
     //.help("Starts a local server to serve your app and gives you a URL to it.\n" +
     //"[project-dir] defaults to '.'");
     .urlOpts()

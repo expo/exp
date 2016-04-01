@@ -1,20 +1,23 @@
+var simpleSpinner = require('@exponent/simple-spinner');
+
 import {
   Simulator,
   UrlUtils,
 } from 'xdl';
+
+var log = require('../log');
 
 async function action(projectDir, options) {
   let url = await UrlUtils.constructManifestUrlAsync(projectDir, {
     localhost: true,
   });
 
-  await Simulator.openUrlInSimulatorAsync(url);
-  await Simulator.openSimulatorAsync();
+  await Simulator.openUrlInSimulatorSafeAsync(url, log, log, simpleSpinner.start, simpleSpinner.stop);
 }
 
 module.exports = (program) => {
   program
-    .command('ios-open')
+    .command('ios')
     .description('Opens your app in Exponent in a currently running iOS simulator on your computer')
     //.help('You must already have Exponent installed on a simulator on your computer.')
     .asyncActionProjectDir(action);

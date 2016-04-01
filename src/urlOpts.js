@@ -1,13 +1,21 @@
 var _ = require('lodash-node');
+var qrcodeTerminal = require('qrcode-terminal');
+var simpleSpinner = require('@exponent/simple-spinner');
 
 import {
+  Android,
   ProjectSettings,
+  Simulator,
 } from 'xdl';
 
 var CommandError = require('./CommandError');
+var log = require('./log');
 
 var addOptions = function (program) {
   program
+    .option('-a, --android', 'Opens your app in Exponent on a connected Android device')
+    .option('-i, --ios', 'Opens your app in Exponent in a currently running iOS simulator on your computer')
+    .option('-q, --qr', 'Will generate a QR code for the URL')
     .option('-m, --host [mode]', 'tunnel (default), lan, localhost. Type of host to use. "tunnel" allows you to view your link on other networks')
     .option('-p, --protocol [mode]', 'exp (default), http, redirect. Type of protocol. "exp" is recommended right now')
     .option('--tunnel', 'Same as --host tunnel')
@@ -67,7 +75,29 @@ async function optsAsync(projectDir, options) {
   return opts;
 }
 
+function handleQROpt(url, options) {
+  if (options.qr) {
+    qrcodeTerminal.generate(url);
+  }
+
+  return !!options.qr;
+}
+
+async function handleMobileOptsAsync(url, options) {
+  if (options.android) {
+    await Android.openUrlSafeAsync(url, log, log);
+  }
+
+  if (options.ios) {
+    await Simulator.openUrlInSimulatorSafeAsync(url, log, log, simpleSpinner.start, simpleSpinner.stop);
+  }
+
+  return !!options.android || !!options.ios;
+}
+
 module.exports = {
   addOptions,
+  handleMobileOptsAsync,
+  handleQROpt,
   optsAsync,
 };

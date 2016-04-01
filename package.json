@@ -1,6 +1,6 @@
 {
   "name": "exp",
-  "version": "0.14.3",
+  "version": "0.14.4",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
   "main": "build/exp.js",
   "files": [
@@ -68,6 +68,6 @@
     "slugid": "^1.0.3",
     "window-size": "^0.1.2",
     "wordwrap": "^1.0.0",
-    "xdl": "^0.0.16"
+    "xdl": "^0.0.17"
   }
 }

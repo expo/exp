@@ -28,6 +28,5 @@ module.exports = (program) => {
     .description('Streams the logs')
     .option('-l, --lines [number]', 'Number of lines of history to go back')
     .option('-r, --raw', 'View raw logs (with no prefixing)')
-    .urlOpts()
     .asyncActionProjectDir(action);
 };
