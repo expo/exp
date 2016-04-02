@@ -18,7 +18,7 @@ async function action(projectDir, options) {
 module.exports = (program) => {
   program
     .command('ios')
-    .description('Opens your app in Exponent in a currently running iOS simulator on your computer')
+    .description('Opens your app in Exponent in an iOS simulator on your computer')
     //.help('You must already have Exponent installed on a simulator on your computer.')
     .asyncActionProjectDir(action);
 };
