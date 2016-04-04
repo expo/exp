@@ -15,6 +15,7 @@ async function action(projectDir, options) {
   let url = await UrlUtils.constructManifestUrlAsync(projectDir);
 
   log("Your URL is\n\n" + crayon.underline(url) + "\n");
+  log.raw(url);
 
   let shouldQuit = false;
   if (urlOpts.handleQROpt(url, options)) { shouldQuit = true; }

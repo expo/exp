@@ -87,6 +87,7 @@ async function action(projectDir, options) {
 
     let url = await UrlUtils.constructManifestUrlAsync(projectDir);
     log("Your URL is\n\n" + crayon.underline(url) + "\n");
+    log.raw(url);
 
     if (recipient) {
       await sendTo.sendUrlAsync(url, recipient);

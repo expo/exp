@@ -26,6 +26,10 @@ Command.prototype.urlOpts = function () {
 Command.prototype.asyncAction = function (asyncFn) {
   return this.action(async (...args) => {
     try {
+      let options = _.last(args).parent;
+      if (options.output === 'raw') {
+        log.config.raw = true;
+      }
       let result = await asyncFn(...args);
     } catch (err) {
      if (err._isCommandError) {
@@ -67,7 +71,9 @@ async function runAsync() {
     }
 
     program.name = 'exp';
-    program.version(require('../package.json').version);
+    program
+      .version(require('../package.json').version)
+      .option('-o, --output [format]', 'Output format. pretty (default), raw');
     glob.sync('commands/*.js', {
       cwd: __dirname,
     }).forEach(file => {

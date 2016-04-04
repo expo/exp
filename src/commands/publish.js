@@ -38,6 +38,7 @@ async function action(projectDir, options) {
 
   log('Published');
   log('Your URL is\n\n' + crayon.underline(result.expUrl) + '\n');
+  log.raw(result.expUrl);
 
   if (recipient) {
     await sendTo.sendUrlAsync(result.expUrl, recipient);
