@@ -71,6 +71,8 @@ async function runAsync() {
       Config.api.port = parsedUrl.port;
     }
 
+    Config.developerTool = 'exp';
+
     program.name = 'exp';
     program
       .version(require('../package.json').version)
