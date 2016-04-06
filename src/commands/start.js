@@ -35,7 +35,12 @@ async function action(projectDir, options) {
     var args_ = process.argv.slice(2);
     args_.push('--foreground');
 
+    // pm2 spits out some log statements here
+    let tempLog = console.log;
+    console.log = function () {};
     await pm2.promise.connect();
+    console.log = tempLog;
+
     await config.projectExpJsonFile(projectDir).writeAsync({pm2Id, pm2Name, state: 'STARTING'});
 
     // There is a race condition here, but let's just not worry about it for now...

@@ -29,6 +29,7 @@ Command.prototype.asyncAction = function (asyncFn) {
       let options = _.last(args).parent;
       if (options.output === 'raw') {
         log.config.raw = true;
+        process.env['PM2_SILENT'] = true;
       }
       let result = await asyncFn(...args);
     } catch (err) {
