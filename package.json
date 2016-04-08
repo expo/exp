@@ -1,7 +1,8 @@
 {
   "name": "exp",
-  "version": "0.14.4",
+  "version": "0.14.5",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
+  "preferGlobal": true,
   "main": "build/exp.js",
   "files": [
     "build"
@@ -53,6 +54,6 @@
     "pm2": "^0.14.5",
     "qrcode-terminal": "^0.10.0",
     "semver": "^5.0.1",
-    "xdl": "0.0.21"
+    "xdl": "0.0.22"
   }
 }

@@ -48,11 +48,11 @@ async function optsAsync(projectDir, options) {
   var opts = await ProjectSettings.readAsync(projectDir);
 
   if ((!!options.host + !!options.lan + !!options.localhost + !!options.tunnel) > 1) {
-    throw CommandError('BAD_ARGS', env, "Specify at most one of --host, --tunnel, --lan, and --localhost");
+    throw CommandError('BAD_ARGS', "Specify at most one of --host, --tunnel, --lan, and --localhost");
   }
 
   if ((!!options.protocol + !!options.exp + !!options.http + !!options.redirect) > 1) {
-    throw CommandError('BAD_ARGS', env, "Specify at most one of --protocol, --exp, --http, and --redirect");
+    throw CommandError('BAD_ARGS', "Specify at most one of --protocol, --exp, --http, and --redirect");
   }
 
   if (options.host) { opts.hostType = options.host; }

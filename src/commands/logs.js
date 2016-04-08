@@ -10,7 +10,7 @@ async function action(projectDir, options) {
   await pm2serve.setupServeAsync(projectDir);
   var pm2Id = await config.projectExpJsonFile(projectDir).getAsync('pm2Id', null);
   if (pm2Id == null) {
-    throw CommandError('NO_PM2_ID', env, "I can't find a server; try running `exp start` first.");
+    throw CommandError('NO_PM2_ID', "I can't find a server; try running `exp start` first.");
   }
 
   var lines = options.lines || 50;

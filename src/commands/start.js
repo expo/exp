@@ -77,7 +77,7 @@ async function action(projectDir, options) {
     if (app) {
       await config.projectExpJsonFile(projectDir).mergeAsync({pm2Name, pm2Id: app.pm_id});
     } else {
-      throw CommandError('PM2_ERROR_STARTING_PROCESS', env, "Something went wrong starting exp serve:");
+      throw CommandError('PM2_ERROR_STARTING_PROCESS', "Something went wrong starting exp serve:");
     }
 
     await pm2.promise.disconnect();
