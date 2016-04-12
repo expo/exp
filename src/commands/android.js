@@ -13,7 +13,7 @@ async function action(projectDir, options) {
 
 module.exports = (program) => {
   program
-    .command('android')
+    .command('android [project-dir]')
     .description('Opens your app in Exponent on a connected Android device')
     //.help('You must already have Exponent installed on a simulator on your computer.')
     .asyncActionProjectDir(action);
