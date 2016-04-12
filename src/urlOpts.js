@@ -29,7 +29,8 @@ var addOptions = function (program) {
     .option('--no-minify', 'Turns minify flag off')
     .option('--exp', 'Same as --protocol exp')
     .option('--http', 'Same as --protocol http')
-    .option('--redirect', 'Same as --protocol redirect');
+    .option('--redirect', 'Same as --protocol redirect')
+    ;
 }
 
 function hasBooleanArg(rawArgs, argName) {
