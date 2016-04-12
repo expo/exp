@@ -1,6 +1,6 @@
 {
   "name": "exp",
-  "version": "0.14.7",
+  "version": "0.14.8",
   "description": "The command-line tool for creating and publishing rich articles written with JavaScript and React Native",
   "preferGlobal": true,
   "main": "build/exp.js",
