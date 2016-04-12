@@ -23,6 +23,11 @@ Command.prototype.urlOpts = function () {
   return this;
 };
 
+Command.prototype.addUrlOption = function () {
+  urlOpts.addUrlOption(this);
+  return this;
+}
+
 Command.prototype.asyncAction = function (asyncFn) {
   return this.action(async (...args) => {
     try {

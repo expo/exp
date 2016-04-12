@@ -29,7 +29,8 @@ var addOptions = function (program) {
     .option('--no-minify', 'Turns minify flag off')
     .option('--exp', 'Same as --protocol exp')
     .option('--http', 'Same as --protocol http')
-    .option('--redirect', 'Same as --protocol redirect');
+    .option('--redirect', 'Same as --protocol redirect')
+    ;
 }
 
 function hasBooleanArg(rawArgs, argName) {
@@ -95,8 +96,15 @@ async function handleMobileOptsAsync(url, options) {
   return !!options.android || !!options.ios;
 }
 
+function addUrlOption(command) {
+  return command
+    .option('-u, --url [exp-url-to-open]', "Opens the specified URL")
+    ;
+}
+
 module.exports = {
   addOptions,
+  addUrlOption,
   handleMobileOptsAsync,
   handleQROpt,
   optsAsync,

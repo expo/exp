@@ -8,7 +8,8 @@ import {
 var log = require('../log');
 
 async function action(projectDir, options) {
-  let url = await UrlUtils.constructManifestUrlAsync(projectDir, {
+
+  let url = options.url || await UrlUtils.constructManifestUrlAsync(projectDir, {
     localhost: true,
   });
 
@@ -18,7 +19,9 @@ async function action(projectDir, options) {
 module.exports = (program) => {
   program
     .command('ios [project-dir]')
-    .description('Opens your app in Exponent in an iOS simulator on your computer')
+    .addUrlOption()
+    .description("Opens your app in Exponent in an iOS simulator on your computer")
     //.help('You must already have Exponent installed on a simulator on your computer.')
-    .asyncActionProjectDir(action);
+    .asyncActionProjectDir(action)
+    ;
 };
