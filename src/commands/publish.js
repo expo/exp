@@ -18,6 +18,7 @@ async function action(projectDir, options) {
   if (status !== 'RUNNING') {
     log.error(`Exponent server not running for project at ${projectDir}`);
     log.error(`Please run "exp start ${projectDir}" first.`);
+    process.exit(1);
     return;
   }
 

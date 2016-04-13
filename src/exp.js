@@ -108,6 +108,7 @@ async function runAsync() {
     }
   } catch (e) {
     console.error(e);
+    throw e;
   }
 }
 

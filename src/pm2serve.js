@@ -49,6 +49,8 @@ async function waitForRunningAsync(expFile) {
   var state = await expFile.getAsync('state', null);
   if (state === 'RUNNING') {
     return true;
+  } else if (state === 'ERROR') {
+    return false;
   } else {
     await delayAsync(500);
     return waitForRunningAsync(expFile);

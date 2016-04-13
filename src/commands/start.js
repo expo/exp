@@ -86,8 +86,14 @@ async function action(projectDir, options) {
 
     log("Waiting for packager, etc. to start");
     simpleSpinner.start();
-    await pm2serve.waitForRunningAsync(config.projectExpJsonFile(projectDir));
+    let result = await pm2serve.waitForRunningAsync(config.projectExpJsonFile(projectDir));
     simpleSpinner.stop();
+    if (!result) {
+      log.error(`Error while starting. Please run "exp logs ${projectDir}" to view the errors.`);
+      process.exit(1);
+      return;
+    }
+
     log("Exponent is ready.");
 
     let url = await UrlUtils.constructManifestUrlAsync(projectDir);
@@ -113,12 +119,19 @@ async function action(projectDir, options) {
   pc.on('stdout', console.log);
   pc.on('stderr', console.log);
 
-  await pc.startAsync();
+  try {
+    await pc.startAsync();
 
-  config.projectExpJsonFile(projectDir).mergeAsync({
-    err: null,
-    state: 'RUNNING',
-  });
+    config.projectExpJsonFile(projectDir).mergeAsync({
+      err: null,
+      state: 'RUNNING',
+    });
+  } catch (e) {
+    config.projectExpJsonFile(projectDir).mergeAsync({
+      err: null,
+      state: 'ERROR',
+    });
+  }
 
   process.on('exit', () => {
     PackagerController.exit();

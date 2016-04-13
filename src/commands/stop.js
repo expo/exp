@@ -22,6 +22,8 @@ async function action(projectDir, options) {
       await pm2.promise.stop(await pm2serve.pm2NameAsync());
     } catch (e) {
       log.error("Failed to stop the server\n" + e.message);
+      process.exit(1);
+      return;
     }
     await pm2.promise.disconnect();
     await config.projectExpJsonFile(projectDir).mergeAsync({state: 'STOPPED'});
